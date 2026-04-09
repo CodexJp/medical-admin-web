@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Diagnosticos Medico (Sub-tab)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Sidebar collapse — kept as requested */
+    .sidebar-collapsed .sidebar { width: 60px; }
+    .sidebar-collapsed .sidebar .nav-label { display: none; }
+
+    /* Autocomplete open state */
+    .autocomplete-wrapper.open .autocomplete-dropdown { display: block; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-6">
+
+  <!-- Context banner -->
+  <div class="flex items-center gap-2 rounded-lg border border-zinc-200/60 bg-white px-4 py-3 mb-4">
+    <span class="inline-block rounded-full bg-blue-100 text-blue-700 text-[11px] font-semibold px-2 py-0.5">Sub-tab</span>
+    <span class="text-zinc-400 text-xs">Evento Actual &rsaquo; Diagnosticos Medico &mdash; CIE-10, causa externa, finalidad consulta</span>
+  </div>
+
+  <!-- Diagnostico de Consulta -->
+  <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6">
+    <h2 class="text-base font-bold text-zinc-900 mb-1">Diagnosticos Medico</h2>
+    <p class="text-zinc-400 text-xs mb-5">Diagnostico de consulta &mdash; Clasifique la atencion con codigos CIE-10</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Diagnostico principal -->
+      <div class="md:col-span-2">
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Diagnostico principal <span class="text-red-500">*</span></label>
+        <div class="autocomplete-wrapper open relative">
+          <input type="text" placeholder="Buscar diagnostico CIE-10..." value="E11 Diabetes" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+          <div class="autocomplete-dropdown hidden absolute top-full left-0 right-0 z-50 bg-white border border-zinc-200 rounded-md shadow-lg mt-1 max-h-[220px] overflow-y-auto">
+            <div class="autocomplete-item flex items-center gap-2 px-3 py-2 cursor-pointer bg-blue-50">
+              <span class="code font-semibold text-blue-600 text-xs min-w-[44px]">E11.9</span>
+              <span class="name text-sm text-zinc-700">Diabetes mellitus tipo 2, sin complicaciones</span>
+            </div>
+            <div class="autocomplete-item flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-zinc-50">
+              <span class="code font-semibold text-blue-600 text-xs min-w-[44px]">E11.0</span>
+              <span class="name text-sm text-zinc-700">Diabetes mellitus tipo 2, con coma</span>
+            </div>
+            <div class="autocomplete-item flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-zinc-50">
+              <span class="code font-semibold text-blue-600 text-xs min-w-[44px]">E11.2</span>
+              <span class="name text-sm text-zinc-700">Diabetes mellitus tipo 2, con complicaciones renales</span>
+            </div>
+            <div class="autocomplete-item flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-zinc-50">
+              <span class="code font-semibold text-blue-600 text-xs min-w-[44px]">E11.3</span>
+              <span class="name text-sm text-zinc-700">Diabetes mellitus tipo 2, con complicaciones oftalmicas</span>
+            </div>
+            <div class="autocomplete-item flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-zinc-50">
+              <span class="code font-semibold text-blue-600 text-xs min-w-[44px]">E11.5</span>
+              <span class="name text-sm text-zinc-700">Diabetes mellitus tipo 2, con complicaciones circulatorias perifericas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tipo diagnostico -->
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Tipo de diagnostico</label>
+        <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <option value="" disabled>Seleccione...</option>
+          <option value="1" selected>Impresion diagnostica</option>
+          <option value="2">Confirmado</option>
+          <option value="3">Recurrente</option>
+        </select>
+      </div>
+
+      <!-- Causa externa -->
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Causa externa</label>
+        <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <option value="" disabled>Seleccione...</option>
+          <option value="1">Accidente de trabajo</option>
+          <option value="2">Accidente de transito</option>
+          <option value="3" selected>Enfermedad general</option>
+          <option value="4">Enfermedad profesional</option>
+          <option value="5">Evento catastrofico</option>
+          <option value="6">Lesion por agresion</option>
+          <option value="7">Lesion autoinfligida</option>
+          <option value="8">Otra</option>
+        </select>
+      </div>
+
+      <!-- Finalidad consulta -->
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Finalidad de la consulta</label>
+        <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <option value="" disabled>Seleccione...</option>
+          <option value="1" selected>Diagnostico</option>
+          <option value="2">Tratamiento</option>
+          <option value="3">Seguimiento</option>
+          <option value="4">Deteccion temprana</option>
+          <option value="5">Proteccion especifica</option>
+        </select>
+      </div>
+
+      <!-- Impresion diagnostica -->
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Impresion diagnostica</label>
+        <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <option value="" disabled>Seleccione...</option>
+          <option value="1" selected>Nuevo</option>
+          <option value="2">Repetido</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Diagnosticos relacionados -->
+    <div class="h-px bg-zinc-200 my-6"></div>
+    <h3 class="text-sm font-semibold text-zinc-900 mb-3">Diagnosticos relacionados</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Diagnostico relacionado 1</label>
+        <div class="autocomplete-wrapper relative">
+          <input type="text" value="I10 - Hipertension esencial (primaria)" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Diagnostico relacionado 2</label>
+        <div class="autocomplete-wrapper relative">
+          <input type="text" value="E78.0 - Hipercolesterolemia pura" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Diagnostico relacionado 3</label>
+        <div class="autocomplete-wrapper relative">
+          <input type="text" placeholder="Buscar CIE-10..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla diagnosticos agregados -->
+  <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6 mt-4">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-zinc-900">Diagnosticos agregados</h3>
+      <button class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-zinc-200 bg-white text-sm text-zinc-700 hover:bg-zinc-50 transition-colors">
+        <i data-lucide="plus" style="width:14px;height:14px"></i>
+        Agregar diagnostico secundario
+      </button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-zinc-200">
+            <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-10">#</th>
+            <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Codigo CIE-10</th>
+            <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Nombre</th>
+            <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
+            <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Rol</th>
+            <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-[100px]">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-100">
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="font-semibold text-blue-600">E11.9</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">Diabetes mellitus tipo 2, sin complicaciones</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 text-xs font-medium px-2 py-0.5">Impresion Dx</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600"><i data-lucide="star" style="width:12px;height:12px"></i> Principal</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">
+              <div class="flex items-center gap-0.5">
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Editar"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <td class="py-3.5 px-4 text-sm text-zinc-700">2</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="font-semibold text-blue-600">I10</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">Hipertension esencial (primaria)</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium px-2 py-0.5">Confirmado</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5">Relacionado</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">
+              <div class="flex items-center gap-0.5">
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Editar"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <td class="py-3.5 px-4 text-sm text-zinc-700">3</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="font-semibold text-blue-600">J06.9</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">Infeccion aguda de las vias respiratorias superiores, no especificada</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 text-xs font-medium px-2 py-0.5">Impresion Dx</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5">Relacionado</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">
+              <div class="flex items-center gap-0.5">
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Editar"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <td class="py-3.5 px-4 text-sm text-zinc-700">4</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="font-semibold text-blue-600">E78.0</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">Hipercolesterolemia pura</td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium px-2 py-0.5">Confirmado</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5">Relacionado</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700">
+              <div class="flex items-center gap-0.5">
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Editar"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Diagnostico de Procedimiento (condicional) -->
+  <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6 mt-4 border-l-[3px] border-l-blue-600">
+    <h3 class="text-sm font-semibold text-zinc-900 mb-1">Diagnostico de procedimiento</h3>
+    <p class="text-zinc-400 text-xs mb-5">Solo visible cuando el formato tiene habilitado el diagnostico de procedimiento</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Ambito</label>
+        <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <option>Consulta externa</option>
+          <option>PYP</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Diagnostico principal de procedimiento <span class="text-red-500">*</span></label>
+        <div class="autocomplete-wrapper relative">
+          <input type="text" value="K80.2 - Calculo de vesicula biliar sin colecistitis" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Dx procedimiento relacionado 1</label>
+        <div class="autocomplete-wrapper relative">
+          <input type="text" placeholder="Buscar CIE-10..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Dx procedimiento relacionado 2</label>
+        <div class="autocomplete-wrapper relative">
+          <input type="text" placeholder="Buscar CIE-10..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Dx procedimiento relacionado 3</label>
+        <div class="autocomplete-wrapper relative">
+          <input type="text" placeholder="Buscar CIE-10..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Toggle autocomplete dropdown on focus
+    document.querySelectorAll('.autocomplete-wrapper input').forEach(input => {
+      input.addEventListener('focus', () => {
+        document.querySelectorAll('.autocomplete-wrapper').forEach(w => w.classList.remove('open'));
+        if (input.closest('.autocomplete-wrapper').querySelector('.autocomplete-dropdown')) {
+          input.closest('.autocomplete-wrapper').classList.add('open');
+        }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.autocomplete-wrapper')) {
+        document.querySelectorAll('.autocomplete-wrapper').forEach(w => w.classList.remove('open'));
+      }
+    });
+
+    document.querySelectorAll('.autocomplete-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const wrapper = item.closest('.autocomplete-wrapper');
+        const input = wrapper.querySelector('input');
+        input.value = item.querySelector('.code').textContent + ' - ' + item.querySelector('.name').textContent;
+        wrapper.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>

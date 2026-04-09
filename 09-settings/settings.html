@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Configuracion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: #18181B; color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 150ms; z-index: 99; }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="app-layout">
+    <!-- App sidebar -->
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Navegacion principal">
+  <div class="sidebar-header">
+    <a href="../00-shell/shell.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <i data-lucide="heart-pulse" style="width:18px;height:18px;stroke-width:1.5"></i>
+      </div>
+      <span class="sidebar-logo-text">MedicalAdmin</span>
+    </a>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Colapsar menu">
+      <i data-lucide="panel-left-close" style="width:16px;height:16px;stroke-width:1.5"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- ====== INICIO ====== -->
+    <div class="nav-section">
+      <a href="../00-shell/dashboard-medico.html" class="nav-item" data-tooltip="Dashboard">
+        <span class="nav-item-icon"><i data-lucide="layout-dashboard"></i></span>
+        <span class="nav-item-label">Dashboard</span>
+      </a>
+    </div>
+
+    <!-- ====== MODULO 1: CONSULTA EXTERNA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Consulta Externa</div>
+
+      <!-- Agendamiento -->
+      <button class="nav-item" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda-group')">
+        <span class="nav-item-icon"><i data-lucide="calendar-days"></i></span>
+        <span class="nav-item-label">Agendamiento</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="cit-agenda-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="cit-agenda-group">
+        <a href="../01-calendar/index.html" class="nav-item" data-tooltip="Agenda">Agenda</a>
+        <span class="nav-item nav-disabled" data-tooltip="Creacion de Citas" title="Disponible en version anterior">Creacion de Citas</span>
+        <a href="../03-reception/index.html" class="nav-item" data-tooltip="Recepcion de Paciente">Recepcion de Paciente</a>
+        <span class="nav-item nav-disabled" data-tooltip="Motivos de Cancelacion" title="Disponible en version anterior">Motivos de Cancelacion</span>
+      </div>
+
+      <!-- Configuracion CIT -->
+      <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('cit-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="cit-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="cit-config-group">
+        <a href="../02-appointments/admin-horarios.html" class="nav-item" data-tooltip="Horarios">Horarios</a>
+        <a href="../02-appointments/admin-consultorios.html" class="nav-item" data-tooltip="Consultorios">Consultorios</a>
+        <a href="../02-appointments/admin-duraciones.html" class="nav-item" data-tooltip="Duracion de Citas">Duracion de Citas</a>
+      </div>
+    </div>
+
+    <!-- ====== MODULO 2: HISTORIA CLINICA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Historia Clinica</div>
+
+      <!-- Historia Clinica -->
+      <button class="nav-item" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc-group')">
+        <span class="nav-item-icon"><i data-lucide="file-heart"></i></span>
+        <span class="nav-item-label">Historia Clinica</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="his-hc-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="his-hc-group">
+        <span class="nav-item nav-disabled" data-tooltip="Adm. Pacientes" title="Disponible en version anterior">Adm. Pacientes</span>
+        <a href="../04-clinical/attention-queue.html" class="nav-item" data-tooltip="Atencion de Pacientes">Atencion de Pacientes</a>
+        <span class="nav-item nav-disabled" data-tooltip="HC Externa" title="Disponible en version anterior">HC Externa</span>
+        <span class="nav-item nav-disabled" data-tooltip="Evaluacion Enfermeria" title="Disponible en version anterior">Evaluacion Enfermeria</span>
+      </div>
+
+      <!-- Configuracion General HIS -->
+      <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('his-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion General</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="his-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="his-config-group">
+        <a href="../04-clinical/format-list.html" class="nav-item" data-tooltip="Formatos HC">Formatos HC</a>
+        <span class="nav-item nav-disabled" data-tooltip="Profesionales de la Salud" title="Disponible en version anterior">Profesionales de la Salud</span>
+        <a href="../05-medical-config/index.html" class="nav-item" data-tooltip="Areas Funcionales">Areas Funcionales</a>
+        <a href="../05-medical-config/servicios.html" class="nav-item" data-tooltip="Servicios">Servicios</a>
+        <a href="../05-medical-config/procedimientos.html" class="nav-item" data-tooltip="Otros Procedimientos">Otros Procedimientos</a>
+        <a href="../05-medical-config/checklist.html" class="nav-item" data-tooltip="Lista de Chequeo">Lista de Chequeo</a>
+        <a href="../05-medical-config/ocupaciones.html" class="nav-item" data-tooltip="Ocupaciones">Ocupaciones</a>
+        <span class="nav-item nav-disabled" data-tooltip="Especialidades" title="Disponible en version anterior">Especialidades</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo de Cita" title="Disponible en version anterior">Tipo de Cita</span>
+        <span class="nav-item nav-disabled" data-tooltip="Formulas Consultorios" title="Disponible en version anterior">Formulas Consultorios</span>
+      </div>
+
+      <!-- Configuracion Hospitalizacion (fuera scope) -->
+      <span class="nav-item nav-module-disabled" data-tooltip="Configuracion Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="bed"></i></span>
+        <span class="nav-item-label">Config. Hospitalizacion</span>
+      </span>
+
+      <!-- Hospitalizacion sub-modulo (fuera scope) -->
+      <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
+        <span class="nav-item-label">Hospitalizacion</span>
+      </span>
+    </div>
+
+    <!-- ====== MODULO 3: FACTURACION ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Facturacion</div>
+
+      <!-- Ejecucion de Procesos -->
+      <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec-group')">
+        <span class="nav-item-icon"><i data-lucide="receipt"></i></span>
+        <span class="nav-item-label">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="pos-exec-group">
+        <a href="../07-billing/crear-orden.html" class="nav-item" data-tooltip="Ordenes de Facturacion">Ordenes de Facturacion</a>
+        <a href="../07-billing/admin-facturas.html" class="nav-item" data-tooltip="Facturas">Facturas</a>
+        <a href="../07-billing/rips.html" class="nav-item" data-tooltip="RIPS">RIPS</a>
+        <a href="../07-billing/clientes.html" class="nav-item" data-tooltip="Clientes">Clientes</a>
+        <span class="nav-item nav-disabled" data-tooltip="Lista de Pacientes" title="Disponible en version anterior">Lista de Pacientes</span>
+      </div>
+
+      <!-- Configuracion General POS -->
+      <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion General</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="pos-config-group">
+        <a href="../07-billing/medios-pago.html" class="nav-item" data-tooltip="Medios de Pago">Medios de Pago</a>
+        <a href="../07-billing/rangos-facturacion.html" class="nav-item" data-tooltip="Rangos de Facturacion">Rangos de Facturacion</a>
+        <a href="../07-billing/tarifas.html" class="nav-item" data-tooltip="Manuales Tarifarios">Manuales Tarifarios</a>
+        <span class="nav-item nav-disabled" data-tooltip="Tarifas de Facturacion" title="Proximamente">Tarifas de Facturacion</span>
+        <a href="../07-billing/plm.html" class="nav-item" data-tooltip="Lista Precios Medicamentos">Lista Precios Medicamentos</a>
+        <a href="../07-billing/tarifas-medicamentos.html" class="nav-item" data-tooltip="Tarifas de Medicamentos">Tarifas de Medicamentos</a>
+        <a href="../07-billing/convenios.html" class="nav-item" data-tooltip="Convenios">Convenios</a>
+        <span class="nav-item nav-disabled" data-tooltip="Sedes" title="Disponible en version anterior">Sedes</span>
+      </div>
+    </div>
+
+    <!-- ====== MODULO 4: FARMACIA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Farmacia</div>
+
+      <!-- Ejecucion de Procesos FAR -->
+      <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec-group')">
+        <span class="nav-item-icon"><i data-lucide="pill"></i></span>
+        <span class="nav-item-label">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-exec-group">
+        <a href="../06-pharmacy/despacho.html" class="nav-item" data-tooltip="Entrega de Articulos">Entrega de Articulos</a>
+        <a href="../06-pharmacy/inventario.html" class="nav-item" data-tooltip="Movimientos Inventario">Movimientos Inventario</a>
+        <span class="nav-item nav-disabled" data-tooltip="Articulos" title="Disponible en version anterior">Articulos</span>
+      </div>
+
+      <!-- Configuracion FAR -->
+      <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('far-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-config-group">
+        <span class="nav-item nav-disabled" data-tooltip="Bodegas" title="Disponible en version anterior">Bodegas</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo Articulos" title="Disponible en version anterior">Tipo Articulos</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo Movimientos" title="Disponible en version anterior">Tipo Movimientos</span>
+      </div>
+
+      <!-- Reporte FAR -->
+      <button class="nav-item" data-tooltip="Reporte" onclick="toggleGroup('far-report-group')">
+        <span class="nav-item-icon"><i data-lucide="file-bar-chart"></i></span>
+        <span class="nav-item-label">Reporte</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-report-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-report-group">
+        <span class="nav-item nav-disabled" data-tooltip="Kardex" title="Disponible en version anterior">Kardex</span>
+      </div>
+    </div>
+
+    <!-- ====== COMUNICACION (nuevo, no existe en BD legacy) ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Comunicacion</div>
+      <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-item" data-tooltip="WhatsApp">
+        <span class="nav-item-icon"><i data-lucide="message-circle"></i></span>
+        <span class="nav-item-label">WhatsApp</span>
+      </a>
+    </div>
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="nav-separator"></div>
+
+    <!-- ====== MODULOS FUERA DE SCOPE (5-13, 15) ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Otros Modulos</div>
+      <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
+        <span class="nav-item-label">Hospitalizacion</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Reportes" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="file-text"></i></span>
+        <span class="nav-item-label">Reportes</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="PyP" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="heart"></i></span>
+        <span class="nav-item-label">PyP</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Laboratorio" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="flask-conical"></i></span>
+        <span class="nav-item-label">Laboratorio</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Radiologia" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="scan"></i></span>
+        <span class="nav-item-label">Radiologia</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Quirurgicos" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="scissors"></i></span>
+        <span class="nav-item-label">Quirurgicos</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Banco Sangre" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="droplets"></i></span>
+        <span class="nav-item-label">Banco Sangre</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="CRM" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="folder"></i></span>
+        <span class="nav-item-label">CRM</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Integracion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="puzzle"></i></span>
+        <span class="nav-item-label">Integracion</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Control de Accesos" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="key-round"></i></span>
+        <span class="nav-item-label">Control de Accesos</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Tablero / Estadisticas" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="bar-chart-3"></i></span>
+        <span class="nav-item-label">Tablero / Estadisticas</span>
+      </span>
+    </div>
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="nav-separator"></div>
+
+    <!-- ====== PREFERENCIAS ====== -->
+    <div class="nav-section">
+      <a href="../09-settings/settings.html" class="nav-item active" data-tooltip="Preferencias">
+        <span class="nav-item-icon"><i data-lucide="sliders-horizontal"></i></span>
+        <span class="nav-item-label">Preferencias</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Footer: Accessibility + User -->
+  <div class="sidebar-footer">
+    <div class="sidebar-footer-section">
+      <div class="sidebar-footer-label">Accesibilidad</div>
+      <div class="accessibility-controls">
+        <button class="access-btn active-opt" onclick="setFontSize('normal')" title="Normal">
+          <span>A</span>
+        </button>
+        <button class="access-btn" onclick="setFontSize('large')" title="Grande">
+          <span>A+</span>
+        </button>
+        <button class="access-btn" onclick="setFontSize('xlarge')" title="Extra Grande">
+          <span>A++</span>
+        </button>
+      </div>
+      <div class="accessibility-controls" style="margin-top:4px">
+        <button class="access-btn" onclick="toggleContrast()" title="Alto Contraste">
+          <i data-lucide="contrast" style="width:12px;height:12px;stroke-width:1.5"></i>
+          <span>Contraste</span>
+        </button>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">JP</div>
+      <div class="user-info">
+        <div class="user-name">Dr. Juan P. Rodriguez</div>
+        <div class="user-role">Medicina General</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+    <div class="main-area">
+            <header class="app-header">
+        <div class="header-tenant">
+          <div class="header-tenant-logo">
+            <i data-lucide="building-2"></i>
+          </div>
+          <span class="header-tenant-name">Clinica San Rafael</span>
+        </div>
+        <div class="header-separator"></div>
+        <div class="header-search">
+          <span class="header-search-icon"><i data-lucide="search"></i></span>
+          <input type="text" class="header-search-input" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly>
+          <span class="header-search-kbd"><span class="kbd">&#8984;K</span></span>
+        </div>
+        <div class="header-spacer"></div>
+        <div class="header-actions">
+          <button class="header-btn" title="Notificaciones">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge">5</span>
+          </button>
+          <button class="header-btn" title="Ayuda">
+            <i data-lucide="circle-help"></i>
+          </button>
+        </div>
+        <button class="header-user-btn">
+          <div class="header-user-avatar">JP</div>
+          <span class="header-user-name">Dr. Rodriguez</span>
+          <span class="header-user-chevron"><i data-lucide="chevron-down"></i></span>
+        </button>
+      </header>
+
+      <div class="settings-layout">
+        <!-- Settings nav -->
+        <nav class="settings-nav">
+          <div class="settings-nav-title">Configuración</div>
+          <a class="settings-nav-item active" onclick="showSection('profile')" data-section="profile">
+            <i data-lucide="user"></i> Perfil
+          </a>
+          <a class="settings-nav-item" onclick="showSection('notifications')" data-section="notifications">
+            <i data-lucide="bell"></i> Notificaciones
+          </a>
+          <a class="settings-nav-item" onclick="showSection('account')" data-section="account">
+            <i data-lucide="globe"></i> Cuenta
+          </a>
+          <a class="settings-nav-item" onclick="showSection('security')" data-section="security">
+            <i data-lucide="shield"></i> Seguridad
+          </a>
+          <a class="settings-nav-item" onclick="showSection('accessibility')" data-section="accessibility">
+            <i data-lucide="accessibility"></i> Accesibilidad
+          </a>
+        </nav>
+
+        <!-- Settings content -->
+        <div class="settings-content">
+
+          <!-- Profile -->
+          <div class="settings-section active" id="section-profile">
+            <h2 class="section-title">Perfil</h2>
+            <p class="section-desc">Gestiona tu información personal y profesional</p>
+
+            <div class="settings-card">
+              <div class="avatar-section">
+                <div class="avatar-large">JP</div>
+                <div>
+                  <div style="font-size:14px;font-weight:500;color:var(--text-heading);margin-bottom:6px">Foto de perfil</div>
+                  <div class="avatar-actions">
+                    <button class="btn-sm btn-primary"><i data-lucide="upload" style="width:14px;height:14px"></i> Subir foto</button>
+                    <button class="btn-sm btn-outline">Eliminar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nombre</label>
+                  <input class="form-input" type="text" value="Juan Pablo">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Apellidos</label>
+                  <input class="form-input" type="text" value="Rodríguez Álvarez">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Correo electrónico</label>
+                <input class="form-input" type="email" value="jrodriguez@clinicasanrafael.com" disabled style="background:var(--bg-muted);color:var(--text-muted)">
+                <div class="form-hint">El correo es gestionado por el administrador</div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Especialidad</label>
+                  <input class="form-input" type="text" value="Medicina General" disabled style="background:var(--bg-muted);color:var(--text-muted)">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Registro médico</label>
+                  <input class="form-input" type="text" value="RM-12345" disabled style="background:var(--bg-muted);color:var(--text-muted)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="settings-section" id="section-notifications">
+            <h2 class="section-title">Notificaciones</h2>
+            <p class="section-desc">Controla qué notificaciones recibes y cómo</p>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Notificaciones en la app</div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Citas nuevas</div>
+                  <div class="toggle-desc">Recibir notificación cuando se agenda una cita</div>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Cancelaciones</div>
+                  <div class="toggle-desc">Notificar cuando un paciente cancela su cita</div>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">HC sin finalizar</div>
+                  <div class="toggle-desc">Recordatorio de historias clínicas pendientes</div>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Confirmación WhatsApp</div>
+                  <div class="toggle-desc">Estado de confirmación de citas por WhatsApp</div>
+                </div>
+                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Notificaciones por correo</div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Resumen diario</div>
+                  <div class="toggle-desc">Resumen de actividad del día a las 7:00 AM</div>
+                </div>
+                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Alertas del sistema</div>
+                  <div class="toggle-desc">Actualizaciones, mantenimiento y seguridad</div>
+                </div>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account -->
+          <div class="settings-section" id="section-account">
+            <h2 class="section-title">Cuenta</h2>
+            <p class="section-desc">Preferencias de idioma, zona horaria y región</p>
+
+            <div class="settings-card">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Idioma</label>
+                  <select class="form-select">
+                    <option selected>Español</option>
+                    <option>English</option>
+                    <option>Português</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Zona horaria</label>
+                  <select class="form-select">
+                    <option selected>America/Bogota (UTC-5)</option>
+                    <option>America/Santiago (UTC-3)</option>
+                    <option>America/Sao_Paulo (UTC-3)</option>
+                    <option>America/Mexico_City (UTC-6)</option>
+                    <option>Asia/Singapore (UTC+8)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Formato de fecha</label>
+                  <select class="form-select">
+                    <option selected>DD/MM/YYYY</option>
+                    <option>MM/DD/YYYY</option>
+                    <option>YYYY-MM-DD</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Formato de hora</label>
+                  <select class="form-select">
+                    <option selected>24 horas (14:30)</option>
+                    <option>12 horas (2:30 PM)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security -->
+          <div class="settings-section" id="section-security">
+            <h2 class="section-title">Seguridad</h2>
+            <p class="section-desc">Contraseña y autenticación de dos factores</p>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Cambiar contraseña</div>
+              <div class="form-group">
+                <label class="form-label">Contraseña actual</label>
+                <input class="form-input" type="password" placeholder="Ingresa tu contraseña actual">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nueva contraseña</label>
+                <input class="form-input" type="password" placeholder="Mínimo 8 caracteres">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirmar nueva contraseña</label>
+                <input class="form-input" type="password" placeholder="Repite la nueva contraseña">
+              </div>
+              <button class="btn-sm btn-primary" style="margin-top:8px">Actualizar contraseña</button>
+            </div>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Autenticación de dos factores (2FA)</div>
+              <div class="toggle-row" style="border-bottom:none">
+                <div class="toggle-info">
+                  <div class="toggle-label">Habilitar 2FA</div>
+                  <div class="toggle-desc">Añade una capa extra de seguridad con tu teléfono</div>
+                </div>
+                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Sesiones activas</div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Chrome — MacOS</div>
+                  <div class="toggle-desc">Última actividad: ahora (esta sesión)</div>
+                </div>
+                <span style="font-size:11px;font-weight:500;padding:2px 8px;border-radius:9999px;background:#F0FDF4;color:#15803D">Activa</span>
+              </div>
+              <div class="toggle-row" style="border-bottom:none">
+                <div class="toggle-info">
+                  <div class="toggle-label">Safari — iPad</div>
+                  <div class="toggle-desc">Última actividad: hace 2 días</div>
+                </div>
+                <button class="btn-sm btn-outline" style="color:#DC2626;border-color:#FECDD3">Cerrar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accessibility -->
+          <div class="settings-section" id="section-accessibility">
+            <h2 class="section-title">Accesibilidad</h2>
+            <p class="section-desc">Ajusta la experiencia visual para tu comodidad</p>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Tamaño de fuente</div>
+              <div class="font-size-options">
+                <div class="font-option selected" onclick="selectFont(this, 13)">
+                  <span class="font-option-sample" style="font-size:13px">Aa</span>
+                  <span class="font-option-label">Normal</span>
+                </div>
+                <div class="font-option" onclick="selectFont(this, 16)">
+                  <span class="font-option-sample" style="font-size:16px">Aa</span>
+                  <span class="font-option-label">Grande</span>
+                </div>
+                <div class="font-option" onclick="selectFont(this, 18)">
+                  <span class="font-option-sample" style="font-size:18px">Aa</span>
+                  <span class="font-option-label">Extra Grande</span>
+                </div>
+              </div>
+              <div class="form-hint" style="margin-top:8px">Esto ajusta el tamaño base de todo el texto en la aplicación</div>
+            </div>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Esquema de colores</div>
+              <div class="scheme-options">
+                <div class="scheme-option selected" onclick="selectScheme(this, 'default')">
+                  <div class="scheme-preview" style="background:linear-gradient(to right, #FFFFFF 50%, #FCFCFC 50%)"></div>
+                  <span class="scheme-label">Default</span>
+                </div>
+                <div class="scheme-option" onclick="selectScheme(this, 'high-contrast')">
+                  <div class="scheme-preview" style="background:linear-gradient(to right, #FFFFFF 50%, #171717 50%)"></div>
+                  <span class="scheme-label">Alto Contraste</span>
+                </div>
+                <div class="scheme-option" onclick="selectScheme(this, 'reduce-motion')">
+                  <div class="scheme-preview" style="background:linear-gradient(to right, #FAFAFA 50%, #F0F0F0 50%)"></div>
+                  <span class="scheme-label">Reducir Movimiento</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <div class="settings-card-title">Densidad de la interfaz</div>
+              <div class="density-options">
+                <div class="density-option selected" onclick="selectDensity(this, 'comfortable')">
+                  <div class="density-preview">
+                    <div class="density-bar" style="width:100%"></div>
+                    <div class="density-bar" style="width:80%"></div>
+                    <div class="density-bar" style="width:60%"></div>
+                  </div>
+                  <span class="density-label">Cómoda</span>
+                </div>
+                <div class="density-option" onclick="selectDensity(this, 'compact')">
+                  <div class="density-preview" style="gap:1px">
+                    <div class="density-bar" style="width:100%;height:3px"></div>
+                    <div class="density-bar" style="width:80%;height:3px"></div>
+                    <div class="density-bar" style="width:60%;height:3px"></div>
+                    <div class="density-bar" style="width:90%;height:3px"></div>
+                  </div>
+                  <span class="density-label">Compacta</span>
+                </div>
+              </div>
+              <div class="form-hint" style="margin-top:8px">Compacta muestra más información en pantalla, ideal para monitores grandes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+    function toggleGroup(id) {
+      document.getElementById(id).classList.toggle('open');
+      document.getElementById(id + '-toggle').classList.toggle('open');
+    }
+    function setFontSize(size) {
+      var root = document.documentElement;
+      document.querySelectorAll('.accessibility-controls .access-btn').forEach(function(b) { b.classList.remove('active-opt'); });
+      event.target.closest('.access-btn').classList.add('active-opt');
+      switch(size) {
+        case 'normal': root.style.setProperty('--font-size-base', '13px'); break;
+        case 'large': root.style.setProperty('--font-size-base', '16px'); break;
+        case 'xlarge': root.style.setProperty('--font-size-base', '18px'); break;
+      }
+    }
+    function toggleContrast() {
+      document.documentElement.classList.toggle('high-contrast');
+      event.target.closest('.access-btn').classList.toggle('active-opt');
+    }
+
+    function showSection(id) {
+      document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
+
+      document.getElementById('section-' + id).classList.add('active');
+      document.querySelector('[data-section="' + id + '"]').classList.add('active');
+    }
+
+    function selectFont(el, size) {
+      document.querySelectorAll('.font-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      document.documentElement.style.setProperty('--font-size-base', size + 'px');
+      document.documentElement.style.fontSize = size + 'px';
+    }
+
+    function selectScheme(el, scheme) {
+      document.querySelectorAll('.scheme-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      document.documentElement.classList.remove('high-contrast', 'reduce-motion');
+      if (scheme !== 'default') document.documentElement.classList.add(scheme);
+    }
+
+    function selectDensity(el, density) {
+      document.querySelectorAll('.density-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    // Handle URL hash for direct section navigation
+    if (window.location.hash) {
+      const section = window.location.hash.replace('#', '');
+      const validSections = ['profile', 'notifications', 'account', 'security', 'accessibility', 'preferences'];
+      if (validSections.includes(section)) showSection(section);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Component Library V2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+/* ════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Single Source of Truth
+   Based on: shadcn/ui + @_heyrico Cheatsheet + Tailwind Neutral
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 24px;
+  --line-height-base: 18px;
+  --letter-spacing-base: -0.31px;
+
+  /* Colors — Tailwind Neutral */
+  --color-heading: #18181B;   /* zinc-900 (shadcn foreground) */
+  --color-body: #52525B;      /* zinc-600 */
+  --color-muted: #71717A;     /* zinc-500 */
+  --color-disabled: #A1A1AA;  /* zinc-400 */
+  --color-placeholder: #A1A1AA;
+
+  /* Backgrounds */
+  --bg-surface: #FFFFFF;
+  --bg-panel: #FAFAFA;        /* zinc-50 */
+  --bg-muted: #F4F4F5;        /* zinc-100 */
+  --bg-hover: #E4E4E7;        /* zinc-200 */
+  --bg-active: #D4D4D8;       /* zinc-300 */
+
+  /* Borders */
+  --border-default: #E4E4E7;  /* zinc-200 */
+  --border-hover: #D4D4D8;    /* zinc-300 */
+  --border-focus: #A1A1AA;    /* zinc-400 */
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --border-radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 12px 0 rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 8px 24px 0 rgb(0 0 0 / 0.12);
+
+  /* Spacing (4px base) */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* Primary — shadcn default (zinc-900) */
+  --primary-bg: #18181B;
+  --primary-text: #FFFFFF;
+  --primary-hover: #27272A;
+
+  /* Status Colors — bg-50 + text-700 */
+  --status-success-bg: #F0FDF4;
+  --status-success-text: #15803D;
+  --status-success-border: #BBF7D0;
+  --status-warning-bg: #FFFBEB;
+  --status-warning-text: #B45309;
+  --status-warning-border: #FDE68A;
+  --status-error-bg: #FEF2F2;
+  --status-error-text: #DC2626;
+  --status-error-border: #FECACA;
+  --status-info-bg: #EFF6FF;
+  --status-info-text: #2563EB;
+  --status-info-border: #BFDBFE;
+  --status-neutral-bg: #F4F4F5;
+  --status-neutral-text: #52525B;
+  --status-neutral-border: #E4E4E7;
+
+  /* Calendar */
+  --cal-range-bg: #EEF4F7;
+  --cal-range-border: #D1E3ED;
+  --cal-event-appointment: #FDE8EC;
+  --cal-event-appointment-text: #BE185D;
+  --cal-event-appointment-border: #FBCFE8;
+  --cal-event-other: #EDE9FE;
+  --cal-event-other-text: #6D28D9;
+  --cal-event-other-border: #DDD6FE;
+
+  /* Layout */
+  --sidebar-width: 256px;
+  --sidebar-collapsed: 64px;
+  --header-height: 56px;
+}
+
+
+/* ── RESET & BASE ─────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--line-height-base);
+  letter-spacing: var(--letter-spacing-base);
+  color: var(--color-body);
+  background: var(--bg-muted);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; max-width: 100%; }
+table { border-collapse: collapse; }
+button { font-family: inherit; cursor: pointer; }
+
+
+/* ════════════════════════════════════════════════════════════
+   COMPONENT STYLES
+   ════════════════════════════════════════════════════════════ */
+
+
+/* ── 01. TYPOGRAPHY ───────────────────────────────────────── */
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-heading);
+  letter-spacing: -0.35px;
+  line-height: 1.3;
+}
+
+.page-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-muted);
+  margin-top: var(--space-1);
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+}
+
+.text-heading { color: var(--color-heading); font-weight: 500; }
+.text-body    { color: var(--color-body); }
+.text-muted   { color: var(--color-muted); }
+.text-disabled { color: var(--color-disabled); }
+
+.text-xs  { font-size: var(--text-xs); }
+.text-sm  { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-md  { font-size: var(--text-md); }
+.text-lg  { font-size: var(--text-lg); }
+.text-xl  { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+
+/* ── 02. BUTTONS ──────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-md);
+  font-weight: 500;
+  font-family: var(--font-sans);
+  line-height: 1;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--border-focus);
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Sizes */
+.btn-sm { height: 32px; padding: 0 12px; font-size: var(--text-base); gap: 6px; }
+.btn-sm svg { width: 14px; height: 14px; }
+.btn-lg { height: 40px; padding: 0 24px; font-size: var(--text-md); }
+
+/* Icon-only */
+.btn-icon { width: 36px; height: 36px; padding: 0; }
+.btn-icon.btn-sm { width: 32px; height: 32px; }
+.btn-icon.btn-lg { width: 40px; height: 40px; }
+
+/* Primary — shadcn default: dark bg, white text */
+.btn-primary {
+  background: #18181B;
+  color: #FFFFFF;
+}
+.btn-primary:hover:not(:disabled) { background: #27272A; }
+
+/* Secondary / Outline — white bg, border */
+.btn-secondary,
+.btn-outline {
+  background: var(--bg-surface);
+  color: var(--color-heading);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-xs);
+}
+.btn-secondary:hover:not(:disabled),
+.btn-outline:hover:not(:disabled) {
+  background: var(--bg-muted);
+  border-color: var(--border-hover);
+}
+
+/* Destructive — soft red */
+.btn-destructive {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+.btn-destructive:hover:not(:disabled) { background: #B91C1C; }
+
+/* Destructive Outline — for less prominent destructive actions */
+.btn-destructive-outline {
+  background: var(--bg-surface);
+  color: var(--status-error-text);
+  border: 1px solid var(--status-error-border);
+}
+.btn-destructive-outline:hover:not(:disabled) {
+  background: var(--status-error-bg);
+}
+
+/* Ghost — transparent */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-body);
+}
+.btn-ghost:hover:not(:disabled) { background: var(--bg-muted); color: var(--color-heading); }
+
+/* Link */
+.btn-link {
+  background: transparent;
+  color: var(--status-info-text);
+  padding: 0;
+  height: auto;
+}
+.btn-link:hover:not(:disabled) { text-decoration: underline; }
+
+
+/* ── 03. FORM CONTROLS ────────────────────────────────────── */
+
+.form-group { margin-bottom: var(--space-4); }
+
+.form-label {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  margin-bottom: var(--space-1);
+}
+.form-required::after { content: ' *'; color: var(--status-error-text); }
+.form-hint  { font-size: var(--text-xs); color: var(--color-muted); margin-top: var(--space-1); }
+.form-error { font-size: var(--text-xs); color: var(--status-error-text); margin-top: var(--space-1); }
+
+/* Input */
+.form-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  color: var(--color-heading);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-xs);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  line-height: var(--line-height-base);
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgb(113 113 122 / 0.15);
+}
+.form-input::placeholder { color: var(--color-placeholder); }
+.form-input:disabled { background: var(--bg-muted); color: var(--color-disabled); cursor: not-allowed; opacity: 0.5; }
+.form-input.is-error { border-color: var(--status-error-text); }
+.form-input.is-error:focus { box-shadow: 0 0 0 3px rgb(220 38 38 / 0.15); }
+
+/* Select trigger — NO nativo, estilo shadcn */
+.form-select {
+  width: 100%;
+  height: 36px;
+  padding: 0 32px 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  color: var(--color-heading);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-xs);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+  line-height: 36px;
+}
+.form-select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgb(113 113 122 / 0.15);
+}
+.form-select:disabled { background: var(--bg-muted); color: var(--color-disabled); cursor: not-allowed; opacity: 0.5; }
+.form-select.is-error { border-color: var(--status-error-text); }
+
+/* Small variants */
+.form-input-sm { height: 32px; padding: 0 10px; font-size: var(--text-sm); }
+.form-select-sm { height: 32px; padding: 0 28px 0 10px; font-size: var(--text-sm); line-height: 32px; }
+
+/* Textarea */
+.form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  color: var(--color-heading);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-xs);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  min-height: 80px;
+  resize: vertical;
+  line-height: var(--line-height-base);
+}
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgb(113 113 122 / 0.15);
+}
+.form-textarea::placeholder { color: var(--color-placeholder); }
+
+/* Checkbox & Radio */
+.form-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: var(--text-base);
+  color: var(--color-body);
+}
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #18181B;
+  cursor: pointer;
+}
+
+/* Switch toggle */
+.form-switch {
+  position: relative;
+  display: inline-flex;
+  width: 36px;
+  height: 20px;
+  background: var(--border-default);
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.form-switch.active { background: #18181B; }
+.form-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: var(--shadow-sm);
+  transition: transform 200ms ease;
+}
+.form-switch.active::after { transform: translateX(16px); }
+
+
+/* ── 04. DATA TABLES ──────────────────────────────────────── */
+
+.data-table { width: 100%; border-collapse: collapse; font-size: var(--text-md); }
+
+.data-table th {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  white-space: nowrap;
+}
+
+.data-table td {
+  font-size: var(--text-base);
+  color: var(--color-body);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+  vertical-align: middle;
+}
+
+.data-table tbody tr { transition: background 150ms ease; }
+.data-table tbody tr:hover td { background: var(--bg-panel); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table .row-selected td { background: var(--status-info-bg); }
+
+/* Cell emphasis */
+.cell-primary { color: var(--color-heading); font-weight: 500; }
+
+/* Action icon buttons (ghost, round, 32px) */
+.data-table-actions { display: flex; gap: 2px; align-items: center; }
+
+.table-action-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-full);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-muted);
+  transition: all 150ms ease;
+}
+.table-action-btn svg { width: 16px; height: 16px; }
+.table-action-btn:hover { background: var(--bg-muted); color: var(--color-heading); }
+.table-action-btn.destructive:hover { background: var(--status-error-bg); color: var(--status-error-text); }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+}
+.pagination-info { font-size: var(--text-sm); color: var(--color-muted); }
+.pagination-controls { display: flex; gap: var(--space-1); }
+
+.pagination-btn {
+  min-width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-2);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-body);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+.pagination-btn:hover { background: var(--bg-muted); border-color: var(--border-hover); }
+.pagination-btn.active { background: var(--primary-bg); color: var(--primary-text); border-color: var(--primary-bg); }
+.pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+
+/* ── 05. BADGES / STATUS PILLS ────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 8px;
+  border-radius: var(--border-radius-full);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.badge svg { width: 12px; height: 12px; }
+
+.badge-success { background: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
+.badge-warning { background: var(--status-warning-bg); color: var(--status-warning-text); border-color: var(--status-warning-border); }
+.badge-error   { background: var(--status-error-bg);   color: var(--status-error-text);   border-color: var(--status-error-border); }
+.badge-info    { background: var(--status-info-bg);    color: var(--status-info-text);    border-color: var(--status-info-border); }
+.badge-neutral { background: var(--status-neutral-bg); color: var(--status-neutral-text); border-color: var(--status-neutral-border); }
+
+/* Dot indicator variant */
+.badge-dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+
+/* ── 06. TABS ─────────────────────────────────────────────── */
+
+/* Variant A: Segmented Control (shadcn default) */
+.tabs-segmented {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-muted);
+  border-radius: var(--border-radius-lg);
+  padding: 3px;
+  gap: 0;
+}
+.tabs-segmented .tab-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+}
+.tabs-segmented .tab-trigger:hover { color: var(--color-heading); }
+.tabs-segmented .tab-trigger.active {
+  background: var(--bg-surface);
+  color: var(--color-heading);
+  box-shadow: var(--shadow-sm);
+}
+.tabs-segmented .tab-trigger svg { width: 14px; height: 14px; }
+
+/* Variant B: Underline Tabs */
+.tabs-underline {
+  display: flex;
+  border-bottom: 1px solid var(--border-default);
+  gap: 0;
+}
+.tabs-underline .tab-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--color-muted);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 150ms ease;
+  white-space: nowrap;
+}
+.tabs-underline .tab-trigger:hover { color: var(--color-heading); }
+.tabs-underline .tab-trigger.active {
+  color: var(--color-heading);
+  border-bottom-color: var(--color-heading);
+}
+
+/* Variant C: Icon Tabs (tabs-03 style) */
+.tabs-icon {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-muted);
+  border-radius: var(--border-radius-lg);
+  padding: 3px;
+  gap: 2px;
+}
+.tabs-icon .tab-trigger {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 72px;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+  white-space: nowrap;
+}
+.tabs-icon .tab-trigger svg { width: 18px; height: 18px; }
+.tabs-icon .tab-trigger:hover { color: var(--color-heading); }
+.tabs-icon .tab-trigger.active {
+  background: var(--bg-surface);
+  color: var(--color-heading);
+  box-shadow: var(--shadow-sm);
+}
+
+.tab-content { padding: var(--space-5) 0; }
+
+
+/* ── 07. CARDS ────────────────────────────────────────────── */
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-5);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+/* KPI Card */
+.card-kpi { text-align: left; }
+.card-kpi-label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  margin-bottom: var(--space-1);
+}
+.card-kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  line-height: 1.2;
+}
+.card-kpi-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  margin-top: var(--space-1);
+}
+.card-kpi-trend.up   { color: var(--status-success-text); }
+.card-kpi-trend.down { color: var(--status-error-text); }
+.card-kpi-trend svg  { width: 12px; height: 12px; }
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.content-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-5);
+}
+
+
+/* ── 08. DIALOGS / MODALS ─────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: var(--bg-surface);
+  border-radius: var(--border-radius-xl);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 560px;
+  border: 1px solid var(--border-default);
+}
+.modal-content.modal-wide { max-width: 720px; }
+.modal-content.modal-xl   { max-width: 900px; }
+.modal-content.modal-full  { max-width: calc(100% - 32px); max-height: calc(100vh - 32px); }
+
+.modal-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  position: relative;
+}
+
+.modal-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.modal-description {
+  font-size: var(--text-md);
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-md);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-muted);
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+.modal-close:hover { background: var(--bg-muted); color: var(--color-heading); }
+.modal-close svg { width: 18px; height: 18px; }
+
+.modal-body { padding: var(--space-6); }
+
+.modal-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border-default);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+
+/* ── 09. ACCORDIONS ───────────────────────────────────────── */
+
+.accordion-item {
+  border-bottom: 1px solid var(--border-default);
+}
+.accordion-item:last-child { border-bottom: none; }
+
+.accordion-trigger {
+  width: 100%;
+  padding: var(--space-4) 0;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  cursor: pointer;
+  font-size: var(--text-md);
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--color-heading);
+  text-align: left;
+  transition: all 150ms ease;
+}
+.accordion-trigger:hover { text-decoration: underline; }
+.accordion-trigger svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-muted);
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+.accordion-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.accordion-content {
+  padding-bottom: var(--space-4);
+  font-size: var(--text-md);
+  color: var(--color-body);
+  line-height: 1.6;
+}
+
+
+/* ── 10. STEPPER / WIZARD ─────────────────────────────────── */
+
+.stepper { display: flex; align-items: center; gap: 0; }
+
+.stepper-item { display: flex; align-items: center; gap: var(--space-2); }
+
+.stepper-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: 2px solid var(--border-default);
+  color: var(--color-muted);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+  transition: all 200ms ease;
+}
+
+.stepper-item.active .stepper-number {
+  background: var(--primary-bg);
+  color: var(--primary-text);
+  border-color: var(--primary-bg);
+}
+.stepper-item.completed .stepper-number {
+  background: var(--primary-bg);
+  color: var(--primary-text);
+  border-color: var(--primary-bg);
+}
+
+.stepper-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.stepper-item.active .stepper-label { color: var(--color-heading); }
+.stepper-item.completed .stepper-label { color: var(--color-heading); }
+
+.stepper-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border-default);
+  margin: 0 var(--space-3);
+  min-width: 24px;
+}
+.stepper-line.completed { background: var(--primary-bg); }
+
+
+/* ── 11. FILTER BAR ───────────────────────────────────────── */
+
+.filter-bar {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-4) var(--space-5);
+}
+
+.filter-row {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-group label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+}
+
+
+/* ── 12. PAGE LAYOUT ──────────────────────────────────────── */
+
+.page-header { margin-bottom: var(--space-6); }
+.page-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.page-breadcrumb {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.page-breadcrumb a { color: var(--color-muted); }
+.page-breadcrumb a:hover { color: var(--color-heading); }
+.page-breadcrumb .separator { color: var(--color-disabled); }
+
+
+/* ── 13. EMPTY & ERROR STATES ─────────────────────────────── */
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-10) var(--space-6);
+  max-width: 360px;
+  margin: 0 auto;
+}
+.empty-state-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-4);
+  color: var(--color-disabled);
+}
+.empty-state-icon svg { width: 48px; height: 48px; stroke-width: 1; }
+.empty-state-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: var(--space-2);
+}
+.empty-state-description {
+  font-size: var(--text-base);
+  color: var(--color-muted);
+  margin-bottom: var(--space-4);
+  line-height: 1.5;
+}
+
+
+/* ── 14. ALERTS ───────────────────────────────────────────── */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--border-radius-lg);
+  font-size: var(--text-sm);
+  border: 1px solid;
+}
+.alert svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-info    { background: var(--status-info-bg);    color: var(--status-info-text);    border-color: var(--status-info-border); }
+.alert-success { background: var(--status-success-bg); color: var(--status-success-text); border-color: var(--status-success-border); }
+.alert-warning { background: var(--status-warning-bg); color: var(--status-warning-text); border-color: var(--status-warning-border); }
+.alert-error   { background: var(--status-error-bg);   color: var(--status-error-text);   border-color: var(--status-error-border); }
+
+
+/* ── 15. TOOLTIPS ─────────────────────────────────────────── */
+
+.tooltip { position: relative; }
+.tooltip-content {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: var(--color-heading);
+  color: white;
+  font-size: var(--text-xs);
+  border-radius: var(--border-radius-md);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  z-index: 50;
+}
+.tooltip:hover .tooltip-content { opacity: 1; }
+
+
+/* ════════════════════════════════════════════════════════════
+   CATALOG-SPECIFIC LAYOUT (only for this library page)
+   ════════════════════════════════════════════════════════════ */
+
+.catalog-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
+  padding: var(--space-4) var(--space-6);
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+.catalog-header h1 {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-heading);
+}
+.catalog-header .subtitle { font-size: var(--text-sm); color: var(--color-muted); }
+
+.catalog-body {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-6);
+  display: flex; flex-direction: column; gap: var(--space-6);
+}
+
+.catalog-toc {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-5);
+}
+.catalog-toc h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: var(--space-3);
+}
+.catalog-toc-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-2);
+}
+.catalog-toc-list a {
+  font-size: var(--text-sm);
+  color: var(--status-info-text);
+  text-decoration: none;
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.catalog-toc-list a:hover { text-decoration: underline; }
+.catalog-toc-list .toc-num { font-size: var(--text-xs); color: var(--color-muted); min-width: 20px; }
+
+.catalog-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-6);
+}
+.catalog-section h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: var(--space-1);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-default);
+}
+.catalog-section .section-desc {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin-bottom: var(--space-5);
+  margin-top: var(--space-2);
+  line-height: 1.5;
+}
+
+.catalog-subsection { margin-bottom: var(--space-5); }
+.catalog-subsection:last-child { margin-bottom: 0; }
+.catalog-subsection h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: var(--space-3);
+}
+
+.catalog-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+.catalog-row:last-child { margin-bottom: 0; }
+
+.catalog-label {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-2);
+}
+
+.catalog-code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  background: var(--bg-muted);
+  padding: 2px 8px;
+  border-radius: var(--border-radius-sm);
+  display: inline-block;
+  margin-top: var(--space-1);
+}
+
+.catalog-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+.catalog-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4); }
+
+.catalog-item {
+  padding: var(--space-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+}
+
+/* Modal static preview */
+.modal-static {
+  position: relative;
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- HEADER -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<header class="catalog-header">
+  <div>
+    <h1>MedicalAdmin — Component Library V2</h1>
+    <div class="subtitle">shadcn/ui + Inter + Tailwind Zinc | CSS-in-file para cada mockup</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="badge badge-info">v2.0</span>
+    <span style="font-size:var(--text-xs);color:var(--color-muted);">2026-04</span>
+  </div>
+</header>
+
+<div class="catalog-body">
+
+<!-- ════════ TABLE OF CONTENTS ════════ -->
+<nav class="catalog-toc">
+  <h2>Componentes</h2>
+  <ol class="catalog-toc-list">
+    <li><a href="#typography"><span class="toc-num">01</span> Typography</a></li>
+    <li><a href="#buttons"><span class="toc-num">02</span> Buttons</a></li>
+    <li><a href="#form-controls"><span class="toc-num">03</span> Form Controls</a></li>
+    <li><a href="#data-tables"><span class="toc-num">04</span> Data Tables</a></li>
+    <li><a href="#badges"><span class="toc-num">05</span> Badges / Status Pills</a></li>
+    <li><a href="#tabs"><span class="toc-num">06</span> Tabs (3 variantes)</a></li>
+    <li><a href="#cards"><span class="toc-num">07</span> Cards KPI</a></li>
+    <li><a href="#modals"><span class="toc-num">08</span> Dialogs / Modals</a></li>
+    <li><a href="#accordions"><span class="toc-num">09</span> Accordions</a></li>
+    <li><a href="#steppers"><span class="toc-num">10</span> Steppers / Wizards</a></li>
+    <li><a href="#filter-bar"><span class="toc-num">11</span> Filter Bar</a></li>
+    <li><a href="#pagination"><span class="toc-num">12</span> Pagination</a></li>
+    <li><a href="#empty-error"><span class="toc-num">13</span> Empty & Error States</a></li>
+    <li><a href="#alerts"><span class="toc-num">14</span> Alerts</a></li>
+  </ol>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 01. TYPOGRAPHY -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="typography" class="catalog-section">
+  <h2>01. Typography</h2>
+  <p class="section-desc">Inter para todo (body + headings). Escala compacta @_heyrico: base 13px / line-height 18px / letter-spacing -0.31px. Headings usan font-weight 600 (semibold), no bold.</p>
+
+  <div class="catalog-subsection">
+    <h3>Heading Styles</h3>
+    <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+      <div>
+        <span class="page-title">Page Title — Pacientes</span>
+        <div class="catalog-code">.page-title — 20px / 600 / Inter / #18181B</div>
+      </div>
+      <div>
+        <span class="page-subtitle">Gestionar informacion de pacientes registrados</span>
+        <div class="catalog-code">.page-subtitle — 13px / #71717A</div>
+      </div>
+      <div>
+        <span class="section-title">Section Title</span>
+        <div class="catalog-code">.section-title — 14px / 600 / #18181B</div>
+      </div>
+      <div>
+        <span class="label">Label / Overline</span>
+        <div class="catalog-code">.label — 11px / 500 / uppercase / #71717A</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>Body Text Scale</h3>
+    <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">24px</span>
+        <span class="text-body" style="font-size:24px;">Text 3XL</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">20px</span>
+        <span class="text-body" style="font-size:20px;">Text 2XL</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">18px</span>
+        <span class="text-body" style="font-size:18px;">Text XL</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">16px</span>
+        <span class="text-body" style="font-size:16px;">Text LG</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">14px</span>
+        <span class="text-body" style="font-size:14px;">Text MD (table, buttons)</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">13px</span>
+        <span class="text-body" style="font-size:13px;">Text Base (default body)</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">12px</span>
+        <span class="text-body" style="font-size:12px;">Text SM (hints, captions)</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:16px;">
+        <span style="min-width:60px;" class="catalog-code">11px</span>
+        <span class="text-body" style="font-size:11px;">Text XS (labels, table headers)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>Color Tokens</h3>
+    <div class="catalog-row">
+      <div style="padding:var(--space-3);display:flex;flex-direction:column;gap:2px;">
+        <span style="color:#18181B;font-weight:500;font-size:14px;">Heading — #18181B</span>
+        <div class="catalog-code">.text-heading (zinc-900)</div>
+      </div>
+      <div style="padding:var(--space-3);display:flex;flex-direction:column;gap:2px;">
+        <span style="color:#52525B;font-size:14px;">Body — #52525B</span>
+        <div class="catalog-code">.text-body (zinc-600)</div>
+      </div>
+      <div style="padding:var(--space-3);display:flex;flex-direction:column;gap:2px;">
+        <span style="color:#71717A;font-size:14px;">Muted — #71717A</span>
+        <div class="catalog-code">.text-muted (zinc-500)</div>
+      </div>
+      <div style="padding:var(--space-3);display:flex;flex-direction:column;gap:2px;">
+        <span style="color:#A1A1AA;font-size:14px;">Disabled — #A1A1AA</span>
+        <div class="catalog-code">.text-disabled (zinc-400)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 02. BUTTONS -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="buttons" class="catalog-section">
+  <h2>02. Buttons</h2>
+  <p class="section-desc">shadcn default: Primary = #18181B (zinc-900), h-9 (36px), border-radius 6px, font 14px/500. Usar 1 Primary por vista. Secondary para acciones secundarias. Ghost para acciones terciarias.</p>
+
+  <div class="catalog-subsection">
+    <h3>Variants</h3>
+
+    <div class="catalog-label">Primary (1 por vista)</div>
+    <div class="catalog-row">
+      <button class="btn btn-primary"><i data-lucide="plus" style="width:16px;height:16px;"></i> Nueva Cita</button>
+      <button class="btn btn-primary">Guardar</button>
+      <button class="btn btn-primary" disabled>Disabled</button>
+    </div>
+    <div class="catalog-code">.btn.btn-primary — bg:#18181B, color:white, h:36px, radius:6px</div>
+
+    <div class="catalog-label" style="margin-top:var(--space-5);">Secondary / Outline</div>
+    <div class="catalog-row">
+      <button class="btn btn-secondary"><i data-lucide="download" style="width:16px;height:16px;"></i> Exportar</button>
+      <button class="btn btn-secondary">Cancelar</button>
+      <button class="btn btn-secondary" disabled>Disabled</button>
+    </div>
+    <div class="catalog-code">.btn.btn-secondary — bg:white, border:#E4E4E7, shadow-xs</div>
+
+    <div class="catalog-label" style="margin-top:var(--space-5);">Destructive</div>
+    <div class="catalog-row">
+      <button class="btn btn-destructive"><i data-lucide="trash-2" style="width:16px;height:16px;"></i> Eliminar</button>
+      <button class="btn btn-destructive-outline"><i data-lucide="trash-2" style="width:16px;height:16px;"></i> Eliminar</button>
+    </div>
+    <div class="catalog-code">.btn-destructive (solid) | .btn-destructive-outline (soft)</div>
+
+    <div class="catalog-label" style="margin-top:var(--space-5);">Ghost</div>
+    <div class="catalog-row">
+      <button class="btn btn-ghost"><i data-lucide="filter" style="width:16px;height:16px;"></i> Filtros</button>
+      <button class="btn btn-ghost">Ghost</button>
+    </div>
+    <div class="catalog-code">.btn.btn-ghost — bg:transparent, hover:bg-muted</div>
+
+    <div class="catalog-label" style="margin-top:var(--space-5);">Link</div>
+    <div class="catalog-row">
+      <button class="btn btn-link">Ver todos los pacientes</button>
+    </div>
+    <div class="catalog-code">.btn.btn-link — color:#2563EB, underline on hover</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>Sizes</h3>
+    <div class="catalog-row">
+      <button class="btn btn-primary btn-sm">Small (32px)</button>
+      <button class="btn btn-primary">Default (36px)</button>
+      <button class="btn btn-primary btn-lg">Large (40px)</button>
+    </div>
+    <div class="catalog-code">.btn-sm (h:32px) | default (h:36px) | .btn-lg (h:40px)</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>Icon-Only Buttons</h3>
+    <div class="catalog-row">
+      <button class="btn btn-secondary btn-icon btn-sm"><i data-lucide="settings" style="width:14px;height:14px;"></i></button>
+      <button class="btn btn-secondary btn-icon"><i data-lucide="settings" style="width:16px;height:16px;"></i></button>
+      <button class="btn btn-ghost btn-icon"><i data-lucide="more-vertical" style="width:16px;height:16px;"></i></button>
+      <button class="btn btn-ghost btn-icon btn-sm"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+    </div>
+    <div class="catalog-code">.btn.btn-icon — square, same height as size variant</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>Table Action Buttons (ghost, round, 32px)</h3>
+    <div class="catalog-row" style="gap:2px;">
+      <button class="table-action-btn"><i data-lucide="eye"></i></button>
+      <button class="table-action-btn"><i data-lucide="pencil"></i></button>
+      <button class="table-action-btn destructive"><i data-lucide="trash-2"></i></button>
+      <button class="table-action-btn"><i data-lucide="more-vertical"></i></button>
+    </div>
+    <div class="catalog-code">.table-action-btn — 32px round, ghost, .destructive para eliminar</div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 03. FORM CONTROLS -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="form-controls" class="catalog-section">
+  <h2>03. Form Controls</h2>
+  <p class="section-desc">Inputs h-9 (36px), border-radius 6px, border #E4E4E7, focus ring 3px zinc-500/15%. Select = trigger shadcn con chevron SVG (NO select nativo). Labels 11px uppercase.</p>
+
+  <div class="catalog-grid-2">
+    <div class="catalog-subsection">
+      <h3>Input Text</h3>
+      <div class="form-group">
+        <label class="form-label">Default</label>
+        <input type="text" class="form-input" placeholder="Ingrese texto...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Focused</label>
+        <input type="text" class="form-input" value="Texto ingresado" style="border-color:var(--border-focus);box-shadow:0 0 0 3px rgb(113 113 122 / 0.15);">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Error</label>
+        <input type="text" class="form-input is-error" value="valor invalido">
+        <div class="form-error">Este campo es requerido</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Disabled</label>
+        <input type="text" class="form-input" disabled value="No editable">
+      </div>
+      <div class="catalog-code">.form-input — h:36px, border:6px, focus-ring 3px</div>
+    </div>
+
+    <div class="catalog-subsection">
+      <h3>Select Trigger</h3>
+      <div class="form-group">
+        <label class="form-label">Tipo de documento</label>
+        <select class="form-select">
+          <option>Seleccionar...</option>
+          <option>Cedula de Ciudadania</option>
+          <option>Tarjeta de Identidad</option>
+          <option>Pasaporte</option>
+        </select>
+      </div>
+      <div class="catalog-code">.form-select — chevron SVG, appearance:none</div>
+
+      <h3 style="margin-top:var(--space-4);">Textarea</h3>
+      <div class="form-group">
+        <label class="form-label">Observaciones</label>
+        <textarea class="form-textarea" placeholder="Escriba las observaciones..."></textarea>
+      </div>
+      <div class="catalog-code">.form-textarea — min-h:80px, resize:vertical</div>
+    </div>
+  </div>
+
+  <div class="catalog-subsection" style="margin-top:var(--space-4);">
+    <h3>Checkbox, Radio & Switch</h3>
+    <div class="catalog-row">
+      <label class="form-check"><input type="checkbox" checked> Activo</label>
+      <label class="form-check"><input type="checkbox"> Inactivo</label>
+      <label class="form-check"><input type="checkbox" disabled> Disabled</label>
+      <span style="width:24px;"></span>
+      <label class="form-check"><input type="radio" name="demo" checked> Opcion A</label>
+      <label class="form-check"><input type="radio" name="demo"> Opcion B</label>
+      <span style="width:24px;"></span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="form-switch"></div>
+        <span class="text-sm text-muted">Off</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="form-switch active"></div>
+        <span class="text-sm text-heading">On</span>
+      </div>
+    </div>
+    <div class="catalog-code">.form-check | .form-switch (.active para on)</div>
+  </div>
+
+  <div class="catalog-subsection" style="margin-top:var(--space-4);">
+    <h3>Form Group Completo</h3>
+    <div class="catalog-grid-2">
+      <div class="form-group">
+        <label class="form-label form-required">Nombre completo</label>
+        <input type="text" class="form-input" placeholder="Ej: Maria Fernanda Lopez">
+        <div class="form-hint">Nombre como aparece en el documento de identidad</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label form-required">Correo electronico</label>
+        <input type="email" class="form-input is-error" value="correo-invalido">
+        <div class="form-error">Ingrese un correo electronico valido</div>
+      </div>
+    </div>
+    <div class="catalog-code">.form-group > .form-label.form-required + .form-input + .form-hint | .form-error</div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 04. DATA TABLES -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="data-tables" class="catalog-section">
+  <h2>04. Data Tables</h2>
+  <p class="section-desc">Headers 11px uppercase (zinc-500), rows con hover, acciones como icon-buttons ghost round 32px (NO dropdown, NO texto). Padding 12px 16px.</p>
+
+  <div class="content-card" style="padding:0;overflow:hidden;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Paciente</th>
+          <th>Fecha Nacimiento</th>
+          <th>EPS</th>
+          <th>Estado</th>
+          <th style="text-align:right;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1.032.456.789</td>
+          <td class="cell-primary">Maria Fernanda Lopez Gutierrez</td>
+          <td>15/03/1985</td>
+          <td>Sura EPS</td>
+          <td><span class="badge badge-success badge-dot">Activo</span></td>
+          <td>
+            <div class="data-table-actions" style="justify-content:flex-end;">
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn"><i data-lucide="eye"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn"><i data-lucide="pencil"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn destructive"><i data-lucide="trash-2"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>80.234.567</td>
+          <td class="cell-primary">Carlos Andres Rodriguez Mejia</td>
+          <td>22/07/1978</td>
+          <td>Nueva EPS</td>
+          <td><span class="badge badge-success badge-dot">Activo</span></td>
+          <td>
+            <div class="data-table-actions" style="justify-content:flex-end;">
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn"><i data-lucide="eye"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn"><i data-lucide="pencil"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn destructive"><i data-lucide="trash-2"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>52.789.123</td>
+          <td class="cell-primary">Sandra Patricia Moreno Cardenas</td>
+          <td>08/11/1992</td>
+          <td>Compensar</td>
+          <td><span class="badge badge-warning badge-dot">Pendiente</span></td>
+          <td>
+            <div class="data-table-actions" style="justify-content:flex-end;">
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn"><i data-lucide="eye"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn"><i data-lucide="pencil"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+              <div class="group relative inline-flex">
+                  <button class="table-action-btn destructive"><i data-lucide="trash-2"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <div class="pagination-info">Mostrando 1–3 de 245 pacientes</div>
+      <div class="pagination-controls">
+        <button class="pagination-btn" disabled><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></button>
+        <button class="pagination-btn active">1</button>
+        <button class="pagination-btn">2</button>
+        <button class="pagination-btn">3</button>
+        <button class="pagination-btn">...</button>
+        <button class="pagination-btn">82</button>
+        <button class="pagination-btn"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="catalog-code" style="margin-top:var(--space-2);">.data-table + .pagination | .cell-primary | .table-action-btn (.destructive)</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 05. BADGES -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="badges" class="catalog-section">
+  <h2>05. Badges / Status Pills</h2>
+  <p class="section-desc">Pill shape (border-radius full). Patron bg-{color}-50 + text-{color}-700 + border-{color}-200. Dot variant con circulo de 6px.</p>
+
+  <div class="catalog-subsection">
+    <h3>Status Variants</h3>
+    <div class="catalog-row">
+      <span class="badge badge-success">Activo</span>
+      <span class="badge badge-warning">Pendiente</span>
+      <span class="badge badge-error">Cancelado</span>
+      <span class="badge badge-info">En proceso</span>
+      <span class="badge badge-neutral">Inactivo</span>
+    </div>
+    <div class="catalog-code">.badge.badge-{success|warning|error|info|neutral}</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>With Dot Indicator</h3>
+    <div class="catalog-row">
+      <span class="badge badge-success badge-dot">Confirmada</span>
+      <span class="badge badge-warning badge-dot">En espera</span>
+      <span class="badge badge-error badge-dot">No asistio</span>
+      <span class="badge badge-info badge-dot">Atendido</span>
+      <span class="badge badge-neutral badge-dot">Sin confirmar</span>
+    </div>
+    <div class="catalog-code">.badge.badge-{variant}.badge-dot — circulo 6px currentColor</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>Con contexto medico</h3>
+    <div class="catalog-row">
+      <span class="badge badge-success badge-dot">Consulta General</span>
+      <span class="badge badge-info badge-dot">Control</span>
+      <span class="badge badge-warning badge-dot">Urgente</span>
+      <span class="badge badge-error badge-dot">Prioritaria</span>
+      <span class="badge badge-neutral badge-dot">Teleconsulta</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 06. TABS -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="tabs" class="catalog-section">
+  <h2>06. Tabs (3 variantes)</h2>
+  <p class="section-desc">Variant A: Segmented (shadcn default) — fondo muted, tab activo blanco con shadow. Variant B: Underline — borde inferior. Variant C: Icon Tabs — icono + texto vertical, para HC sub-tabs.</p>
+
+  <div class="catalog-subsection">
+    <h3>A — Segmented Control (HC L1 tabs, filtros)</h3>
+    <div class="tabs-segmented">
+      <button class="tab-trigger active">Evaluacion</button>
+      <button class="tab-trigger">Antecedentes</button>
+      <button class="tab-trigger">Examenes</button>
+      <button class="tab-trigger">Ordenes</button>
+      <button class="tab-trigger">Anexos</button>
+    </div>
+    <div class="catalog-code" style="margin-top:var(--space-2);">.tabs-segmented > .tab-trigger (.active) — bg:#F4F4F5, active:white+shadow</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>B — Underline (navegacion principal, modales con tabs)</h3>
+    <div class="tabs-underline">
+      <button class="tab-trigger active">Informacion General</button>
+      <button class="tab-trigger">Horarios</button>
+      <button class="tab-trigger">Permisos</button>
+      <button class="tab-trigger">Historial</button>
+    </div>
+    <div class="catalog-code" style="margin-top:var(--space-2);">.tabs-underline > .tab-trigger (.active) — border-bottom 2px</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>C — Icon Tabs (HC L2 sub-tabs, secciones con icono)</h3>
+    <div class="tabs-icon">
+      <button class="tab-trigger active">
+        <i data-lucide="stethoscope" style="width:18px;height:18px;"></i>
+        Motivo
+      </button>
+      <button class="tab-trigger">
+        <i data-lucide="clipboard-list" style="width:18px;height:18px;"></i>
+        Examen
+      </button>
+      <button class="tab-trigger">
+        <i data-lucide="pill" style="width:18px;height:18px;"></i>
+        Diagnostico
+      </button>
+      <button class="tab-trigger">
+        <i data-lucide="file-text" style="width:18px;height:18px;"></i>
+        Plan
+      </button>
+    </div>
+    <div class="catalog-code" style="margin-top:var(--space-2);">.tabs-icon > .tab-trigger (.active) — icono + texto vertical</div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 07. CARDS KPI -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="cards" class="catalog-section">
+  <h2>07. Cards KPI</h2>
+  <p class="section-desc">Label uppercase 11px + valor grande 28px/700 + trend badge. Para dashboards. Grid auto-fit minmax(200px, 1fr).</p>
+
+  <div class="kpi-grid">
+    <div class="card card-kpi">
+      <div class="card-kpi-label">Citas Hoy</div>
+      <div class="card-kpi-value">47</div>
+      <div class="card-kpi-trend up">
+        <i data-lucide="trending-up" style="width:12px;height:12px;"></i>
+        +12% vs ayer
+      </div>
+    </div>
+    <div class="card card-kpi">
+      <div class="card-kpi-label">Pacientes Atendidos</div>
+      <div class="card-kpi-value">32</div>
+      <div class="card-kpi-trend up">
+        <i data-lucide="trending-up" style="width:12px;height:12px;"></i>
+        68% completado
+      </div>
+    </div>
+    <div class="card card-kpi">
+      <div class="card-kpi-label">Ingresos del Dia</div>
+      <div class="card-kpi-value">$4.2M</div>
+      <div class="card-kpi-trend down">
+        <i data-lucide="trending-down" style="width:12px;height:12px;"></i>
+        -5% vs promedio
+      </div>
+    </div>
+    <div class="card card-kpi">
+      <div class="card-kpi-label">Cancelaciones</div>
+      <div class="card-kpi-value">3</div>
+      <div class="card-kpi-trend" style="color:var(--color-muted);">
+        Promedio: 4/dia
+      </div>
+    </div>
+  </div>
+  <div class="catalog-code" style="margin-top:var(--space-2);">.kpi-grid > .card.card-kpi > .card-kpi-label + .card-kpi-value + .card-kpi-trend (.up | .down)</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 08. DIALOGS / MODALS -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="modals" class="catalog-section">
+  <h2>08. Dialogs / Modals</h2>
+  <p class="section-desc">Header BLANCO (nunca colores de fondo). Titulo Inter 18px/600. Close = ghost X top-right. Footer con botones alineados derecha. Overlay bg-black/50.</p>
+
+  <div class="catalog-subsection">
+    <h3>Default Dialog (560px)</h3>
+    <div class="modal-static" style="max-width:560px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Nueva Cita</div>
+          <div class="modal-description">Complete los datos para agendar la cita</div>
+        </div>
+        <button class="modal-close"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label form-required">Paciente</label>
+          <input type="text" class="form-input" placeholder="Buscar por nombre o documento...">
+        </div>
+        <div class="catalog-grid-2">
+          <div class="form-group">
+            <label class="form-label form-required">Fecha</label>
+            <input type="text" class="form-input" value="15/04/2026">
+          </div>
+          <div class="form-group">
+            <label class="form-label form-required">Hora</label>
+            <select class="form-select">
+              <option>08:00</option>
+              <option selected>09:00</option>
+              <option>10:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observaciones</label>
+          <textarea class="form-textarea" placeholder="Notas adicionales..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">Cancelar</button>
+        <button class="btn btn-primary">Crear Cita</button>
+      </div>
+    </div>
+    <div class="catalog-code" style="margin-top:var(--space-2);">.modal-content > .modal-header + .modal-body + .modal-footer | Sizes: default(560) | .modal-wide(720) | .modal-xl(900)</div>
+  </div>
+
+  <div class="catalog-subsection">
+    <h3>Confirmation Dialog</h3>
+    <div class="modal-static" style="max-width:420px;">
+      <div class="modal-header">
+        <div class="modal-title">Confirmar eliminacion</div>
+        <button class="modal-close"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" style="padding-top:var(--space-4);">
+        <p style="font-size:var(--text-md);color:var(--color-body);line-height:1.5;">Esta accion eliminara permanentemente la cita de <strong style="color:var(--color-heading);">Maria Fernanda Lopez</strong> del dia 15/04/2026 a las 09:00. Esta accion no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">Cancelar</button>
+        <button class="btn btn-destructive">Eliminar Cita</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 09. ACCORDIONS -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="accordions" class="catalog-section">
+  <h2>09. Accordions</h2>
+  <p class="section-desc">Estilo shadcn: border-bottom only (no box border), trigger 14px/500 con hover:underline, chevron rota 180deg al abrir.</p>
+
+  <div class="content-card">
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="true">
+        <span>Datos del Paciente</span>
+        <i data-lucide="chevron-down"></i>
+      </button>
+      <div class="accordion-content">
+        <p>Informacion basica del paciente: nombre completo, documento de identidad, fecha de nacimiento, genero, contacto, direccion de residencia.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span>Datos del Responsable</span>
+        <i data-lucide="chevron-down"></i>
+      </button>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span>Informacion de Facturacion</span>
+        <i data-lucide="chevron-down"></i>
+      </button>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span>Servicios y Productos</span>
+        <i data-lucide="chevron-down"></i>
+      </button>
+    </div>
+  </div>
+  <div class="catalog-code" style="margin-top:var(--space-2);">.accordion-item > .accordion-trigger[aria-expanded] + .accordion-content</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 10. STEPPERS / WIZARDS -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="steppers" class="catalog-section">
+  <h2>10. Steppers / Wizards</h2>
+  <p class="section-desc">Numeros 32px circulares con estados: completed (dark + check), active (dark + numero), pending (gray border + numero). Linea conectora entre pasos.</p>
+
+  <div class="content-card">
+    <div class="stepper">
+      <div class="stepper-item completed">
+        <div class="stepper-number">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <span class="stepper-label">Paciente</span>
+      </div>
+      <div class="stepper-line completed"></div>
+      <div class="stepper-item completed">
+        <div class="stepper-number">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <span class="stepper-label">Servicio</span>
+      </div>
+      <div class="stepper-line completed"></div>
+      <div class="stepper-item active">
+        <div class="stepper-number">3</div>
+        <span class="stepper-label">Horario</span>
+      </div>
+      <div class="stepper-line"></div>
+      <div class="stepper-item">
+        <div class="stepper-number">4</div>
+        <span class="stepper-label">Confirmacion</span>
+      </div>
+    </div>
+  </div>
+  <div class="catalog-code" style="margin-top:var(--space-2);">.stepper > .stepper-item (.completed | .active) + .stepper-line (.completed)</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 11. FILTER BAR -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="filter-bar" class="catalog-section">
+  <h2>11. Filter Bar</h2>
+  <p class="section-desc">Card con grid de campos + boton buscar. Labels 11px uppercase. Inputs y selects de tamaño completo. Boton primary alineado al final.</p>
+
+  <div class="filter-bar">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Fecha Desde</label>
+        <input type="text" class="form-input" value="01/04/2026">
+      </div>
+      <div class="filter-group">
+        <label>Fecha Hasta</label>
+        <input type="text" class="form-input" value="15/04/2026">
+      </div>
+      <div class="filter-group">
+        <label>Medico</label>
+        <select class="form-select">
+          <option>Todos los medicos</option>
+          <option>Dr. Alejandro Ramirez</option>
+          <option>Dra. Carolina Mendez</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Estado</label>
+        <select class="form-select">
+          <option>Todos</option>
+          <option>Confirmada</option>
+          <option>Pendiente</option>
+          <option>Cancelada</option>
+        </select>
+      </div>
+      <div style="flex-shrink:0;">
+        <button class="btn btn-primary"><i data-lucide="search" style="width:16px;height:16px;"></i> Buscar</button>
+      </div>
+    </div>
+  </div>
+  <div class="catalog-code" style="margin-top:var(--space-2);">.filter-bar > .filter-row > .filter-group + .btn-primary</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 12. PAGINATION -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="pagination" class="catalog-section">
+  <h2>12. Pagination</h2>
+  <p class="section-desc">"Mostrando X–Y de Z" a la izquierda. Botones de pagina a la derecha con chevrons para prev/next. Pagina activa = primary bg.</p>
+
+  <div class="content-card" style="padding:0;">
+    <div class="pagination">
+      <div class="pagination-info">Mostrando 21–30 de 245 resultados</div>
+      <div class="pagination-controls">
+        <button class="pagination-btn"><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></button>
+        <button class="pagination-btn">1</button>
+        <button class="pagination-btn">2</button>
+        <button class="pagination-btn active">3</button>
+        <button class="pagination-btn">4</button>
+        <button class="pagination-btn">...</button>
+        <button class="pagination-btn">25</button>
+        <button class="pagination-btn"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="catalog-code" style="margin-top:var(--space-2);">.pagination > .pagination-info + .pagination-controls > .pagination-btn (.active)</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 13. EMPTY & ERROR STATES -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="empty-error" class="catalog-section">
+  <h2>13. Empty & Error States</h2>
+  <p class="section-desc">Icono 48px (stroke-width 1) + titulo 16px/600 + descripcion 13px muted + CTA button. Centrado, max-width 360px.</p>
+
+  <div class="catalog-grid-2">
+    <div class="content-card">
+      <div class="empty-state">
+        <div class="empty-state-icon"><i data-lucide="calendar-x"></i></div>
+        <div class="empty-state-title">Sin citas programadas</div>
+        <div class="empty-state-description">No hay citas para el dia seleccionado. Puede crear una nueva cita usando el boton de abajo.</div>
+        <button class="btn btn-primary"><i data-lucide="plus" style="width:16px;height:16px;"></i> Nueva Cita</button>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="empty-state">
+        <div class="empty-state-icon"><i data-lucide="search-x"></i></div>
+        <div class="empty-state-title">Sin resultados</div>
+        <div class="empty-state-description">No se encontraron pacientes con los criterios de busqueda. Intente con otros filtros.</div>
+        <button class="btn btn-secondary">Limpiar filtros</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="catalog-subsection" style="margin-top:var(--space-4);">
+    <h3>Disabled / Proximamente</h3>
+    <div class="content-card" style="opacity:0.6;">
+      <div class="empty-state" style="padding:var(--space-6);">
+        <div class="empty-state-icon"><i data-lucide="lock"></i></div>
+        <div class="empty-state-title">Proximamente</div>
+        <div class="empty-state-description">Esta funcionalidad estara disponible en una proxima version. Mientras tanto, puede acceder desde la version anterior del sistema.</div>
+        <button class="btn btn-secondary" disabled>Disponible en version anterior</button>
+      </div>
+    </div>
+    <div class="catalog-code" style="margin-top:var(--space-2);">Usar para opciones sin mockup: icono lock + "Proximamente" + "Disponible en version anterior"</div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- 14. ALERTS -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="alerts" class="catalog-section">
+  <h2>14. Alerts / Banners</h2>
+  <p class="section-desc">Patron bg-{color}-50 + text-{color}-700 + border. Icono 16px + texto. Para mensajes contextuales en formularios o paginas.</p>
+
+  <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+    <div class="alert alert-info">
+      <i data-lucide="info"></i>
+      <span>El paciente tiene cita de control programada para el 20/04/2026.</span>
+    </div>
+    <div class="alert alert-success">
+      <i data-lucide="check-circle"></i>
+      <span>Cita creada exitosamente. Se envio confirmacion por WhatsApp.</span>
+    </div>
+    <div class="alert alert-warning">
+      <i data-lucide="alert-triangle"></i>
+      <span>El convenio del paciente vence en 15 dias. Verifique la vigencia antes de agendar.</span>
+    </div>
+    <div class="alert alert-error">
+      <i data-lucide="alert-circle"></i>
+      <span>Error al guardar la cita. Verifique la disponibilidad del horario e intente nuevamente.</span>
+    </div>
+  </div>
+  <div class="catalog-code" style="margin-top:var(--space-2);">.alert.alert-{info|success|warning|error} > svg + span</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- DESIGN TOKENS REFERENCE -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<section class="catalog-section" style="background:var(--bg-panel);">
+  <h2>Referencia Rapida — Design Tokens</h2>
+  <p class="section-desc">Valores exactos para copiar en cada mockup HTML. Paleta: Tailwind Zinc. Font: Inter. Base: shadcn/ui.</p>
+
+  <div class="catalog-grid-3">
+    <div>
+      <div class="catalog-label">Colors</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:#18181B;border-radius:4px;"></div><span class="text-sm">#18181B heading/primary</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:#52525B;border-radius:4px;"></div><span class="text-sm">#52525B body</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:#71717A;border-radius:4px;"></div><span class="text-sm">#71717A muted</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:#A1A1AA;border-radius:4px;"></div><span class="text-sm">#A1A1AA disabled</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:#E4E4E7;border-radius:4px;border:1px solid #D4D4D8;"></div><span class="text-sm">#E4E4E7 border</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:20px;height:20px;background:#F4F4F5;border-radius:4px;border:1px solid #E4E4E7;"></div><span class="text-sm">#F4F4F5 muted bg</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="catalog-label">Dimensions</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+        <span class="text-sm">btn/input height: <strong>36px</strong> (sm:32, lg:40)</span>
+        <span class="text-sm">border-radius: <strong>6px</strong> (sm:4, lg:8, xl:12)</span>
+        <span class="text-sm">focus ring: <strong>3px</strong> zinc-500/15%</span>
+        <span class="text-sm">table-action: <strong>32px</strong> round</span>
+        <span class="text-sm">sidebar: <strong>256px</strong> (collapsed:64)</span>
+        <span class="text-sm">header: <strong>56px</strong></span>
+      </div>
+    </div>
+    <div>
+      <div class="catalog-label">Status Colors</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-success" style="font-size:10px;">success</span><span class="text-sm">#F0FDF4 / #15803D</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-warning" style="font-size:10px;">warning</span><span class="text-sm">#FFFBEB / #B45309</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-error" style="font-size:10px;">error</span><span class="text-sm">#FEF2F2 / #DC2626</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-info" style="font-size:10px;">info</span><span class="text-sm">#EFF6FF / #2563EB</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-neutral" style="font-size:10px;">neutral</span><span class="text-sm">#F4F4F5 / #52525B</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /catalog-body -->
+
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+</script>
+</body>
+</html>

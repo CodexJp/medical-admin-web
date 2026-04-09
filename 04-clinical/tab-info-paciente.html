@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Info Paciente (Tab nivel 1)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-6">
+
+  <div class="flex items-center gap-2 rounded-md border border-zinc-200/60 bg-white px-4 py-3 mb-4">
+    <span class="bg-amber-100 text-amber-800 text-[11px] font-semibold px-2 py-0.5 rounded-full">Tab nivel 1</span>
+    <span class="text-zinc-400 text-xs">Informacion del Paciente &mdash; Datos read-only con CountryAwareFields</span>
+  </div>
+
+  <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6">
+    <div class="flex justify-between items-center mb-5">
+      <div>
+        <h2 class="text-base font-bold text-zinc-900 mb-1">Informacion del Paciente</h2>
+        <p class="text-zinc-400 text-xs">Datos demograficos y de contacto &mdash; modo solo lectura</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer border border-red-300 bg-red-50 text-red-700 hover:bg-red-100">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+          Alertas de riesgo (2)
+        </button>
+      </div>
+    </div>
+
+    <!-- Datos basicos -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/60">
+        <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-blue-100 text-blue-700">
+          <i data-lucide="user" class="w-4 h-4"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900">Datos Basicos</h3>
+      </div>
+      <div class="grid grid-cols-4 gap-y-4 gap-x-6 max-lg:grid-cols-3 max-md:grid-cols-2">
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Tipo documento</div>
+          <div class="text-[13px] font-medium text-zinc-900">Cedula de Ciudadania</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Numero documento</div>
+          <div class="text-[13px] font-medium text-zinc-900">1.023.456.789</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Nombres</div>
+          <div class="text-[13px] font-medium text-zinc-900">Maria Alejandra</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Apellidos</div>
+          <div class="text-[13px] font-medium text-zinc-900">Rodriguez Gomez</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Genero</div>
+          <div class="text-[13px] font-medium text-zinc-900">Femenino</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Edad</div>
+          <div class="text-[13px] font-medium text-zinc-900">42 anos</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Fecha nacimiento</div>
+          <div class="text-[13px] font-medium text-zinc-900">15/06/1983</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Estado civil</div>
+          <div class="text-[13px] font-medium text-zinc-900">Casada</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contacto -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/60">
+        <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-green-50 text-green-700">
+          <i data-lucide="phone" class="w-4 h-4"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900">Contacto</h3>
+      </div>
+      <div class="grid grid-cols-4 gap-y-4 gap-x-6 max-lg:grid-cols-3 max-md:grid-cols-2">
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Telefono</div>
+          <div class="text-[13px] font-medium text-zinc-900">(601) 555-1234</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Celular</div>
+          <div class="text-[13px] font-medium text-zinc-900">+57 310 555 6789</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Email</div>
+          <div class="text-[13px] font-medium text-zinc-900">maria.rodriguez@email.com</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Direccion</div>
+          <div class="text-[13px] font-medium text-zinc-900">Cra 15 # 82-45 Apto 301</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ubicacion -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/60">
+        <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-amber-100 text-amber-800">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900">
+          Ubicacion
+          <span class="inline-flex items-center gap-1 text-[10px] text-blue-600 bg-blue-50 px-1.5 py-px rounded ml-1">COL</span>
+        </h3>
+      </div>
+      <div class="grid grid-cols-4 gap-y-4 gap-x-6 max-lg:grid-cols-3 max-md:grid-cols-2">
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Departamento</div>
+          <div class="text-[13px] font-medium text-zinc-900">Cundinamarca</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Ciudad / Municipio</div>
+          <div class="text-[13px] font-medium text-zinc-900">Bogota D.C.</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Barrio / Localidad</div>
+          <div class="text-[13px] font-medium text-zinc-900">Chapinero</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Zona</div>
+          <div class="text-[13px] font-medium text-zinc-900">Urbana</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Codigo postal</div>
+          <div class="text-[13px] font-medium text-zinc-900">110231</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Ocupacion</div>
+          <div class="text-[13px] font-medium text-zinc-900">Ingeniera de Sistemas</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Tipo paciente</div>
+          <div class="text-[13px] font-medium text-zinc-900"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Cotizante</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seguridad social -->
+    <div>
+      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/60">
+        <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 bg-purple-100 text-violet-600">
+          <i data-lucide="shield" class="w-4 h-4"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900">Seguridad Social</h3>
+      </div>
+      <div class="grid grid-cols-4 gap-y-4 gap-x-6 max-lg:grid-cols-3 max-md:grid-cols-2">
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Convenio</div>
+          <div class="text-[13px] font-medium text-zinc-900">Sura EPS</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Tipo afiliacion</div>
+          <div class="text-[13px] font-medium text-zinc-900"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Contributivo</span></div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Grupo sanguineo</div>
+          <div class="text-[13px] font-medium text-zinc-900">O+</div>
+        </div>
+        <div>
+          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">RH</div>
+          <div class="text-[13px] font-medium text-zinc-900">Positivo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datos adicionales (metadata) -->
+  <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6 mt-4">
+    <h3 class="text-sm font-semibold text-zinc-900 mb-3">Datos Adicionales</h3>
+    <div class="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2">
+      <div class="px-3 py-2.5 bg-zinc-50 rounded-md border border-zinc-200/60">
+        <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Etnia</div>
+        <div class="text-[13px] font-medium text-zinc-900">Mestizo</div>
+      </div>
+      <div class="px-3 py-2.5 bg-zinc-50 rounded-md border border-zinc-200/60">
+        <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Nivel educativo</div>
+        <div class="text-[13px] font-medium text-zinc-900">Universitario</div>
+      </div>
+      <div class="px-3 py-2.5 bg-zinc-50 rounded-md border border-zinc-200/60">
+        <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Estrato</div>
+        <div class="text-[13px] font-medium text-zinc-900">4</div>
+      </div>
+      <div class="px-3 py-2.5 bg-zinc-50 rounded-md border border-zinc-200/60">
+        <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-0.5">Acompanante</div>
+        <div class="text-[13px] font-medium text-zinc-900">Carlos Rodriguez (esposo)</div>
+      </div>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

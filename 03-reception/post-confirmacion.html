@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Post-Confirmacion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: #18181B; color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 150ms; z-index: 99; }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR (canonical from dashboard-medico) -->
+    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900"><i data-lucide="heart-pulse" class="size-4 text-white"></i></div>
+          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+        </a>
+        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition"><i data-lucide="panel-left-close" class="size-4"></i></button>
+      </div>
+      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+        <div class="mb-1"><a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard"><i data-lucide="layout-dashboard" class="size-4 shrink-0"></i><span class="sidebar-hide">Dashboard</span></a></div>
+        <div class="mt-4 mb-1"><p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p></div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')"><i data-lucide="calendar-days" class="size-4 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Agendamiento</span><i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400 open"></i></button>
+        <div class="nav-group-items pl-5 open" id="cit-agenda">
+          <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
+          <a href="index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-zinc-900 bg-zinc-900/10">Recepcion de Paciente</a>
+        </div>
+      </nav>
+      <div class="border-t border-zinc-200 p-3 shrink-0">
+        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+          <div class="sidebar-hide overflow-hidden"><p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p><p class="text-xs text-zinc-400">Medicina General</p></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+      <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+        <div class="flex items-center justify-between gap-6 px-6 py-2">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-3.5 text-zinc-500"></i></div>
+              <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+            </div>
+            <div class="h-4 w-px bg-zinc-200"></div>
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+              <input type="text" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly class="h-9 w-80 rounded-md border border-zinc-200 bg-zinc-50 pl-9 pr-12 text-sm placeholder:text-zinc-400 focus:outline-none">
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2"><kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-white px-1 text-[10px] font-medium text-zinc-400">&#8984;K</kbd></span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="relative flex size-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 transition"><i data-lucide="bell" class="size-[18px]"></i><span class="absolute top-1 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-semibold text-white ring-2 ring-white">5</span></button>
+            <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition"><div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-[11px] font-semibold text-white">JP</div><span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto bg-zinc-50 px-6 py-6">
+        <div class="max-w-3xl mx-auto">
+
+          <!-- Breadcrumb (P0 fix: correct link) -->
+          <div class="flex items-center gap-1.5 text-xs text-zinc-400 mb-4">
+            <a href="../00-shell/dashboard-medico.html" class="hover:text-zinc-600 transition">Inicio</a>
+            <i data-lucide="chevron-right" class="size-3"></i>
+            <a href="index.html" class="hover:text-zinc-600 transition">Recepcion</a>
+            <i data-lucide="chevron-right" class="size-3"></i>
+            <span class="text-zinc-600">Confirmacion</span>
+          </div>
+
+          <!-- Success Banner -->
+          <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-6 mb-6 text-center">
+            <div class="flex size-14 items-center justify-center rounded-full bg-emerald-100 mx-auto mb-3">
+              <i data-lucide="check" class="size-7 text-emerald-600"></i>
+            </div>
+            <h2 class="text-lg font-semibold text-zinc-900 mb-1">Recepcion Exitosa</h2>
+            <p class="text-sm text-zinc-600">La recepcion del paciente ha sido guardada correctamente</p>
+          </div>
+
+          <!-- P1: CTA Iniciar Atencion -->
+          <a href="../04-clinical/attention-queue.html" class="flex items-center justify-between rounded-xl border-2 border-blue-200 bg-blue-50 p-5 mb-6 hover:border-blue-300 hover:bg-blue-100 transition cursor-pointer">
+            <div class="flex items-center gap-3">
+              <div class="flex size-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500"><i data-lucide="stethoscope" class="size-5"></i></div>
+              <div>
+                <span class="text-sm font-semibold text-zinc-900">Iniciar Atencion</span>
+                <p class="text-xs text-zinc-600">Abrir historia clinica del paciente para iniciar la consulta</p>
+              </div>
+            </div>
+            <i data-lucide="arrow-right" class="size-5 text-blue-500"></i>
+          </a>
+
+          <!-- Appointment Summary -->
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mb-4">
+            <div class="flex items-center gap-2 px-6 py-3 border-b border-zinc-100">
+              <i data-lucide="calendar-check" class="size-4 text-zinc-500"></i>
+              <span class="text-sm font-semibold text-zinc-900">Datos de la Cita</span>
+            </div>
+            <div class="grid grid-cols-3 gap-4 p-6">
+              <div><p class="text-xs text-zinc-400 mb-0.5">Numero de Cita</p><p class="text-sm font-medium text-zinc-900 font-mono">#CIT-2026-04178</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Fecha y Hora</p><p class="text-sm font-medium text-zinc-900">04/04/2026 — 07:00</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Tipo de Cita</p><p class="text-sm font-medium text-zinc-900">Consulta Externa</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Programa PYP</p><p class="text-sm text-zinc-400">— No aplica</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Profesional</p><p class="text-sm font-medium text-zinc-900">Dr. Carlos Ramirez</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Especialidad</p><p class="text-sm font-medium text-zinc-900">Medicina General</p></div>
+            </div>
+          </div>
+
+          <!-- Patient Summary -->
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mb-4">
+            <div class="flex items-center gap-2 px-6 py-3 border-b border-zinc-100">
+              <i data-lucide="user" class="size-4 text-zinc-500"></i>
+              <span class="text-sm font-semibold text-zinc-900">Paciente</span>
+            </div>
+            <div class="grid grid-cols-4 gap-4 p-6">
+              <div><p class="text-xs text-zinc-400 mb-0.5">Nombre Completo</p><p class="text-sm font-medium text-zinc-900">Luis Fernando Castillo Rios</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Documento</p><p class="text-sm font-medium text-zinc-900 font-mono">CC 1032456789</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Edad</p><p class="text-sm font-medium text-zinc-900">35 anos</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Genero</p><p class="text-sm font-medium text-zinc-900">Masculino</p></div>
+            </div>
+          </div>
+
+          <!-- Billing Summary -->
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mb-4">
+            <div class="flex items-center gap-2 px-6 py-3 border-b border-zinc-100">
+              <i data-lucide="receipt" class="size-4 text-zinc-500"></i>
+              <span class="text-sm font-semibold text-zinc-900">Informacion de Facturacion</span>
+            </div>
+            <div class="grid grid-cols-4 gap-4 p-6">
+              <div><p class="text-xs text-zinc-400 mb-0.5">Convenio</p><p class="text-sm font-medium text-zinc-900">Nueva EPS - Contrato Principal</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Tipo de Facturacion</p><p class="text-sm font-medium text-zinc-900">EPS / Empresa</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Cuota Moderadora</p><p class="text-sm font-medium text-zinc-900">$12,500</p></div>
+              <div><p class="text-xs text-zinc-400 mb-0.5">Orden de Facturacion</p><p class="text-sm font-medium text-zinc-900 font-mono">#ORD-2026-08345</p></div>
+            </div>
+          </div>
+
+          <!-- Generar Documentos (según legacy Angular: solo PDF Orden + Recibo Caja + Factura Res506 condicional) -->
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mb-6">
+            <div class="flex items-center gap-2 px-6 py-3 border-b border-zinc-100">
+              <i data-lucide="printer" class="size-4 text-zinc-500"></i>
+              <span class="text-sm font-semibold text-zinc-900">Generar Documentos</span>
+            </div>
+            <div class="flex flex-col gap-3 p-6">
+
+              <!-- PDF Orden de Facturación (siempre visible) -->
+              <div class="flex items-center justify-between rounded-lg border border-zinc-200 p-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex size-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500"><i data-lucide="file-output" class="size-5"></i></div>
+                  <div>
+                    <span class="text-sm font-medium text-zinc-900">Orden de Facturacion</span>
+                    <p class="text-xs text-zinc-500">#ORD-2026-08345</p>
+                  </div>
+                </div>
+                <button class="inline-flex h-9 items-center gap-2 rounded-md bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-800 transition">
+                  <i data-lucide="download" class="size-4"></i>
+                  Generar PDF
+                </button>
+              </div>
+
+              <!-- Recibo de Caja (visible si NO es Res.506) -->
+              <div class="flex items-center justify-between rounded-lg border border-zinc-200 p-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex size-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500"><i data-lucide="receipt" class="size-5"></i></div>
+                  <div>
+                    <span class="text-sm font-medium text-zinc-900">Recibo de Caja</span>
+                    <p class="text-xs text-zinc-500">Cuota moderadora — $12,500</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700">
+                    <option>Cuota Moderadora</option>
+                    <option>Copago</option>
+                    <option>Particular</option>
+                  </select>
+                  <button class="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">
+                    <i data-lucide="download" class="size-4"></i>
+                    Generar PDF
+                  </button>
+                </div>
+              </div>
+
+              <!-- Factura Res.506 (condicional: solo Colombia + Resolución 506) -->
+              <div class="flex items-center justify-between rounded-lg border border-dashed border-zinc-300 p-4 bg-zinc-50/50">
+                <div class="flex items-center gap-3">
+                  <div class="flex size-10 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500"><i data-lucide="file-spreadsheet" class="size-5"></i></div>
+                  <div>
+                    <span class="text-sm font-medium text-zinc-900">Factura Electronica Res. 506</span>
+                    <p class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="info" class="size-3"></i> Solo Colombia — Resolución 506 activa</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700">
+                    <option>Seleccionar factura...</option>
+                    <option>FE-2026-001234</option>
+                  </select>
+                  <button class="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">
+                    <i data-lucide="download" class="size-4"></i>
+                    Generar PDF
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Back -->
+          <a href="index.html" class="h-9 w-full rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-zinc-800 transition">
+            <i data-lucide="arrow-left" class="size-4"></i> Volver a Lista de Recepcion
+          </a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-collapsed'); }
+    function toggleGroup(id) { document.getElementById(id).classList.toggle('open'); document.getElementById(id + '-chevron').classList.toggle('open'); }
+  </script>
+</body>
+</html>

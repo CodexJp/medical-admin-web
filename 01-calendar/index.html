@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Agenda de Citas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Only custom CSS for sidebar collapse behavior — everything else is Tailwind */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    /* Scrollbar */
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+
+    /* Calendar grid - required for complex layout */
+    .calendar-grid { display: grid; grid-template-columns: 60px repeat(7, 1fr); flex: 1; overflow-y: auto; }
+    .views-container { display: flex; flex: 1; overflow: hidden; }
+    .calendar-view-area { flex: 1; overflow-y: auto; }
+    .tab-content { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+    .tab-content.active { display: flex; }
+
+    /* Mini calendar panel */
+    .mini-calendar-panel { width: 240px; border-left: 1px solid #e4e4e7; padding: 16px; overflow-y: auto; flex-shrink: 0; }
+
+    /* Calendar time/cell grid */
+    .cal-time-corner { grid-column: 1; }
+    .cal-header { padding: 8px 0; text-align: center; border-bottom: 1px solid #e4e4e7; border-left: 1px solid #f4f4f5; }
+    .cal-header .cal-header-day { display: block; font-size: 11px; font-weight: 500; color: #a1a1aa; text-transform: uppercase; }
+    .cal-header .cal-header-num { display: block; font-size: 18px; font-weight: 600; color: #18181b; margin-top: 2px; }
+    .cal-header.today .cal-header-num { background: #18181b; color: white; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+    .cal-time { grid-column: 1; position: relative; height: 48px; border-bottom: 1px solid #f4f4f5; }
+    .cal-time span { position: absolute; top: -8px; right: 8px; font-size: 11px; color: #a1a1aa; font-variant-numeric: tabular-nums; }
+    .cal-cell { border-bottom: 1px solid #f4f4f5; border-left: 1px solid #f4f4f5; position: relative; height: 48px; cursor: pointer; }
+    .cal-cell:hover { background: #fafafa; }
+    .cal-cell.in-range { background: #f0f7fa; }
+    .cal-cell.no-range { background: #fafafa; }
+    .cal-cell.half-hour { border-bottom: 1px dashed #f4f4f5; }
+    .cal-cell.disabled-hour { background: #f8f8f8; cursor: default; }
+
+    /* Event blocks */
+    .cal-event { position: absolute; left: 2px; right: 2px; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-weight: 500; cursor: pointer; overflow: hidden; z-index: 2; line-height: 1.3; }
+    .cal-event.appointment { background: #fce7f3; border-left: 3px solid #ec4899; color: #9d174d; }
+    .cal-event.other { background: #ede9fe; border-left: 3px solid #8b5cf6; color: #5b21b6; }
+    .cal-event.conflict { background: #fef9c3; border-left: 3px solid #eab308; color: #854d0e; }
+    .cal-event .cal-event-time { font-size: 10px; opacity: 0.7; }
+    .cal-event .cal-event-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-event .drag-hint { display: none; }
+    .cal-event:hover .drag-hint { display: block; position: absolute; bottom: 2px; right: 4px; font-size: 9px; opacity: 0.5; }
+    .cal-event.dragging { opacity: 0.5; }
+    .drop-target { background: #dbeafe !important; }
+    .filter-hidden { display: none !important; }
+
+    /* Overlap events */
+    .event-overlap-2 { width: 50% !important; }
+    .event-overlap-2.overlap-idx-0 { left: 2px; right: auto; }
+    .event-overlap-2.overlap-idx-1 { left: 50%; right: 2px; }
+    .overlap-conflict { border-left-color: #eab308 !important; }
+
+    /* Current time indicator */
+    .current-time-line { position: absolute; left: 0; right: 0; height: 2px; background: #ef4444; z-index: 3; }
+    .current-time-line::before { content: ''; position: absolute; left: -4px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
+
+    /* Mini calendar grid */
+    .mini-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; text-align: center; }
+    .mini-cal-day-label { font-size: 10px; font-weight: 500; color: #a1a1aa; padding: 4px 0; }
+    .mini-cal-day { font-size: 12px; color: #52525b; padding: 4px 0; cursor: pointer; border-radius: 4px; }
+    .mini-cal-day:hover { background: #f4f4f5; }
+    .mini-cal-day.today { background: #18181b; color: white; font-weight: 600; }
+    .mini-cal-day.other-month { color: #d4d4d8; }
+    .mini-cal-day.selected { background: #e4e4e7; font-weight: 600; }
+
+    /* Day view grid */
+    .day-grid { display: grid; grid-template-columns: 60px 1fr; flex: 1; overflow-y: auto; }
+    .day-event-detail .ev-patient { font-weight: 600; font-size: 12px; }
+    .day-event-detail .ev-convenio { font-size: 10px; opacity: 0.7; }
+    .day-event-detail .ev-type { font-size: 10px; opacity: 0.6; }
+
+    /* Month view grid */
+    .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; }
+    .month-header-cell { padding: 8px; text-align: center; font-size: 12px; font-weight: 500; color: #71717a; border-bottom: 1px solid #e4e4e7; }
+    .month-day-cell { min-height: 100px; padding: 6px; border: 1px solid #f4f4f5; cursor: pointer; }
+    .month-day-cell:hover { background: #fafafa; }
+    .month-day-cell.other-month { background: #fafafa; }
+    .month-day-cell.today .month-day-number { background: #18181b; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+    .month-day-number { font-size: 13px; font-weight: 600; color: #18181b; margin-bottom: 4px; }
+    .month-event-chip { font-size: 10px; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .month-event-chip.appointment { background: #fce7f3; color: #9d174d; }
+    .month-event-chip.other { background: #ede9fe; color: #5b21b6; }
+    .month-more-link { font-size: 10px; color: #71717a; cursor: pointer; }
+    .month-day-dots { display: flex; gap: 2px; margin-top: 2px; }
+    .month-dot { width: 4px; height: 4px; border-radius: 50%; }
+
+    /* List view */
+    .list-view { padding: 16px; overflow-y: auto; }
+    .list-day-group { margin-bottom: 16px; }
+    .list-day-header { font-size: 13px; font-weight: 600; color: #18181b; padding: 8px 0; border-bottom: 1px solid #e4e4e7; margin-bottom: 8px; }
+    .list-day-count { font-size: 11px; font-weight: 400; color: #a1a1aa; margin-left: 8px; }
+    .list-event-card { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; border: 1px solid #f4f4f5; margin-bottom: 6px; cursor: pointer; }
+    .list-event-card:hover { background: #fafafa; }
+    .list-event-time { font-size: 12px; color: #71717a; font-variant-numeric: tabular-nums; min-width: 100px; }
+    .list-event-info { flex: 1; }
+    .list-event-title { font-size: 13px; font-weight: 500; color: #18181b; }
+    .list-event-patient { font-size: 12px; color: #52525b; }
+    .list-event-desc { font-size: 11px; color: #a1a1aa; }
+
+    /* Year view */
+    .year-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 16px; overflow-y: auto; }
+    .year-month-card { border: 1px solid #f4f4f5; border-radius: 8px; padding: 12px; }
+    .year-month-header { font-size: 13px; font-weight: 600; color: #18181b; margin-bottom: 8px; cursor: pointer; }
+    .year-month-header:hover { color: #3b82f6; }
+    .year-month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; text-align: center; }
+    .year-day-label { font-size: 9px; font-weight: 500; color: #a1a1aa; padding: 2px 0; }
+    .year-day { font-size: 11px; color: #52525b; padding: 2px 0; border-radius: 3px; }
+    .year-day.other-month { color: #d4d4d8; }
+    .year-day.today { background: #18181b; color: white; font-weight: 600; }
+    .year-day.has-events::after { content: ''; display: block; width: 3px; height: 3px; background: #3b82f6; border-radius: 50%; margin: 0 auto; }
+
+    /* Modal system */
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+    .modal-backdrop.visible { display: flex; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SIDEBAR (copied from dashboard-medico.html canonical) -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+
+      <!-- Sidebar Header -->
+      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
+            <i data-lucide="heart-pulse" class="size-4 text-white"></i>
+          </div>
+          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+        </a>
+        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
+          <i data-lucide="panel-left-close" class="size-4"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+
+        <!-- Dashboard -->
+        <div class="mb-1">
+          <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
+            <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Dashboard</span>
+          </a>
+        </div>
+
+        <!-- CONSULTA EXTERNA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
+          <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
+          <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron open sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items open pl-5" id="cit-agenda">
+          <a href="index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium bg-zinc-900/10 text-zinc-900 transition">Agenda</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
+          <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Recepcion de Paciente</a>
+          <a href="../02-appointments/admin-razones-cancelacion.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Motivos de Cancelacion</a>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-config">
+          <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
+          <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
+          <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
+          <a href="../02-appointments/admin-tipos-cita.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Tipos de Cita</a>
+        </div>
+
+        <!-- HISTORIA CLINICA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
+          <i data-lucide="file-heart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
+          <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-hc">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
+          <a href="../04-clinical/attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-config">
+          <a href="../04-clinical/format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
+          <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
+          <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
+          <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
+          <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
+          <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
+        </div>
+
+        <!-- FACTURACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
+          <i data-lucide="receipt" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-exec">
+          <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
+          <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
+          <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-config">
+          <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
+          <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
+          <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
+        </div>
+
+        <!-- FARMACIA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
+          <i data-lucide="pill" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-exec">
+          <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
+          <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
+        </div>
+
+        <!-- COMUNICACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
+        </div>
+        <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
+          <i data-lucide="message-circle" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">WhatsApp</span>
+        </a>
+
+        <!-- OTROS MODULOS -->
+        <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
+        </div>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="border-t border-zinc-200 p-3 shrink-0">
+        <div class="sidebar-hide mb-2">
+          <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
+          <div class="flex gap-1">
+            <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
+            <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
+            <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
+          </div>
+          <button onclick="document.documentElement.classList.toggle('high-contrast')" class="mt-1 w-full h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition inline-flex items-center justify-center gap-1">
+            <i data-lucide="contrast" class="size-3"></i> Contraste
+          </button>
+        </div>
+        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+          <div class="sidebar-hide overflow-hidden">
+            <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
+            <p class="text-xs text-zinc-400">Medicina General</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- MAIN AREA -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+
+      <!-- Header -->
+      <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+        <div class="flex items-center justify-between gap-6 px-6 py-2">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-3.5 text-zinc-500"></i></div>
+              <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+            </div>
+            <div class="h-4 w-px bg-zinc-200"></div>
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+              <input type="text" placeholder="Buscar paciente, cita, CIE-10..." readonly class="h-9 w-80 rounded-md border border-zinc-200 bg-zinc-50 pl-9 pr-12 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2"><kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-white px-1 text-[10px] font-medium text-zinc-400">&#8984;K</kbd></span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="relative flex size-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition">
+              <i data-lucide="bell" class="size-[18px]"></i>
+              <span class="absolute top-1 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-semibold text-white ring-2 ring-white">3</span>
+            </button>
+            <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-[11px] font-semibold text-white">JP</div>
+              <span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex flex-1 flex-col overflow-hidden bg-zinc-50 px-6 py-6">
+        <div class="flex flex-1 flex-col min-h-0">
+
+          <!-- Page Header + Breadcrumbs -->
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <div class="flex items-center gap-1.5 text-xs text-zinc-400 mb-2">
+                <a href="../00-shell/dashboard-medico.html" class="hover:text-zinc-600 transition">Inicio</a>
+                <i data-lucide="chevron-right" class="size-3"></i>
+                <span>Consulta Externa</span>
+                <i data-lucide="chevron-right" class="size-3"></i>
+                <span class="text-zinc-600">Agenda</span>
+              </div>
+              <h1 class="text-xl font-semibold text-zinc-900 tracking-tight">Agenda de Citas</h1>
+              <p class="text-sm text-zinc-500 mt-0.5">Gestion y programacion de citas medicas</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-800 transition" onclick="openCreateModal(8, 0, 0)">
+                <i data-lucide="plus" class="size-4"></i> Nueva Cita
+              </button>
+              <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-50 transition" onclick="openMassiveModal()">
+                <i data-lucide="copy" class="size-4"></i> Cita Masiva
+              </button>
+            </div>
+          </div>
+
+          <!-- Filters Card -->
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-5 mb-4">
+            <div class="grid grid-cols-[1fr_1fr_1fr_2fr] gap-3 items-end">
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-zinc-500">Sede</label>
+                <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="filterSede">
+                  <option value="norte" selected>Sede Norte</option>
+                  <option value="centro">Sede Centro</option>
+                  <option value="sur">Sede Sur</option>
+                </select>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-zinc-500">Especialidad</label>
+                <div class="relative">
+                  <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="filterEspecialidad">
+                    <option value="">Todas</option>
+                    <option value="general" selected>Medicina General</option>
+                    <option value="cardio">Cardiologia</option>
+                    <option value="pediatria">Pediatria</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-zinc-500">Fecha</label>
+                <input type="date" value="2026-04-04" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-zinc-500">Profesional</label>
+                <div class="relative">
+                  <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+                  <input type="text" id="filterProfesional" value="Dr. Enrique Lopez Guzman (01/01/2026 - 30/06/2028) - Medicina General" placeholder="Buscar profesional..." class="w-full h-9 rounded-md border border-zinc-200 bg-white pl-9 pr-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-5 mt-3">
+              <div class="flex items-center gap-1.5 text-xs text-zinc-500"><div class="w-3 h-3 rounded border-[1.5px]" style="background:#EEF4F7;border-color:#D1E3ED;"></div>Rango de atencion</div>
+              <div class="flex items-center gap-1.5 text-xs text-zinc-500"><div class="w-3 h-3 rounded border-[1.5px]" style="background:#FDE8EC;border-color:#FBCFE8;"></div>Cita programada</div>
+              <div class="flex items-center gap-1.5 text-xs text-zinc-500"><div class="w-3 h-3 rounded border-[1.5px]" style="background:#EDE9FE;border-color:#DDD6FE;"></div>Otro evento</div>
+              <div class="flex items-center gap-1.5 text-xs text-zinc-500"><div class="w-3 h-3 rounded border-[1.5px]" style="background:#FEF9C3;border-color:#FDE68A;"></div>Citas misma hora</div>
+            </div>
+          </div>
+
+          <!-- Calendar Card -->
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm flex-1 flex flex-col min-h-0 overflow-hidden">
+
+            <!-- Card header: Calendar toolbar + shadcn Tabs -->
+            <div class="flex items-center justify-between px-5 pt-4 pb-3 border-b border-zinc-100">
+              <!-- Left: Date navigator -->
+              <div class="flex items-center gap-3">
+                <button class="flex flex-col items-start overflow-hidden rounded-lg border border-zinc-200 focus:outline-none" onclick="navToday()" id="toolbarMonthBadge" title="Ir a hoy" style="width:44px;height:44px;">
+                  <span class="flex h-5 w-full items-center justify-center bg-zinc-900 text-center text-[10px] font-semibold text-white">ABR</span>
+                  <span class="flex flex-1 w-full items-center justify-center text-sm font-bold text-zinc-900">4</span>
+                </button>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-zinc-900" id="toolbarDateRange">31 Mar — 06 Abr, 2026</span>
+                    <span class="inline-flex items-center rounded-full border border-zinc-200 px-1.5 py-0.5 text-xs text-zinc-500" id="toolbarEventCount">42 eventos</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <button class="size-6 inline-flex items-center justify-center rounded-md border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition" onclick="navPrev()"><i data-lucide="chevron-left" class="size-3.5"></i></button>
+                    <button class="size-6 inline-flex items-center justify-center rounded-md border border-zinc-200 text-zinc-500 hover:bg-zinc-50 transition" onclick="navNext()"><i data-lucide="chevron-right" class="size-3.5"></i></button>
+                    <input type="date" value="2026-04-04" class="ml-2 h-6 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" title="Saltar a fecha">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Center: shadcn Tabs -->
+              <div role="tablist" class="inline-flex h-9 items-center justify-center rounded-md bg-zinc-100 p-1 text-zinc-500" id="tabsList">
+                <button class="tab-item inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1 text-sm font-medium bg-white text-zinc-950 shadow-sm transition-all gap-1.5" onclick="switchTab('calendar')">
+                  <i data-lucide="calendar-days" class="size-3.5"></i> Calendario
+                </button>
+                <button class="tab-item inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1 text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-all gap-1.5" onclick="switchTab('priority')">
+                  <i data-lucide="alert-circle" class="size-3.5"></i> Prioritarias <span class="ml-1 inline-flex items-center justify-center size-5 rounded-full bg-red-500 text-[10px] font-semibold text-white">4</span>
+                </button>
+              </div>
+
+              <!-- Right: View toggle + category pills -->
+              <div class="flex items-center gap-2">
+                <div class="inline-flex">
+                  <button class="view-toggle-btn size-8 inline-flex items-center justify-center border border-zinc-200 rounded-l-md rounded-r-none bg-white text-zinc-500 hover:bg-zinc-50 transition" onclick="switchView('list')"><i data-lucide="list" class="size-3.5"></i></button>
+                  <button class="view-toggle-btn size-8 inline-flex items-center justify-center border border-zinc-200 -ml-px rounded-none bg-white text-zinc-500 hover:bg-zinc-50 transition" onclick="switchView('day')"><i data-lucide="square" class="size-3.5"></i></button>
+                  <button class="view-toggle-btn active size-8 inline-flex items-center justify-center border border-zinc-900 -ml-px rounded-none bg-zinc-900 text-white transition" onclick="switchView('week')"><i data-lucide="columns-3" class="size-3.5"></i></button>
+                  <button class="view-toggle-btn size-8 inline-flex items-center justify-center border border-zinc-200 -ml-px rounded-none bg-white text-zinc-500 hover:bg-zinc-50 transition" onclick="switchView('month')"><i data-lucide="grid-3x3" class="size-3.5"></i></button>
+                  <button class="view-toggle-btn size-8 inline-flex items-center justify-center border border-zinc-200 -ml-px rounded-l-none rounded-r-md bg-white text-zinc-500 hover:bg-zinc-50 transition" onclick="switchView('year')"><i data-lucide="calendar" class="size-3.5"></i></button>
+                </div>
+                <div class="inline-flex">
+                  <button class="category-filter-btn active h-8 inline-flex items-center gap-1 border border-zinc-200 rounded-l-md px-2 text-xs font-medium bg-white text-zinc-700 hover:bg-zinc-50 transition" onclick="filterCategory('appointment', this)"><span class="size-2 rounded-full bg-pink-400"></span>C</button>
+                  <button class="category-filter-btn active h-8 inline-flex items-center gap-1 border border-zinc-200 -ml-px px-2 text-xs font-medium bg-white text-zinc-700 hover:bg-zinc-50 transition" onclick="filterCategory('other', this)"><span class="size-2 rounded-full bg-violet-400"></span>O</button>
+                  <button class="category-filter-btn active h-8 inline-flex items-center gap-1 border border-zinc-200 -ml-px px-2 text-xs font-medium bg-white text-zinc-700 hover:bg-zinc-50 transition" onclick="filterCategory('conflict', this)"><span class="size-2 rounded-full bg-amber-400"></span>+2</button>
+                  <button class="category-filter-btn active h-8 inline-flex items-center border border-zinc-200 -ml-px rounded-r-md px-2 text-xs font-medium bg-white text-zinc-700 hover:bg-zinc-50 transition" onclick="filterCategory('all', this)">All</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: Calendar (all views) -->
+            <div class="tab-content active" id="tab-calendar">
+              <div class="views-container">
+                <div class="calendar-view-area" id="calendarViewArea">
+                  <!-- Week view (default) -->
+                  <div id="view-week" class="calendar-grid"></div>
+                  <!-- Day view -->
+                  <div id="view-day" class="day-grid" style="display:none;"></div>
+                  <!-- Month view -->
+                  <div id="view-month" class="month-grid" style="display:none;"></div>
+                  <!-- List view -->
+                  <div id="view-list" class="list-view" style="display:none;"></div>
+                  <!-- Year view -->
+                  <div id="view-year" class="year-grid" style="display:none;"></div>
+                </div>
+
+                <!-- Mini calendar (right sidebar) -->
+                <div class="mini-calendar-panel" id="miniCalPanel">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-[13px] font-semibold text-zinc-900" id="miniCalTitle">Abril 2026</span>
+                    <div class="flex gap-1">
+                      <button onclick="miniCalPrev()" class="size-6 flex items-center justify-center border border-zinc-200 rounded bg-white hover:bg-zinc-50 transition"><i data-lucide="chevron-left" class="size-3.5 text-zinc-500"></i></button>
+                      <button onclick="miniCalNext()" class="size-6 flex items-center justify-center border border-zinc-200 rounded bg-white hover:bg-zinc-50 transition"><i data-lucide="chevron-right" class="size-3.5 text-zinc-500"></i></button>
+                    </div>
+                  </div>
+                  <div class="mini-cal-grid" id="miniCalGrid"></div>
+
+                  <div class="mt-4 border-t border-zinc-200 pt-3">
+                    <p class="text-xs font-semibold text-zinc-900 mb-2">Proximas citas</p>
+                    <div class="flex items-center gap-2 py-1.5 text-xs">
+                      <span class="text-zinc-500 tabular-nums w-9">07:30</span>
+                      <span class="text-zinc-900 font-medium">Maria Fernandez C.</span>
+                    </div>
+                    <div class="flex items-center gap-2 py-1.5 text-xs">
+                      <span class="text-zinc-500 tabular-nums w-9">09:00</span>
+                      <span class="text-zinc-900 font-medium">Carlos Acosta R.</span>
+                    </div>
+                    <div class="flex items-center gap-2 py-1.5 text-xs">
+                      <span class="text-zinc-500 tabular-nums w-9">11:00</span>
+                      <span class="text-zinc-900 font-medium">Laura Perez M.</span>
+                    </div>
+                    <div class="flex items-center gap-2 py-1.5 text-xs">
+                      <span class="text-zinc-500 tabular-nums w-9">14:00</span>
+                      <span class="text-zinc-900 font-medium">Carmen Rodriguez P.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB: Priority -->
+            <div class="tab-content" id="tab-priority">
+              <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200">
+                <div>
+                  <h3 class="text-base font-semibold text-zinc-900">Citas Prioritarias</h3>
+                  <p class="text-sm text-zinc-500 mt-0.5">Citas que requieren asignacion urgente de horario</p>
+                </div>
+                <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-800 transition" onclick="openCreateModal(8, 0, 0)">
+                  <i data-lucide="plus" class="size-4"></i> Crear Cita Prioritaria
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="border-b border-zinc-200">
+                      <th class="h-12 w-12 pl-6 pr-1"><input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer"></th>
+                      <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">#</th>
+                      <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Paciente</th>
+                      <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Convenio</th>
+                      <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Medico</th>
+                      <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Fecha</th>
+                      <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Estado</th>
+                      <th class="h-12 px-4 pr-6 text-left text-sm font-medium text-zinc-500">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-zinc-100">
+                    <tr class="hover:bg-zinc-50 transition-colors">
+                      <td class="py-3.5 pl-6 pr-1"><input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer"></td>
+                      <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">16530</td>
+                      <td class="py-3.5 px-4">
+                        <div class="flex items-center gap-3">
+                          <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-xs font-semibold text-blue-600">JM</div>
+                          <div class="flex flex-col">
+                            <span class="text-sm font-medium text-zinc-900">Juan Pablo Melo Alvarez</span>
+                            <span class="text-sm text-zinc-500">CC - 123456</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">COLSANITAS</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">Gerardo Rueda Escorcia</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">04/04/2026 04:12 PM</td>
+                      <td class="py-3.5 px-4"><span class="inline-flex items-center rounded-md bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-600">Creada</span></td>
+                      <td class="py-3.5 px-4 pr-6">
+                        <div class="flex items-center gap-1">
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Ver Detalle" onclick="showDetailModal(0)"><i data-lucide="eye" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Agendar"><i data-lucide="calendar-plus" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agendar cita</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Mas acciones"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50 transition-colors">
+                      <td class="py-3.5 pl-6 pr-1"><input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer"></td>
+                      <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">16531</td>
+                      <td class="py-3.5 px-4">
+                        <div class="flex items-center gap-3">
+                          <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-xs font-semibold text-amber-600">AT</div>
+                          <div class="flex flex-col">
+                            <span class="text-sm font-medium text-zinc-900">Ana Maria Torres Pineda</span>
+                            <span class="text-sm text-zinc-500">CC - 1.023.456.789</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">Suramericana</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">Dr. Lopez Guzman</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">31/03/2026 08:30 AM</td>
+                      <td class="py-3.5 px-4"><span class="inline-flex items-center rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-600">En espera</span></td>
+                      <td class="py-3.5 px-4 pr-6">
+                        <div class="flex items-center gap-1">
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Ver Detalle" onclick="showDetailModal(1)"><i data-lucide="eye" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Agendar"><i data-lucide="calendar-plus" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agendar cita</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Mas acciones"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50 transition-colors">
+                      <td class="py-3.5 pl-6 pr-1"><input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer"></td>
+                      <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">16532</td>
+                      <td class="py-3.5 px-4">
+                        <div class="flex items-center gap-3">
+                          <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-semibold text-emerald-600">LR</div>
+                          <div class="flex flex-col">
+                            <span class="text-sm font-medium text-zinc-900">Luisa Fernanda Rios Vega</span>
+                            <span class="text-sm text-zinc-500">CC - 52.789.123</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">Sanitas</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">Dr. Lopez Guzman</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">01/04/2026 10:00 AM</td>
+                      <td class="py-3.5 px-4"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Confirmada</span></td>
+                      <td class="py-3.5 px-4 pr-6">
+                        <div class="flex items-center gap-1">
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Ver Detalle" onclick="showDetailModal(2)"><i data-lucide="eye" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Agendar"><i data-lucide="calendar-plus" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agendar cita</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Mas acciones"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50 transition-colors">
+                      <td class="py-3.5 pl-6 pr-1"><input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer"></td>
+                      <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">16533</td>
+                      <td class="py-3.5 px-4">
+                        <div class="flex items-center gap-3">
+                          <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-xs font-semibold text-violet-600">RJ</div>
+                          <div class="flex flex-col">
+                            <span class="text-sm font-medium text-zinc-900">Roberto Jimenez Salazar</span>
+                            <span class="text-sm text-zinc-500">CC - 80.125.300</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">Nueva EPS</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">Dr. Lopez Guzman</td>
+                      <td class="py-3.5 px-4 text-sm text-zinc-700">31/03/2026 02:00 PM</td>
+                      <td class="py-3.5 px-4"><span class="inline-flex items-center rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-600">En espera</span></td>
+                      <td class="py-3.5 px-4 pr-6">
+                        <div class="flex items-center gap-1">
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Ver Detalle" onclick="showDetailModal(3)"><i data-lucide="eye" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Agendar"><i data-lucide="calendar-plus" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agendar cita</div>
+                </div>
+                          <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Mas acciones"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="flex items-center justify-between px-6 py-4 border-t border-zinc-200">
+                <p class="text-sm text-zinc-500">Mostrando 1-4 de 4 citas prioritarias</p>
+                <div class="flex items-center gap-1.5">
+                  <button class="flex size-8 items-center justify-center rounded-md bg-zinc-900 text-sm font-medium text-white">1</button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /calendar card -->
+        </div><!-- /flex container -->
+      </main>
+    </div><!-- /main area -->
+  </div><!-- /flex h-screen -->
+
+  <!-- ====== DETAIL MODAL ====== -->
+  <div class="modal-backdrop" id="detailModalBackdrop" onclick="closeDetailModal()">
+    <div class="bg-white rounded-xl shadow-2xl w-[480px] max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-200">
+        <div class="flex items-center gap-2">
+          <span class="text-[15px] font-semibold text-zinc-900" id="detailTitle">Consulta</span>
+          <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600" id="detailStatusBadge">Confirmada</span>
+        </div>
+        <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeDetailModal()"><i data-lucide="x" class="size-4"></i></button>
+      </div>
+      <div class="py-2">
+        <div class="flex items-center justify-between px-5 py-2 border-b border-zinc-100">
+          <span class="text-xs text-zinc-500">Paciente</span>
+          <span class="text-[13px] font-medium text-zinc-900" id="detailPatient">Maria Fernandez C.</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2 border-b border-zinc-100">
+          <span class="text-xs text-zinc-500">Hora</span>
+          <span class="text-[13px] font-medium text-zinc-900" id="detailTime">07:30 - 08:30</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2 border-b border-zinc-100">
+          <span class="text-xs text-zinc-500">Profesional</span>
+          <span class="text-[13px] font-medium text-zinc-900">Dr. Enrique Lopez Guzman</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2 border-b border-zinc-100">
+          <span class="text-xs text-zinc-500">Especialidad</span>
+          <span class="text-[13px] font-medium text-zinc-900">Medicina General</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2 border-b border-zinc-100">
+          <span class="text-xs text-zinc-500">Convenio</span>
+          <span class="text-[13px] font-medium text-zinc-900" id="detailConvenio">Suramericana</span>
+        </div>
+        <div class="flex items-center justify-between px-5 py-2">
+          <span class="text-xs text-zinc-500">Sede</span>
+          <span class="text-[13px] font-medium text-zinc-900">Sede Norte</span>
+        </div>
+      </div>
+
+      <!-- Move appointment sub-section -->
+      <div id="moveSection" class="hidden border-t border-zinc-200 px-5 py-4">
+        <p class="text-sm font-semibold text-zinc-900 mb-3">Reprogramar Cita</p>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Nueva Fecha</label>
+            <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" value="2026-04-06">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Nueva Hora</label>
+            <input type="time" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" value="09:00">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Profesional</label>
+            <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <option>Dr. Enrique Lopez Guzman</option>
+              <option>Dra. Sandra Morales</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 mt-3">
+          <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium hover:bg-zinc-50 transition" onclick="document.getElementById('moveSection').classList.add('hidden')">Cancelar</button>
+          <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 transition" onclick="document.getElementById('moveSection').classList.add('hidden')">Confirmar</button>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2 px-5 py-4 border-t border-zinc-200">
+        <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium inline-flex items-center gap-1.5 hover:bg-zinc-50 transition" onclick="document.getElementById('moveSection').classList.remove('hidden')">
+          <i data-lucide="move" class="size-3.5"></i> Mover Cita
+        </button>
+        <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-red-600 text-sm font-medium inline-flex items-center gap-1.5 hover:bg-red-50 transition" onclick="document.getElementById('cancel-modal').classList.remove('hidden')">
+          <i data-lucide="x-circle" class="size-3.5"></i> Cancelar Cita
+        </button>
+        <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium inline-flex items-center gap-1.5 hover:bg-zinc-50 transition">
+          <i data-lucide="user-x" class="size-3.5"></i> Marcar Inasistencia
+        </button>
+        <button class="h-9 px-3 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-1.5 hover:bg-zinc-800 transition">
+          <i data-lucide="log-in" class="size-3.5"></i> Ir a Recepcion
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== CREATE MODAL ====== -->
+  <div class="modal-backdrop" id="createModalBackdrop" onclick="closeCreateModal()">
+    <div class="bg-white rounded-xl shadow-2xl w-[95vw] max-w-6xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-200 shrink-0">
+        <span class="text-[15px] font-semibold text-zinc-900">Creacion de Cita Medica</span>
+        <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeCreateModal()"><i data-lucide="x" class="size-4"></i></button>
+      </div>
+
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Left sidebar: Resumen Calendario -->
+        <div class="w-56 border-r border-zinc-200 bg-zinc-50 p-4 overflow-y-auto shrink-0">
+          <p class="text-xs font-semibold text-zinc-900 mb-3">Resumen Calendario</p>
+          <div class="space-y-3">
+            <div><p class="text-[10px] font-medium text-zinc-400">Fecha</p><p class="text-xs font-medium text-zinc-900" id="createSidebarDate">04/04/2026</p></div>
+            <div><p class="text-[10px] font-medium text-zinc-400">Identificacion</p><p class="text-xs font-medium text-zinc-900" id="createSidebarId">--</p></div>
+            <div><p class="text-[10px] font-medium text-zinc-400">Nombre</p><p class="text-xs font-medium text-zinc-900" id="createSidebarName">--</p></div>
+            <div><p class="text-[10px] font-medium text-zinc-400">Convenio</p><p class="text-xs font-medium text-zinc-900" id="createSidebarConvenio">--</p></div>
+            <div><p class="text-[10px] font-medium text-zinc-400">Medico</p><p class="text-xs font-medium text-zinc-900">Dr. Lopez Guzman</p></div>
+            <div><p class="text-[10px] font-medium text-zinc-400">Hora</p><p class="text-xs font-medium text-zinc-900" id="createSidebarHora">08:00 - 08:30</p></div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-200">
+            <p class="text-[10px] font-semibold text-zinc-900 mb-2">Rango del Evento</p>
+            <p class="text-xs text-zinc-500 mb-2" id="createSidebarRange">07:00 AM - 12:00 PM</p>
+            <div class="space-y-0.5 text-[11px]">
+              <div class="py-1 px-1.5 rounded text-emerald-700 bg-emerald-50">07:00</div>
+              <div class="py-1 px-1.5 rounded text-emerald-700 bg-emerald-50">07:30</div>
+              <div class="py-1 px-1.5 rounded text-pink-700 bg-pink-50">08:00 Maria Fernandez</div>
+              <div class="py-1 px-1.5 rounded text-emerald-700 bg-emerald-50">08:30</div>
+              <div class="py-1 px-1.5 rounded text-pink-700 bg-pink-50">09:00 Carlos Acosta</div>
+              <div class="py-1 px-1.5 rounded text-emerald-700 bg-emerald-50">09:30</div>
+              <div class="py-1 px-1.5 rounded text-emerald-700 bg-emerald-50">10:00</div>
+              <div class="py-1 px-1.5 rounded text-emerald-700 bg-emerald-50">10:30</div>
+              <div class="py-1 px-1.5 rounded text-pink-700 bg-pink-50">11:00 Laura Perez</div>
+              <div class="py-1 px-1.5 rounded text-emerald-700 bg-emerald-50">11:30</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main form area -->
+        <div class="flex-1 overflow-y-auto p-5">
+          <!-- Section 1: Informacion de la Cita -->
+          <p class="text-sm font-semibold text-zinc-900 mb-3">Informacion de la Cita</p>
+          <div class="grid grid-cols-4 gap-3 mb-5">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Tipo de Cita <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createTipoCita">
+                <option value="">Seleccionar tipo de cita</option>
+                <option value="consulta" selected>Consulta</option>
+                <option value="procedimiento">Procedimiento</option>
+                <option value="seguimiento">Seguimiento</option>
+                <option value="control">Control</option>
+                <option value="urgente">Urgente</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Duracion <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createDuracion" onchange="updateCreateEndTime()">
+                <option value="">Seleccionar duracion</option>
+                <option value="15">15 minutos</option>
+                <option value="30" selected>30 minutos</option>
+                <option value="45">45 minutos</option>
+                <option value="60">60 minutos</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Hora Inicio <span class="text-red-500">*</span></label>
+              <input type="time" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createHoraInicio" value="08:00" onchange="updateCreateEndTime()">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Hora Fin</label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-500" id="createHoraFin" value="08:30" disabled>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Modalidad <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createModalidad">
+                <option value="presencial" selected>Presencial</option>
+                <option value="intramural">Intramural</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Fecha Deseada</label>
+              <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createFechaDeseada">
+            </div>
+          </div>
+
+          <!-- Section 2: Informacion del Convenio -->
+          <p class="text-sm font-semibold text-zinc-900 mb-3">Informacion del Convenio</p>
+          <div class="grid grid-cols-4 gap-3 mb-5">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Tipo de Evento <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createTipoEvento">
+                <option value="1" selected>Consulta Externa</option>
+                <option value="2">PyP</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Tipo de Convenio <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createTipoConvenio">
+                <option value="1">EPS / Empresa</option>
+                <option value="2">Particular</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Convenio <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createConvenio" onchange="document.getElementById('createSidebarConvenio').textContent=this.options[this.selectedIndex].text">
+                <option value="">Seleccionar convenio</option>
+                <option value="axa">AXA Colpatria</option>
+                <option value="coomeva">Coomeva</option>
+                <option value="nuevaeps">Nueva EPS</option>
+                <option value="sura">Suramericana</option>
+                <option value="particular">Particular</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Sede <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createSede">
+                <option value="norte" selected>Sede Norte</option>
+                <option value="centro">Sede Centro</option>
+                <option value="sur">Sede Sur</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 3: Informacion del Paciente -->
+          <p class="text-sm font-semibold text-zinc-900 mb-3">Informacion del Paciente</p>
+          <div class="grid grid-cols-4 gap-3 mb-5">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Tipo Documento <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createTipoDoc">
+                <option value="1" selected>Cedula de Ciudadania</option>
+                <option value="2">Tarjeta de Identidad</option>
+                <option value="3">Registro Civil</option>
+                <option value="6">Cedula de Extranjeria</option>
+                <option value="7">Pasaporte</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Documento <span class="text-red-500">*</span></label>
+              <div class="flex">
+                <input type="text" class="h-9 flex-1 rounded-l-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createDocumento" placeholder="Numero de documento" onblur="mockSearchPatient()">
+                <button class="h-9 px-3 rounded-r-md bg-zinc-900 text-white hover:bg-zinc-800 transition" onclick="mockSearchPatient()"><i data-lucide="search" class="size-3.5"></i></button>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Genero <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createGenero">
+                <option value="">Seleccionar</option>
+                <option value="M">Masculino</option>
+                <option value="F" selected>Femenino</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Fecha Nacimiento <span class="text-red-500">*</span> <span class="text-zinc-400 font-normal" id="createEdad">32 anos</span></label>
+              <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createFechaNac" value="1993-08-15">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Primer Nombre <span class="text-red-500">*</span></label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createNombre1" value="Carolina">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Segundo Nombre</label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createNombre2" value="Andrea">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Primer Apellido <span class="text-red-500">*</span></label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createApellido1" value="Martinez">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Segundo Apellido</label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createApellido2" value="Restrepo">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Pais <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createPais">
+                <option value="CO" selected>Colombia</option>
+                <option value="EC">Ecuador</option>
+                <option value="VE">Venezuela</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Departamento <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createDepto">
+                <option value="">Seleccionar</option>
+                <option value="antioquia" selected>Antioquia</option>
+                <option value="bogota">Bogota D.C.</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Ciudad <span class="text-red-500">*</span></label>
+              <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createCiudad">
+                <option value="">Seleccionar</option>
+                <option value="medellin" selected>Medellin</option>
+                <option value="envigado">Envigado</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Barrio</label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createBarrio" value="El Poblado">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Direccion</label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createDireccion" value="Cra 43A #7-50">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Telefono</label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createTelefono" value="604 3456789">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Celular</label>
+              <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createCelular" value="310 2345678">
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Correo <span class="text-red-500">*</span></label>
+              <input type="email" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createEmail" value="carolina.martinez@email.com">
+            </div>
+            <div class="col-span-2 flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Nota</label>
+              <textarea class="h-16 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 resize-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createNota" placeholder="Notas adicionales..."></textarea>
+            </div>
+            <div class="col-span-2 flex flex-col gap-1">
+              <label class="text-xs font-medium text-zinc-500">Nota de Atencion Medica</label>
+              <textarea class="h-16 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 resize-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="createNotaMedica" placeholder="Observaciones para el medico...">Paciente solicita control de resultados de laboratorio</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex items-center justify-between px-5 py-4 border-t border-zinc-200 shrink-0">
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer"><input type="checkbox" checked class="accent-zinc-900"> Notificar por correo</label>
+          <label class="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer"><input type="checkbox" checked class="accent-zinc-900"> Notificar por SMS</label>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium hover:bg-zinc-50 transition" onclick="closeCreateModal()">Cancelar</button>
+          <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-800 transition" onclick="closeCreateModal()">
+            <i data-lucide="calendar-check" class="size-4"></i> Crear Cita
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== MASSIVE MODAL ====== -->
+  <div class="modal-backdrop" id="massiveModalBackdrop" onclick="closeMassiveModal()">
+    <div class="bg-white rounded-xl shadow-2xl w-[90vw] max-w-4xl max-h-[85vh] flex flex-col" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-200 shrink-0">
+        <span class="text-[15px] font-semibold text-zinc-900">Creacion de Citas Masivas</span>
+        <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeMassiveModal()"><i data-lucide="x" class="size-4"></i></button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-5">
+        <p class="text-sm font-semibold text-zinc-900 mb-3">Programacion de Cita</p>
+        <div class="grid grid-cols-4 gap-3 mb-5">
+          <div class="col-span-2 flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Profesional de la Salud <span class="text-red-500">*</span></label>
+            <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" value="Dr. Enrique Lopez Guzman - Medicina General">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Fecha Inicio</label>
+            <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" value="2026-04-06">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Fecha Final</label>
+            <div class="flex gap-2">
+              <input type="date" class="h-9 flex-1 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" value="2026-04-30">
+              <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium hover:bg-zinc-50 transition whitespace-nowrap">Buscar</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm font-semibold text-zinc-900 mb-3">Seleccionar Dia de la Semana</p>
+        <div class="space-y-2 mb-5">
+          <!-- Lunes -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr_80px] gap-3 items-end p-3 rounded-lg bg-zinc-50 border border-zinc-100">
+            <label class="flex items-center gap-2 text-sm font-medium text-zinc-900"><input type="checkbox" checked class="accent-zinc-900">Lunes</label>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Rango</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>07:00 AM - 12:00 PM - C1</option><option>02:00 PM - 05:00 PM - C2</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Duracion</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>30 minutos</option><option>15 minutos</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Hora Inicio</label><input type="time" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900" value="07:00"></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Fin</label><p class="h-9 flex items-center text-sm text-zinc-900">07:30</p></div>
+          </div>
+          <!-- Martes -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr_80px] gap-3 items-end p-3 rounded-lg bg-zinc-50 border border-zinc-100">
+            <label class="flex items-center gap-2 text-sm font-medium text-zinc-900"><input type="checkbox" checked class="accent-zinc-900">Martes</label>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Rango</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>07:00 AM - 12:00 PM - C1</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Duracion</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>30 minutos</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Hora Inicio</label><input type="time" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900" value="08:00"></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Fin</label><p class="h-9 flex items-center text-sm text-zinc-900">08:30</p></div>
+          </div>
+          <!-- Miercoles (disabled) -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr_80px] gap-3 items-end p-3 rounded-lg bg-zinc-50 border border-zinc-100 opacity-50">
+            <label class="flex items-center gap-2 text-sm font-medium text-zinc-400"><input type="checkbox" disabled class="accent-zinc-900">Miercoles</label>
+            <p class="text-xs text-zinc-400">Sin rango disponible</p>
+            <div></div><div></div><div></div>
+          </div>
+          <!-- Jueves -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr_80px] gap-3 items-end p-3 rounded-lg bg-zinc-50 border border-zinc-100">
+            <label class="flex items-center gap-2 text-sm font-medium text-zinc-900"><input type="checkbox" checked class="accent-zinc-900">Jueves</label>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Rango</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>07:00 AM - 12:00 PM - C1</option><option>02:00 PM - 06:00 PM - C1</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Duracion</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>30 minutos</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Hora Inicio</label><input type="time" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900" value="07:00"></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Fin</label><p class="h-9 flex items-center text-sm text-zinc-900">07:30</p></div>
+          </div>
+          <!-- Viernes -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr_80px] gap-3 items-end p-3 rounded-lg bg-zinc-50 border border-zinc-100">
+            <label class="flex items-center gap-2 text-sm font-medium text-zinc-900"><input type="checkbox" class="accent-zinc-900">Viernes</label>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Rango</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>07:00 AM - 12:00 PM - C1</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Duracion</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>30 minutos</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Hora Inicio</label><input type="time" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900" value="07:00"></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Fin</label><p class="h-9 flex items-center text-sm text-zinc-900">07:30</p></div>
+          </div>
+          <!-- Sabado -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr_80px] gap-3 items-end p-3 rounded-lg bg-zinc-50 border border-zinc-100">
+            <label class="flex items-center gap-2 text-sm font-medium text-zinc-900"><input type="checkbox" class="accent-zinc-900">Sabado</label>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Rango</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>08:00 AM - 12:00 PM - C1</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Duracion</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900"><option>30 minutos</option></select></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Hora Inicio</label><input type="time" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900" value="08:00"></div>
+            <div class="flex flex-col gap-1"><label class="text-xs font-medium text-zinc-500">Fin</label><p class="h-9 flex items-center text-sm text-zinc-900">08:30</p></div>
+          </div>
+          <!-- Domingo (disabled) -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr_80px] gap-3 items-end p-3 rounded-lg bg-zinc-50 border border-zinc-100 opacity-50">
+            <label class="flex items-center gap-2 text-sm font-medium text-zinc-400"><input type="checkbox" disabled class="accent-zinc-900">Domingo</label>
+            <p class="text-xs text-zinc-400">Sin rango disponible</p>
+            <div></div><div></div><div></div>
+          </div>
+        </div>
+
+        <p class="text-sm font-semibold text-zinc-900 mb-3">Informacion del Paciente</p>
+        <div class="grid grid-cols-4 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Tipo Documento <span class="text-red-500">*</span></label>
+            <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <option value="1" selected>Cedula de Ciudadania</option>
+              <option value="2">Tarjeta de Identidad</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Documento <span class="text-red-500">*</span></label>
+            <div class="flex">
+              <input type="text" class="h-9 flex-1 rounded-l-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none" placeholder="Buscar paciente...">
+              <button class="h-9 px-3 rounded-r-md bg-zinc-900 text-white hover:bg-zinc-800 transition"><i data-lucide="search" class="size-3.5"></i></button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Nombre Paciente</label>
+            <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-500" disabled placeholder="Se llena al buscar">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-500">Convenio <span class="text-red-500">*</span></label>
+            <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <option value="">Seleccionar convenio</option>
+              <option value="sura">Suramericana</option>
+              <option value="nuevaeps">Nueva EPS</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-zinc-200 shrink-0">
+        <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium hover:bg-zinc-50 transition" onclick="closeMassiveModal()">Cancelar</button>
+        <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-800 transition" onclick="closeMassiveModal()">
+          <i data-lucide="calendar-check" class="size-4"></i> Crear Citas Masivas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- MODAL CANCELAR CITA -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div id="cancel-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50">
+    <div class="w-full max-w-md rounded-xl bg-white shadow-lg">
+      <div class="p-6">
+        <h3 class="text-base font-semibold text-zinc-900 mb-1">Cancelar Cita</h3>
+        <p class="text-sm text-zinc-500 mb-4">Seleccione el motivo de la cancelacion</p>
+        <div class="flex flex-col gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-700">Motivo de cancelacion <span class="text-red-500">*</span></label>
+            <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm">
+              <option>-- Seleccionar motivo --</option>
+              <option>Paciente no puede asistir</option>
+              <option>Medico no disponible</option>
+              <option>Reprogramacion solicitada</option>
+              <option>Error en agendamiento</option>
+              <option>Paciente hospitalizado</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-medium text-zinc-700">Observaciones</label>
+            <textarea class="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm" rows="2" placeholder="Detalles adicionales..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 border-t border-zinc-100 px-6 py-4">
+        <button onclick="document.getElementById('cancel-modal').classList.add('hidden')" class="h-9 px-4 rounded-md border border-zinc-200 text-sm font-medium text-zinc-700 hover:bg-zinc-50">No cancelar</button>
+        <button onclick="document.getElementById('cancel-modal').classList.add('hidden');showToast('Cita cancelada exitosamente')" class="h-9 px-4 rounded-md bg-red-600 text-white text-sm font-medium hover:bg-red-700">Confirmar cancelacion</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== SIDEBAR FUNCTIONS ======
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-collapsed'); }
+    function toggleGroup(id) {
+      var items = document.getElementById(id);
+      var chevron = document.getElementById(id + '-chevron');
+      if (items) items.classList.toggle('open');
+      if (chevron) chevron.classList.toggle('open');
+    }
+    function setFontSize(s) { /* placeholder */ }
+
+    // ====== TAB SWITCHING ======
+    function switchTab(tab) {
+      var tabs = document.querySelectorAll('.tab-item');
+      document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+      tabs.forEach(function(t) {
+        t.classList.remove('bg-white', 'text-zinc-950', 'shadow-sm');
+        t.classList.add('text-zinc-500');
+      });
+      var activeIdx = tab === 'calendar' ? 0 : 1;
+      tabs[activeIdx].classList.add('bg-white', 'text-zinc-950', 'shadow-sm');
+      tabs[activeIdx].classList.remove('text-zinc-500');
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    // ====== CALENDAR DATA ======
+    var DAYS = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+    var DATES = ['31', '01', '02', '03', '04', '05', '06'];
+    var MONTHS = ['Mar', 'Abr', 'Abr', 'Abr', 'Abr', 'Abr', 'Abr'];
+    var FULL_DATES = ['31/03/2026', '01/04/2026', '02/04/2026', '03/04/2026', '04/04/2026', '05/04/2026', '06/04/2026'];
+    var TODAY_INDEX = 4;
+
+    var RANGES = {
+      0: [{start: 0, end: 10}, {start: 14, end: 20}],
+      1: [{start: 0, end: 10}],
+      2: [],
+      3: [{start: 0, end: 10}, {start: 14, end: 22}],
+      4: [{start: 0, end: 10}],
+      5: [{start: 2, end: 10}],
+      6: []
+    };
+
+    var EVENTS = [
+      { day: 0, slotStart: 0, slotSpan: 1, type: 'appointment', title: 'Control', patient: 'Diana Rojas P.', time: '06:00 - 06:30', convenio: 'Suramericana', status: 'Confirmada' },
+      { day: 0, slotStart: 1, slotSpan: 1, type: 'appointment', title: 'Consulta', patient: 'Maria Fernandez C.', time: '06:30 - 07:00', convenio: 'Suramericana', status: 'Confirmada' },
+      { day: 0, slotStart: 4, slotSpan: 0.5, type: 'appointment', title: 'Control rapido', patient: 'Pedro Lopez R.', time: '08:00 - 08:15', convenio: 'Nueva EPS', status: 'Confirmada' },
+      { day: 0, slotStart: 6, slotSpan: 1, type: 'appointment', title: 'Consulta', patient: 'Carlos Acosta R.', time: '09:00 - 09:30', convenio: 'Nueva EPS', status: 'Confirmada', overlap: 'lun09' },
+      { day: 0, slotStart: 6, slotSpan: 1.5, type: 'appointment', title: 'Procedimiento', patient: 'Ana Martinez G.', time: '09:00 - 09:45', convenio: 'Sanitas', status: 'Pendiente', overlap: 'lun09' },
+      { day: 0, slotStart: 10, slotSpan: 2, type: 'appointment', title: 'Procedimiento largo', patient: 'Laura Perez M.', time: '11:00 - 12:00', convenio: 'Sanitas', status: 'Pendiente' },
+      { day: 1, slotStart: 4, slotSpan: 2, type: 'appointment', title: 'Procedimiento', patient: 'Juan Perez D.', time: '08:00 - 09:00', convenio: 'Suramericana', status: 'Confirmada' },
+      { day: 1, slotStart: 8, slotSpan: 2, type: 'appointment', title: 'Consulta', patient: 'Sandra Moreno L.', time: '10:00 - 11:00', convenio: 'Particular', status: 'Confirmada' },
+      { day: 3, slotStart: 3, slotSpan: 2, type: 'appointment', title: 'Consulta', patient: 'Andres Fernandez B.', time: '07:30 - 08:30', convenio: 'Nueva EPS', status: 'Confirmada' },
+      { day: 3, slotStart: 16, slotSpan: 3, type: 'appointment', title: 'Procedimiento extenso', patient: 'Roberto Jimenez S.', time: '14:00 - 15:30', convenio: 'Nueva EPS', status: 'Confirmada' },
+      { day: 3, slotStart: 20, slotSpan: 0.5, type: 'appointment', title: 'Control', patient: 'Carmen Rodriguez P.', time: '16:00 - 16:15', convenio: 'Sanitas', status: 'Pendiente' },
+      { day: 4, slotStart: 6, slotSpan: 2, type: 'other', title: 'Reunion equipo', patient: '', time: '09:00 - 10:00', convenio: '', status: '' },
+      { day: 5, slotStart: 4, slotSpan: 1.5, type: 'appointment', title: 'Consulta', patient: 'Felipe Gomez N.', time: '08:00 - 08:45', convenio: 'Coomeva', status: 'Confirmada' }
+    ];
+
+    function computeOverlaps() {
+      var groups = {};
+      EVENTS.forEach(function(ev, idx) {
+        if (ev.overlap) {
+          if (!groups[ev.overlap]) groups[ev.overlap] = [];
+          groups[ev.overlap].push(idx);
+        }
+      });
+      return groups;
+    }
+    var OVERLAP_GROUPS = computeOverlaps();
+    var currentView = 'week';
+
+    var HOUR_START = 6;
+    function slotToTime(slot) {
+      var h = HOUR_START + Math.floor(slot / 2);
+      var m = (slot % 2 === 0) ? '00' : '30';
+      return (h < 10 ? '0' + h : h) + ':' + m;
+    }
+
+    function isInRange(day, slot) {
+      var ranges = RANGES[day] || [];
+      for (var i = 0; i < ranges.length; i++) {
+        if (slot >= ranges[i].start && slot < ranges[i].end) return true;
+      }
+      return false;
+    }
+
+    function getEventsForCell(day, slot) {
+      return EVENTS.filter(function(e) { return e.day === day && e.slotStart === slot; });
+    }
+
+    function getOverlapIndex(evIdx) {
+      var ev = EVENTS[evIdx];
+      if (!ev.overlap) return -1;
+      var group = OVERLAP_GROUPS[ev.overlap];
+      if (!group) return -1;
+      return group.indexOf(evIdx);
+    }
+
+    function isOverlap(evIdx) {
+      var ev = EVENTS[evIdx];
+      return ev.overlap && OVERLAP_GROUPS[ev.overlap] && OVERLAP_GROUPS[ev.overlap].length > 1;
+    }
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    // ====== VIEW SWITCHING ======
+    function switchView(view) {
+      currentView = view;
+      var viewMap = {list: 0, day: 1, week: 2, month: 3, year: 4};
+      document.querySelectorAll('.view-toggle-btn').forEach(function(b) {
+        b.classList.remove('active', 'bg-zinc-900', 'text-white', 'border-zinc-900');
+        b.classList.add('bg-white', 'text-zinc-500', 'border-zinc-200');
+      });
+      var activeBtn = document.querySelectorAll('.view-toggle-btn')[viewMap[view]];
+      activeBtn.classList.add('active', 'bg-zinc-900', 'text-white', 'border-zinc-900');
+      activeBtn.classList.remove('bg-white', 'text-zinc-500', 'border-zinc-200');
+
+      ['view-week', 'view-day', 'view-month', 'view-list', 'view-year'].forEach(function(id) {
+        document.getElementById(id).style.display = 'none';
+      });
+
+      switch(view) {
+        case 'week': document.getElementById('view-week').style.display = 'grid'; renderWeekView(); break;
+        case 'day': document.getElementById('view-day').style.display = 'grid'; renderDayView(); break;
+        case 'month': document.getElementById('view-month').style.display = 'grid'; renderMonthView(); break;
+        case 'list': document.getElementById('view-list').style.display = 'block'; renderListView(); break;
+        case 'year': document.getElementById('view-year').style.display = 'grid'; renderYearView(); break;
+      }
+      updateToolbarDateRange(view);
+      lucide.createIcons();
+    }
+
+    function updateToolbarDateRange(view) {
+      var el = document.getElementById('toolbarDateRange');
+      switch(view) {
+        case 'week': el.textContent = '31 Mar — 06 Abr, 2026'; break;
+        case 'day': el.textContent = 'Viernes, 04 Abril 2026'; break;
+        case 'month': el.textContent = 'Abril 2026'; break;
+        case 'list': el.textContent = '31 Mar — 06 Abr, 2026'; break;
+        case 'year': el.textContent = '2026'; break;
+      }
+    }
+
+    // ====== RENDER: WEEK VIEW ======
+    function renderWeekView() {
+      var grid = document.getElementById('view-week');
+      var html = '';
+      var TOTAL_SLOTS = 28;
+      var SLOT_HEIGHT = 48;
+
+      html += '<div class="cal-time-corner cal-header"></div>';
+      for (var d = 0; d < 7; d++) {
+        var todayClass = d === TODAY_INDEX ? ' today' : '';
+        html += '<div class="cal-header' + todayClass + '">';
+        html += '<span class="cal-header-day">' + DAYS[d] + '</span>';
+        html += '<span class="cal-header-num">' + DATES[d] + '</span>';
+        html += '</div>';
+      }
+
+      for (var s = 0; s < TOTAL_SLOTS; s++) {
+        var timeStr = slotToTime(s);
+        var isHour = s % 2 === 0;
+        var halfClass = !isHour ? ' half-hour' : '';
+
+        html += '<div class="cal-time">';
+        if (isHour) {
+          if (s === 0) {
+            html += '<span style="top:4px;right:8px;">' + timeStr + '</span>';
+          } else {
+            html += '<span>' + timeStr + '</span>';
+          }
+        }
+        html += '</div>';
+
+        for (var d = 0; d < 7; d++) {
+          var inRange = isInRange(d, s);
+          var cellClass = inRange ? 'in-range' : 'no-range';
+          var hour = HOUR_START + Math.floor(s / 2);
+          var disabledClass = (hour < 6 || hour >= 18) ? ' disabled disabled-hour' : '';
+          var clickHandler = inRange ? ' onclick="onCellClick(' + s + ',' + d + ')"' : '';
+
+          html += '<div class="cal-cell ' + cellClass + halfClass + disabledClass + '" data-day="' + DAYS[d] + '" data-time="' + slotToTime(s) + '"' + clickHandler + '>';
+
+          if (d === TODAY_INDEX && s === 8) {
+            html += '<div class="current-time-line" style="top:50%;"></div>';
+          }
+
+          var events = getEventsForCell(d, s);
+          for (var e = 0; e < events.length; e++) {
+            var ev = events[e];
+            var height = ev.slotSpan * SLOT_HEIGHT - 4;
+            var evIdx = EVENTS.indexOf(ev);
+            var overlapClass = '';
+            var overlapStyle = '';
+            var dataType = ev.overlap ? 'conflict' : ev.type;
+            if (isOverlap(evIdx)) {
+              var oIdx = getOverlapIndex(evIdx);
+              overlapClass = ' event-overlap-2 overlap-idx-' + oIdx + ' overlap-conflict';
+              if (oIdx === 1) overlapStyle = 'left:50%;';
+            }
+            html += '<div class="cal-event ' + ev.type + overlapClass + '" draggable="true" data-type="' + dataType + '" data-ev-idx="' + evIdx + '" style="height:' + height + 'px;top:2px;' + overlapStyle + '" onclick="event.stopPropagation();showDetailModal(' + evIdx + ')">';
+            html += '<span class="drag-hint">Arrastra para mover</span>';
+            html += '<div class="cal-event-time">' + ev.time + '</div>';
+            html += '<div class="cal-event-title">' + ev.title + (ev.patient ? ' — ' + ev.patient : '') + '</div>';
+            html += '</div>';
+          }
+          html += '</div>';
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    // ====== RENDER: DAY VIEW ======
+    function renderDayView() {
+      var grid = document.getElementById('view-day');
+      var html = '';
+      var TOTAL_SLOTS = 28;
+      var SLOT_HEIGHT = 48;
+      var d = TODAY_INDEX;
+
+      html += '<div class="cal-time-corner cal-header"></div>';
+      html += '<div class="cal-header today">';
+      html += '<span class="cal-header-day">' + DAYS[d] + '</span>';
+      html += '<span class="cal-header-num">' + DATES[d] + '</span>';
+      html += '</div>';
+
+      for (var s = 0; s < TOTAL_SLOTS; s++) {
+        var timeStr = slotToTime(s);
+        var isHour = s % 2 === 0;
+        var halfClass = !isHour ? ' half-hour' : '';
+
+        html += '<div class="cal-time">';
+        if (isHour) {
+          if (s === 0) html += '<span style="top:4px;right:8px;">' + timeStr + '</span>';
+          else html += '<span>' + timeStr + '</span>';
+        }
+        html += '</div>';
+
+        var inRange = isInRange(d, s);
+        var cellClass = inRange ? 'in-range' : 'no-range';
+        var clickHandler = inRange ? ' onclick="onCellClick(' + s + ',' + d + ')"' : '';
+
+        html += '<div class="cal-cell ' + cellClass + halfClass + '"' + clickHandler + '>';
+        if (d === TODAY_INDEX && s === 8) html += '<div class="current-time-line" style="top:50%;"></div>';
+
+        var events = getEventsForCell(d, s);
+        for (var e = 0; e < events.length; e++) {
+          var ev = events[e];
+          var height = ev.slotSpan * SLOT_HEIGHT - 4;
+          var evIdx = EVENTS.indexOf(ev);
+          var dataType = ev.overlap ? 'conflict' : ev.type;
+          html += '<div class="cal-event ' + ev.type + '" data-type="' + dataType + '" style="height:' + height + 'px;top:2px;" onclick="event.stopPropagation();showDetailModal(' + evIdx + ')">';
+          html += '<div class="day-event-detail">';
+          html += '<div class="cal-event-time">' + ev.time + '</div>';
+          html += '<div class="ev-patient">' + (ev.patient || ev.title) + '</div>';
+          if (ev.convenio) html += '<div class="ev-convenio">' + ev.convenio + '</div>';
+          html += '<div class="ev-type">' + ev.title + '</div>';
+          html += '</div></div>';
+        }
+        html += '</div>';
+      }
+      grid.innerHTML = html;
+    }
+
+    // ====== RENDER: MONTH VIEW ======
+    function renderMonthView() {
+      var grid = document.getElementById('view-month');
+      var html = '';
+      DAYS.forEach(function(d) { html += '<div class="month-header-cell">' + d + '</div>'; });
+
+      var startDay = 2;
+      var daysInMonth = 30;
+      var daysToShow = [];
+
+      for (var i = startDay - 1; i >= 0; i--) {
+        daysToShow.push({ day: 31 - i, current: false, events: i === 0 ? [EVENTS[3], EVENTS[4]] : (i === 1 ? EVENTS.slice(0,3) : []) });
+      }
+      for (var d = 1; d <= daysInMonth; d++) {
+        var dayEvents = [];
+        if (d === 3) dayEvents = [EVENTS[5], EVENTS[6]];
+        if (d === 4) dayEvents = [EVENTS[7], EVENTS[8], EVENTS[9]];
+        daysToShow.push({ day: d, current: true, today: d === 4, events: dayEvents });
+      }
+      var remaining = 7 - (daysToShow.length % 7);
+      if (remaining < 7) {
+        for (var i = 1; i <= remaining; i++) daysToShow.push({ day: i, current: false, events: [] });
+      }
+
+      daysToShow.forEach(function(cell) {
+        var classes = 'month-day-cell';
+        if (!cell.current) classes += ' other-month';
+        if (cell.today) classes += ' today';
+        html += '<div class="' + classes + '">';
+        html += '<div class="month-day-number">' + cell.day + '</div>';
+        var maxShow = 3;
+        var shown = Math.min(cell.events.length, maxShow);
+        for (var i = 0; i < shown; i++) {
+          var ev = cell.events[i];
+          var mDataType = ev.overlap ? 'conflict' : ev.type;
+          html += '<div class="month-event-chip ' + ev.type + '" data-type="' + mDataType + '">' + ev.time.split(' - ')[0] + ' ' + (ev.patient || ev.title).split(' ')[0] + '</div>';
+        }
+        if (cell.events.length > maxShow) html += '<div class="month-more-link">+' + (cell.events.length - maxShow) + ' mas</div>';
+        html += '</div>';
+      });
+      grid.innerHTML = html;
+    }
+
+    // ====== RENDER: LIST VIEW ======
+    function renderListView() {
+      var container = document.getElementById('view-list');
+      var html = '';
+      var grouped = {};
+      var groupOrder = [];
+      EVENTS.forEach(function(ev) {
+        var key = DAYS[ev.day] + ' ' + DATES[ev.day] + ' ' + MONTHS[ev.day] + ', 2026';
+        if (!grouped[key]) { grouped[key] = []; groupOrder.push(key); }
+        grouped[key].push(ev);
+      });
+      for (var gi = 0; gi < groupOrder.length; gi++) {
+        var day = groupOrder[gi];
+        var events = grouped[day];
+        html += '<div class="list-day-group">';
+        html += '<div class="list-day-header">' + day + ' <span class="list-day-count">' + events.length + ' eventos</span></div>';
+        events.forEach(function(ev) {
+          var evIdx = EVENTS.indexOf(ev);
+          var dataType = ev.overlap ? 'conflict' : ev.type;
+          html += '<div class="list-event-card" data-type="' + dataType + '" onclick="showDetailModal(' + evIdx + ')">';
+          html += '<div class="list-event-time">' + ev.time + '</div>';
+          html += '<div class="list-event-info">';
+          html += '<div class="list-event-title">' + ev.title + '</div>';
+          if (ev.patient) html += '<div class="list-event-patient">' + ev.patient + '</div>';
+          html += '<div class="list-event-desc">' + (ev.convenio || 'Sin convenio') + '</div>';
+          html += '</div>';
+          if (ev.status) {
+            var statusClass = ev.status === 'Confirmada' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600';
+            html += '<span class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ' + statusClass + '">' + ev.status + '</span>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      container.innerHTML = html;
+    }
+
+    // ====== RENDER: YEAR VIEW ======
+    function renderYearView() {
+      var container = document.getElementById('view-year');
+      var html = '';
+      var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      var dayLabels = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+      var eventDays = { 3: [31], 4: [1, 3, 4] };
+
+      for (var m = 0; m < 12; m++) {
+        html += '<div class="year-month-card">';
+        html += '<div class="year-month-header" onclick="switchView(\'month\')">' + monthNames[m] + '</div>';
+        html += '<div class="year-month-grid">';
+        dayLabels.forEach(function(l) { html += '<div class="year-day-label">' + l + '</div>'; });
+
+        var firstDays2026 = [3, 6, 6, 2, 4, 0, 2, 5, 1, 3, 6, 1];
+        var daysInMonth2026 = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var firstDay = firstDays2026[m];
+        var dim = daysInMonth2026[m];
+        var prevDim = m > 0 ? daysInMonth2026[m - 1] : 31;
+
+        for (var p = firstDay - 1; p >= 0; p--) html += '<div class="year-day other-month">' + (prevDim - p) + '</div>';
+        for (var d = 1; d <= dim; d++) {
+          var isToday = m === 3 && d === 4;
+          var hasEvent = eventDays[m + 1] && eventDays[m + 1].indexOf(d) >= 0;
+          var cls = 'year-day';
+          if (isToday) cls += ' today';
+          if (hasEvent) cls += ' has-events';
+          html += '<div class="' + cls + '">' + d + '</div>';
+        }
+        var totalCells = firstDay + dim;
+        var remaining = (7 - totalCells % 7) % 7;
+        for (var n = 1; n <= remaining; n++) html += '<div class="year-day other-month">' + n + '</div>';
+        html += '</div></div>';
+      }
+      container.innerHTML = html;
+    }
+
+    // ====== MINI CALENDAR ======
+    function renderMiniCalendar() {
+      var grid = document.getElementById('miniCalGrid');
+      var html = '';
+      var dayLabels = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+      dayLabels.forEach(function(l) { html += '<div class="mini-cal-day-label">' + l + '</div>'; });
+
+      var firstDay = 2;
+      var dim = 30;
+      for (var p = firstDay - 1; p >= 0; p--) html += '<div class="mini-cal-day other-month">' + (31 - p) + '</div>';
+      for (var d = 1; d <= dim; d++) {
+        var cls = 'mini-cal-day';
+        if (d === 4) cls += ' today';
+        html += '<div class="' + cls + '" onclick="miniCalDayClick(' + d + ')">' + d + '</div>';
+      }
+      var totalCells = firstDay + dim;
+      var remaining = (7 - totalCells % 7) % 7;
+      for (var n = 1; n <= remaining; n++) html += '<div class="mini-cal-day other-month">' + n + '</div>';
+      grid.innerHTML = html;
+    }
+
+    function miniCalPrev() {}
+    function miniCalNext() {}
+    function miniCalDayClick(day) {
+      document.querySelectorAll('.mini-cal-day').forEach(function(d) { d.classList.remove('selected'); });
+      document.querySelectorAll('.mini-cal-day:not(.other-month)').forEach(function(d) {
+        if (d.textContent.trim() == day) d.classList.add('selected');
+      });
+      switchView(currentView);
+    }
+
+    // ====== TOOLBAR NAV ======
+    function navPrev() {}
+    function navNext() {}
+    function navToday() {}
+
+    // ====== CATEGORY FILTER ======
+    var activeFilters = { appointment: true, other: true, conflict: true };
+    function filterCategory(cat, btn) {
+      if (cat === 'all') {
+        activeFilters = { appointment: true, other: true, conflict: true };
+        document.querySelectorAll('.category-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      } else {
+        document.querySelectorAll('.category-filter-btn').forEach(function(b) {
+          if (b.textContent.trim() === 'All') b.classList.remove('active');
+        });
+        activeFilters[cat] = !activeFilters[cat];
+        btn.classList.toggle('active', activeFilters[cat]);
+        if (activeFilters.appointment && activeFilters.other && activeFilters.conflict) {
+          document.querySelectorAll('.category-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+          document.querySelector('.category-filter-btn:last-child').classList.add('active');
+        }
+      }
+      applyFilters();
+    }
+
+    function applyFilters() {
+      var selectors = ['.cal-event[data-type]', '.month-event-chip[data-type]', '.list-event-card[data-type]'];
+      selectors.forEach(function(sel) {
+        document.querySelectorAll(sel).forEach(function(el) {
+          var type = el.getAttribute('data-type');
+          el.classList.toggle('filter-hidden', !activeFilters[type]);
+        });
+      });
+    }
+
+    // ====== CELL CLICK ======
+    function onCellClick(slot, day) {
+      openCreateModal(HOUR_START + Math.floor(slot / 2), slot % 2 === 0 ? 0 : 30, day);
+    }
+
+    function openCreateModal(hour, min, day) {
+      document.getElementById('createSidebarDate').textContent = typeof day === 'number' ? FULL_DATES[day] : '04/04/2026';
+      document.getElementById('createSidebarHora').textContent = pad(hour) + ':' + pad(min) + ' - ' + pad(hour) + ':' + pad(min + 30);
+      document.getElementById('createHoraInicio').value = pad(hour) + ':' + pad(min);
+      updateCreateEndTime();
+      document.getElementById('createModalBackdrop').classList.add('visible');
+      lucide.createIcons();
+    }
+
+    function closeCreateModal() {
+      document.getElementById('createModalBackdrop').classList.remove('visible');
+    }
+
+    function updateCreateEndTime() {
+      var timeParts = document.getElementById('createHoraInicio').value.split(':');
+      var h = parseInt(timeParts[0], 10);
+      var m = parseInt(timeParts[1], 10);
+      var dur = parseInt(document.getElementById('createDuracion').value, 10) || 30;
+      var endMin = m + dur;
+      var endH = h + Math.floor(endMin / 60);
+      endMin = endMin % 60;
+      document.getElementById('createHoraFin').value = pad(endH) + ':' + pad(endMin);
+      document.getElementById('createSidebarHora').textContent = pad(h) + ':' + pad(m) + ' - ' + pad(endH) + ':' + pad(endMin);
+    }
+
+    function mockSearchPatient() {
+      var doc = document.getElementById('createDocumento').value;
+      if (doc) {
+        document.getElementById('createSidebarId').textContent = doc;
+        document.getElementById('createSidebarName').textContent = 'Carolina Andrea Martinez Restrepo';
+      }
+    }
+
+    // ====== DETAIL MODAL ======
+    function showDetailModal(evIdx) {
+      var ev = EVENTS[evIdx];
+      document.getElementById('detailTitle').textContent = ev.title;
+      document.getElementById('detailPatient').textContent = ev.patient || '--';
+      document.getElementById('detailTime').textContent = ev.time;
+      document.getElementById('detailConvenio').textContent = ev.convenio || '--';
+
+      var badge = document.getElementById('detailStatusBadge');
+      badge.textContent = ev.status || '--';
+      if (ev.status === 'Confirmada') {
+        badge.className = 'inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600';
+      } else {
+        badge.className = 'inline-flex items-center rounded-md bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-600';
+      }
+
+      document.getElementById('moveSection').classList.add('hidden');
+      document.getElementById('detailModalBackdrop').classList.add('visible');
+      lucide.createIcons();
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModalBackdrop').classList.remove('visible');
+    }
+
+    // ====== MASSIVE MODAL ======
+    function openMassiveModal() {
+      document.getElementById('massiveModalBackdrop').classList.add('visible');
+      lucide.createIcons();
+    }
+
+    function closeMassiveModal() {
+      document.getElementById('massiveModalBackdrop').classList.remove('visible');
+    }
+
+    // ====== TOAST ======
+    function showToast(msg) {
+      var toast = document.createElement('div');
+      toast.textContent = msg;
+      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#171717;color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);transition:opacity 300ms;';
+      document.body.appendChild(toast);
+      setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 300); }, 2500);
+    }
+
+    // ====== DRAG & DROP ======
+    function initDragAndDrop() {
+      document.querySelectorAll('.cal-event').forEach(function(ev) {
+        ev.setAttribute('draggable', 'true');
+        ev.addEventListener('dragstart', function(e) {
+          e.dataTransfer.setData('text/plain', '');
+          e.dataTransfer.effectAllowed = 'move';
+          this.classList.add('dragging');
+          window._draggedEvent = this;
+          window._draggedEventHTML = this.outerHTML;
+        });
+        ev.addEventListener('dragend', function() {
+          this.classList.remove('dragging');
+          document.querySelectorAll('.drop-target').forEach(function(c) { c.classList.remove('drop-target'); });
+        });
+      });
+
+      document.querySelectorAll('.cal-cell.in-range').forEach(function(cell) {
+        cell.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          this.classList.add('drop-target');
+        });
+        cell.addEventListener('dragleave', function() { this.classList.remove('drop-target'); });
+        cell.addEventListener('drop', function(e) {
+          e.preventDefault();
+          this.classList.remove('drop-target');
+          if (window._draggedEvent) {
+            var day = this.getAttribute('data-day') || '';
+            var time = this.getAttribute('data-time') || '';
+            window._draggedEvent.remove();
+            var clone = document.createElement('div');
+            clone.innerHTML = window._draggedEventHTML;
+            var newEvent = clone.firstElementChild;
+            var timeSpan = newEvent.querySelector('.cal-event-time');
+            if (timeSpan) timeSpan.textContent = time;
+            this.style.position = 'relative';
+            newEvent.style.position = 'relative';
+            newEvent.style.top = '0';
+            newEvent.style.height = 'auto';
+            newEvent.style.minHeight = '40px';
+            this.appendChild(newEvent);
+            showToast('Cita movida a ' + day + ' ' + time);
+            setTimeout(function() { initDragAndDrop(); }, 100);
+            window._draggedEvent = null;
+          }
+        });
+      });
+    }
+
+    // ====== INIT ======
+    document.addEventListener('DOMContentLoaded', function() {
+      renderWeekView();
+      renderMiniCalendar();
+      lucide.createIcons();
+      setTimeout(initDragAndDrop, 100);
+    });
+
+    var _origSwitchView = switchView;
+    switchView = function(view) {
+      _origSwitchView(view);
+      setTimeout(initDragAndDrop, 100);
+    };
+  </script>
+</body>
+</html>

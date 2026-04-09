@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Propiedades de Pregunta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Only custom CSS for sidebar collapse behavior */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+    /* Toggle switch */
+    .toggle-switch { width: 36px; height: 20px; background: #d4d4d4; border-radius: 999px; position: relative; cursor: pointer; transition: background 0.2s; }
+    .toggle-switch.active { background: #1d4ed8; }
+    .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1); }
+    .toggle-switch.active::after { transform: translateX(16px); }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+
+      <!-- Sidebar Header -->
+      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
+            <i data-lucide="heart-pulse" class="size-4 text-white"></i>
+          </div>
+          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+        </a>
+        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
+          <i data-lucide="panel-left-close" class="size-4"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+
+        <!-- Dashboard -->
+        <div class="mb-1">
+          <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
+            <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Dashboard</span>
+          </a>
+        </div>
+
+        <!-- CONSULTA EXTERNA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
+          <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
+          <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-agenda">
+          <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
+          <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Recepcion de Paciente</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-config">
+          <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
+          <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
+          <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
+        </div>
+
+        <!-- HISTORIA CLINICA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
+          <i data-lucide="file-heart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
+          <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-hc">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
+          <a href="attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400 open"></i>
+        </button>
+        <div class="nav-group-items open pl-5" id="his-config">
+          <a href="format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-zinc-900 bg-zinc-900/10">Formatos HC</a>
+          <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
+          <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
+          <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
+          <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
+          <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
+        </div>
+
+        <!-- FACTURACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
+          <i data-lucide="receipt" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-exec">
+          <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
+          <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
+          <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-config">
+          <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
+          <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
+          <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
+        </div>
+
+        <!-- FARMACIA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
+          <i data-lucide="pill" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-exec">
+          <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
+          <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
+        </div>
+
+        <!-- COMUNICACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
+        </div>
+        <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
+          <i data-lucide="message-circle" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">WhatsApp</span>
+        </a>
+
+        <!-- OTROS MODULOS -->
+        <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
+        </div>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="border-t border-zinc-200 p-3 shrink-0">
+        <div class="sidebar-hide mb-2">
+          <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
+          <div class="flex gap-1">
+            <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
+            <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
+            <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
+          </div>
+          <button onclick="document.documentElement.classList.toggle('high-contrast')" class="mt-1 w-full h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition inline-flex items-center justify-center gap-1">
+            <i data-lucide="contrast" class="size-3"></i> Contraste
+          </button>
+        </div>
+        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+          <div class="sidebar-hide overflow-hidden">
+            <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
+            <p class="text-xs text-zinc-400">Medicina General</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+      <!-- Topbar -->
+      <header class="h-[52px] bg-white border-b border-zinc-200 flex items-center px-4 gap-3 shrink-0">
+        <a href="format-builder.html" class="w-8 h-8 flex items-center justify-center rounded-md border border-zinc-200/60 bg-white text-zinc-400 cursor-pointer hover:bg-zinc-50">
+          <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
+        </a>
+        <nav class="flex items-center gap-1.5 text-sm">
+          <a href="format-list.html" class="text-zinc-400 hover:text-zinc-600 transition">Formatos</a>
+          <i data-lucide="chevron-right" class="size-3 text-zinc-300"></i>
+          <a href="format-builder.html" class="text-zinc-400 hover:text-zinc-600 transition">HISTORIA CLINICA CONSULTA EXTERNA</a>
+          <i data-lucide="chevron-right" class="size-3 text-zinc-300"></i>
+          <span class="font-semibold text-zinc-900">Editando pregunta</span>
+        </nav>
+        <div class="ml-auto flex items-center gap-2">
+          <div class="flex items-center gap-1 text-[11px] text-emerald-600"><span class="w-1.5 h-1.5 bg-emerald-600 rounded-full"></span> Guardado</div>
+        </div>
+      </header>
+
+      <div class="flex-1 flex overflow-hidden">
+        <!-- Dimmed areas panel -->
+        <aside class="w-[220px] bg-white border-r border-zinc-200 shrink-0 opacity-50 pointer-events-none p-3">
+          <div class="h-8 bg-zinc-100 rounded-md mb-1"></div>
+          <div class="h-8 bg-zinc-100 rounded-md mb-1"></div>
+          <div class="h-8 bg-zinc-100 rounded-md mb-1"></div>
+          <div class="h-8 bg-zinc-100 rounded-md mb-1"></div>
+          <div class="h-8 bg-zinc-100 rounded-md mb-1"></div>
+          <div class="h-8 bg-zinc-100 rounded-md mb-1"></div>
+          <div class="h-8 bg-zinc-100 rounded-md mb-1"></div>
+        </aside>
+
+        <!-- Dimmed grid panel -->
+        <div class="flex-1 bg-zinc-100 opacity-40 pointer-events-none p-4">
+          <div class="h-[60px] bg-white border border-zinc-200 rounded-lg mb-2"></div>
+          <div class="h-[60px] bg-white border border-zinc-200 rounded-lg mb-2"></div>
+          <div class="h-[60px] bg-white border border-zinc-200 rounded-lg mb-2"></div>
+          <div class="h-[60px] bg-white border border-zinc-200 rounded-lg mb-2"></div>
+        </div>
+
+        <!-- Properties sheet -->
+        <div class="w-[380px] bg-white border-l border-zinc-200 flex flex-col shrink-0 shadow-[-4px_0_16px_rgb(0_0_0_/_0.06)]">
+          <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200">
+            <span class="text-sm font-semibold text-zinc-900">Propiedades de Pregunta</span>
+            <button class="w-7 h-7 flex items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 bg-transparent border-none cursor-pointer">
+              <i data-lucide="x" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 py-4">
+            <!-- Basic info -->
+            <div class="mb-5">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-zinc-400 mb-3 pb-1.5 border-b border-zinc-100">Informacion Basica</div>
+              <div class="mb-3.5">
+                <label class="block text-xs font-medium text-zinc-900 mb-1">Nombre de la pregunta</label>
+                <input type="text" value="Presion Arterial" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+              </div>
+              <div class="mb-3.5">
+                <label class="block text-xs font-medium text-zinc-900 mb-1">Tipo de pregunta</label>
+                <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                  <option value="input" selected>Input (texto corto)</option>
+                  <option value="textarea">Textarea (texto largo)</option>
+                  <option value="radio">Radio (seleccion unica)</option>
+                  <option value="select">Select (dropdown)</option>
+                  <option value="checkbox">Checkbox (seleccion multiple)</option>
+                  <option value="date">DatePicker (fecha)</option>
+                  <option value="label">Label (solo lectura)</option>
+                  <option value="popup">Popup (sub-formulario)</option>
+                </select>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-zinc-900">Pregunta obligatoria</span>
+                <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+              </div>
+            </div>
+
+            <!-- Layout -->
+            <div class="mb-5">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-zinc-400 mb-3 pb-1.5 border-b border-zinc-100">Layout</div>
+              <div class="mb-3.5">
+                <label class="block text-xs font-medium text-zinc-900 mb-1">Ancho en grid</label>
+                <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                  <option value="1/4" selected>1/4 (25%)</option>
+                  <option value="1/3">1/3 (33%)</option>
+                  <option value="1/2">1/2 (50%)</option>
+                  <option value="2/3">2/3 (66%)</option>
+                  <option value="3/4">3/4 (75%)</option>
+                  <option value="full">Full (100%)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-5">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-zinc-400 mb-3 pb-1.5 border-b border-zinc-100">Contenido</div>
+              <div class="mb-3.5">
+                <label class="block text-xs font-medium text-zinc-900 mb-1">Valor por defecto</label>
+                <input type="text" placeholder="Sin valor por defecto" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+              </div>
+              <div class="mb-3.5">
+                <label class="block text-xs font-medium text-zinc-900 mb-1">Texto placeholder</label>
+                <input type="text" value="Ej: 120/80 mmHg" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+              </div>
+              <div class="mb-3.5">
+                <label class="block text-xs font-medium text-zinc-900 mb-1">Ayuda contextual (tooltip)</label>
+                <textarea class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm min-h-[60px] resize-y focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Texto de ayuda que aparece al hacer hover...">Ingrese la presion arterial sistolica/diastolica en mmHg</textarea>
+              </div>
+            </div>
+
+            <!-- Response options -->
+            <div class="mb-5">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-zinc-400 mb-3 pb-1.5 border-b border-zinc-100">Opciones de Respuesta</div>
+              <p class="text-[11px] text-zinc-400 mb-2">Solo aplica para tipos Radio, Select y Checkbox</p>
+              <div class="mt-2">
+                <div class="flex items-center gap-2 py-1.5 border-b border-zinc-100">
+                  <i data-lucide="grip-vertical" class="text-zinc-300 cursor-grab" style="width:12px;height:12px;"></i>
+                  <input type="text" value="Normal" class="flex-1 h-7 rounded border border-zinc-200 px-2 text-xs bg-white focus:outline-none focus:border-blue-500">
+                  <button class="w-6 h-6 flex items-center justify-center rounded bg-transparent text-zinc-300 hover:bg-red-50 hover:text-red-600 border-none cursor-pointer"><i data-lucide="x" style="width:12px;height:12px;"></i></button>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-zinc-100">
+                  <i data-lucide="grip-vertical" class="text-zinc-300 cursor-grab" style="width:12px;height:12px;"></i>
+                  <input type="text" value="Anormal" class="flex-1 h-7 rounded border border-zinc-200 px-2 text-xs bg-white focus:outline-none focus:border-blue-500">
+                  <button class="w-6 h-6 flex items-center justify-center rounded bg-transparent text-zinc-300 hover:bg-red-50 hover:text-red-600 border-none cursor-pointer"><i data-lucide="x" style="width:12px;height:12px;"></i></button>
+                </div>
+                <div class="flex items-center gap-2 py-1.5">
+                  <i data-lucide="grip-vertical" class="text-zinc-300 cursor-grab" style="width:12px;height:12px;"></i>
+                  <input type="text" value="No evaluado" class="flex-1 h-7 rounded border border-zinc-200 px-2 text-xs bg-white focus:outline-none focus:border-blue-500">
+                  <button class="w-6 h-6 flex items-center justify-center rounded bg-transparent text-zinc-300 hover:bg-red-50 hover:text-red-600 border-none cursor-pointer"><i data-lucide="x" style="width:12px;height:12px;"></i></button>
+                </div>
+              </div>
+              <button class="flex items-center gap-1 py-1.5 text-xs text-blue-600 bg-transparent border-none cursor-pointer hover:underline">
+                <i data-lucide="plus" style="width:12px;height:12px;"></i>
+                Agregar opcion
+              </button>
+            </div>
+
+            <!-- Conditional logic -->
+            <div class="mb-5">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-zinc-400 mb-3 pb-1.5 border-b border-zinc-100">Logica Condicional</div>
+              <p class="text-[11px] text-zinc-400 mb-2">Muestra esta pregunta solo cuando se cumpla la condicion</p>
+              <div class="flex items-center gap-1.5 p-2.5 bg-zinc-50 border border-zinc-200 rounded-md text-xs">
+                <span class="text-xs text-zinc-400 font-medium">Mostrar SI</span>
+                <select class="flex-1 h-7 rounded border border-zinc-200 px-1.5 text-xs bg-white">
+                  <option value="">-- Seleccionar campo --</option>
+                  <option>Frecuencia Cardiaca</option>
+                  <option>Frecuencia Respiratoria</option>
+                  <option selected>Temperatura</option>
+                  <option>Ojos</option>
+                </select>
+                <select class="h-7 rounded border border-zinc-200 px-1.5 text-xs bg-white">
+                  <option>=</option>
+                  <option selected>!=</option>
+                  <option>&gt;</option>
+                  <option>&lt;</option>
+                </select>
+                <input type="text" class="w-[60px] h-7 rounded border border-zinc-200 px-1.5 text-xs bg-white" value="">
+              </div>
+              <p class="text-[11px] text-zinc-400 mt-1.5">Deja vacio para mostrar siempre</p>
+            </div>
+          </div>
+
+          <!-- Sheet footer -->
+          <div class="flex items-center gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium bg-red-50 text-red-600 border border-red-200 cursor-pointer hover:bg-red-100 mr-auto">
+              <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+              Eliminar
+            </button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cancelar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-blue-600 text-white border-none cursor-pointer hover:bg-blue-700">
+              <i data-lucide="check" style="width:14px;height:14px;"></i>
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
+    }
+    function toggleGroup(id) {
+      const el = document.getElementById(id);
+      const chevron = document.getElementById(id + '-chevron');
+      el.classList.toggle('open');
+      if (chevron) chevron.classList.toggle('open');
+    }
+    function setFontSize(size) {}
+  </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Carga de Archivo (Sub-tab)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-6">
+
+  <div class="flex items-center gap-2 rounded-md border border-zinc-200/60 bg-white px-4 py-3 mb-4">
+    <span class="bg-blue-100 text-blue-700 text-[11px] font-semibold px-2 py-0.5 rounded-full">Sub-tab condicional</span>
+    <span class="text-zinc-400 text-xs">Evento Actual &rsaquo; Carga de Archivo &mdash; Solo si allowImaging = true</span>
+  </div>
+
+  <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6">
+    <div class="flex gap-2 border-b border-zinc-200/60 mb-5">
+      <button class="state-tab px-4 py-2 text-xs font-medium text-blue-600 border-b-2 border-blue-600 bg-transparent cursor-pointer" onclick="showState('files')">Con archivos</button>
+      <button class="state-tab px-4 py-2 text-xs font-medium text-zinc-400 border-b-2 border-transparent bg-transparent cursor-pointer" onclick="showState('empty')">Estado vacio</button>
+    </div>
+
+    <div id="state-files">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h2 class="text-base font-bold text-zinc-900 mb-1">Archivos Adjuntos</h2>
+          <p class="text-zinc-400 text-xs">Imagenes, documentos y archivos asociados a esta atencion</p>
+        </div>
+      </div>
+
+      <!-- Dropzone -->
+      <div class="dropzone border-2 border-dashed border-zinc-200 rounded-xl px-6 py-10 text-center cursor-pointer transition-all bg-zinc-50 hover:border-blue-600 hover:bg-blue-50" id="dropzone">
+        <div class="w-12 h-12 rounded-full bg-zinc-100 inline-flex items-center justify-center mb-3 text-zinc-400">
+          <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900 mb-1">Arrastre archivos aqui o haga clic para seleccionar</h3>
+        <p class="text-zinc-400 text-xs mb-3">Maximo 10MB por archivo</p>
+        <div class="flex gap-1.5 justify-center flex-wrap">
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">PDF</span>
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">JPG</span>
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">PNG</span>
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">DICOM</span>
+        </div>
+        <button class="inline-flex items-center gap-1.5 px-5 py-2 rounded-md text-[13px] font-medium cursor-pointer border-none bg-blue-600 text-white mt-3 hover:bg-blue-700">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Seleccionar archivo
+        </button>
+      </div>
+
+      <!-- File list -->
+      <div class="mt-5">
+        <h3 class="text-sm font-semibold text-zinc-900 mb-3">Archivos subidos (3)</h3>
+        <table class="w-full text-sm">
+          <thead>
+            <tr>
+              <th class="text-left px-3 py-2 font-semibold text-xs text-zinc-400 border-b border-zinc-200/60 bg-zinc-50 w-[60px]"></th>
+              <th class="text-left px-3 py-2 font-semibold text-xs text-zinc-400 border-b border-zinc-200/60 bg-zinc-50">Archivo</th>
+              <th class="text-left px-3 py-2 font-semibold text-xs text-zinc-400 border-b border-zinc-200/60 bg-zinc-50">Tipo</th>
+              <th class="text-left px-3 py-2 font-semibold text-xs text-zinc-400 border-b border-zinc-200/60 bg-zinc-50">Tamano</th>
+              <th class="text-left px-3 py-2 font-semibold text-xs text-zinc-400 border-b border-zinc-200/60 bg-zinc-50">Fecha</th>
+              <th class="text-left px-3 py-2 font-semibold text-xs text-zinc-400 border-b border-zinc-200/60 bg-zinc-50 w-[80px]">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover:bg-zinc-50">
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="w-12 h-12 rounded-md bg-zinc-100 flex items-center justify-center shrink-0 overflow-hidden border border-zinc-200/60">
+                  <div class="text-zinc-400"><i data-lucide="file-image" class="w-5 h-5"></i></div>
+                </div>
+              </td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="font-medium text-zinc-900">radiografia-torax-pa.jpg</div>
+                <div class="text-zinc-400 text-xs mt-0.5">Radiografia PA de torax del paciente</div>
+              </td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">JPG</span></td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">2.4 MB</td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">04/04/2026 09:15</td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="flex gap-1">
+                  <div class="group relative inline-flex">
+                  <button class="w-7 h-7 rounded-md flex items-center justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 border-none cursor-pointer"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+                  <div class="group relative inline-flex">
+                  <button class="w-7 h-7 rounded-md flex items-center justify-center bg-transparent text-red-600 hover:bg-red-50 border-none cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="hover:bg-zinc-50">
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="w-12 h-12 rounded-md bg-zinc-100 flex items-center justify-center shrink-0 overflow-hidden border border-zinc-200/60">
+                  <div class="text-zinc-400"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                </div>
+              </td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="font-medium text-zinc-900">resultados-laboratorio-marzo.pdf</div>
+                <div class="text-zinc-400 text-xs mt-0.5">Resultados de lab del mes anterior</div>
+              </td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">PDF</span></td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">856 KB</td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">04/04/2026 09:12</td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="flex gap-1">
+                  <div class="group relative inline-flex">
+                  <button class="w-7 h-7 rounded-md flex items-center justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 border-none cursor-pointer"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+                  <div class="group relative inline-flex">
+                  <button class="w-7 h-7 rounded-md flex items-center justify-center bg-transparent text-red-600 hover:bg-red-50 border-none cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="hover:bg-zinc-50">
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="w-12 h-12 rounded-md bg-zinc-100 flex items-center justify-center shrink-0 overflow-hidden border border-zinc-200/60">
+                  <div class="text-zinc-400"><i data-lucide="file-image" class="w-5 h-5"></i></div>
+                </div>
+              </td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="font-medium text-zinc-900">ecografia-abdominal.png</div>
+                <div class="text-zinc-400 text-xs mt-0.5">Ecografia abdominal de control</div>
+              </td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle"><span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">PNG</span></td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">3.1 MB</td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">04/04/2026 09:08</td>
+              <td class="px-3 py-2.5 border-b border-zinc-200/60 align-middle">
+                <div class="flex gap-1">
+                  <div class="group relative inline-flex">
+                  <button class="w-7 h-7 rounded-md flex items-center justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 border-none cursor-pointer"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
+                </div>
+                  <div class="group relative inline-flex">
+                  <button class="w-7 h-7 rounded-md flex items-center justify-center bg-transparent text-red-600 hover:bg-red-50 border-none cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="state-empty" style="display:none">
+      <div class="border-2 border-dashed border-zinc-200 rounded-xl px-6 py-10 text-center cursor-pointer transition-all bg-zinc-50 hover:border-blue-600 hover:bg-blue-50 mb-6">
+        <div class="w-12 h-12 rounded-full bg-zinc-100 inline-flex items-center justify-center mb-3 text-zinc-400">
+          <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900 mb-1">Arrastre archivos aqui o haga clic para seleccionar</h3>
+        <p class="text-zinc-400 text-xs mb-3">Maximo 10MB por archivo</p>
+        <div class="flex gap-1.5 justify-center flex-wrap">
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">PDF</span>
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">JPG</span>
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">PNG</span>
+          <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-zinc-100 text-zinc-400">DICOM</span>
+        </div>
+        <button class="inline-flex items-center gap-1.5 px-5 py-2 rounded-md text-[13px] font-medium cursor-pointer border-none bg-blue-600 text-white mt-3 hover:bg-blue-700">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Seleccionar archivo
+        </button>
+      </div>
+      <div class="flex flex-col items-center justify-center py-8">
+        <div class="w-14 h-14 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 mb-3">
+          <i data-lucide="file-x" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900 mb-1">No hay archivos adjuntos</h3>
+        <p class="text-zinc-400 text-xs max-w-xs text-center">Suba imagenes, documentos PDF o archivos DICOM relacionados con esta atencion</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function showState(state) {
+      document.querySelectorAll('.state-tab').forEach(t => {
+        t.classList.remove('text-blue-600', 'border-blue-600');
+        t.classList.add('text-zinc-400', 'border-transparent');
+      });
+      event.target.classList.remove('text-zinc-400', 'border-transparent');
+      event.target.classList.add('text-blue-600', 'border-blue-600');
+      document.getElementById('state-files').style.display = state === 'files' ? 'block' : 'none';
+      document.getElementById('state-empty').style.display = state === 'empty' ? 'block' : 'none';
+    }
+
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-blue-600', 'bg-blue-50'); });
+    dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('border-blue-600', 'bg-blue-50'); });
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('border-blue-600', 'bg-blue-50'); });
+  </script>
+</body>
+</html>

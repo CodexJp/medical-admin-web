@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Ordenes Medicas (Sub-tab)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Only custom CSS: sidebar collapse + order-content toggle */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .order-content { display: none; }
+    .order-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+
+  <div class="p-6 max-w-6xl mx-auto">
+
+    <!-- Page context badge -->
+    <div class="flex items-center gap-2 rounded-lg border border-zinc-200/60 bg-white px-4 py-3 mb-4">
+      <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700">Sub-tab</span>
+      <span class="text-xs text-zinc-500">Evento Actual &rsaquo; Ordenes Medicas &mdash; 7 tipos de ordenes clinicas</span>
+    </div>
+
+    <!-- Main panel -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6">
+
+      <!-- Title -->
+      <h2 class="text-base font-semibold text-zinc-900">Ordenes Medicas</h2>
+      <p class="text-xs text-zinc-500 mb-5">Buscar y agregar servicios, medicamentos, procedimientos e interconsultas</p>
+
+      <!-- Order type toggle: Externa / Interna -->
+      <div class="inline-flex rounded-md border border-zinc-200 overflow-hidden mb-4">
+        <label class="px-4 py-1.5 text-xs font-medium cursor-pointer border-r border-zinc-200 text-white bg-blue-600 has-[input:checked]:bg-blue-600 has-[input:checked]:text-white text-zinc-500 bg-white">
+          <input type="radio" name="orderType" checked class="hidden"> Externa
+        </label>
+        <label class="px-4 py-1.5 text-xs font-medium cursor-pointer text-zinc-500 bg-white has-[input:checked]:bg-blue-600 has-[input:checked]:text-white">
+          <input type="radio" name="orderType" class="hidden"> Interna
+        </label>
+      </div>
+
+      <!-- Search bar -->
+      <div class="flex items-center gap-3 rounded-xl border border-zinc-200/60 bg-zinc-50 px-4 py-2.5 mb-4">
+        <i data-lucide="search" class="size-4 text-zinc-400 shrink-0"></i>
+        <input type="text" placeholder="Buscar servicio, medicamento, procedimiento, especialidad..." class="flex-1 bg-transparent text-sm text-zinc-900 placeholder:text-zinc-400 outline-none border-none">
+        <div class="flex gap-1">
+          <label class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] cursor-pointer text-zinc-500 has-[input:checked]:bg-blue-50 has-[input:checked]:text-blue-600">
+            <input type="radio" name="searchMode" class="hidden"> Inicio
+          </label>
+          <label class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] cursor-pointer text-zinc-500 has-[input:checked]:bg-blue-50 has-[input:checked]:text-blue-600">
+            <input type="radio" name="searchMode" checked class="hidden"> Contiene
+          </label>
+          <label class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] cursor-pointer text-zinc-500 has-[input:checked]:bg-blue-50 has-[input:checked]:text-blue-600">
+            <input type="radio" name="searchMode" class="hidden"> Final
+          </label>
+        </div>
+        <button class="h-8 rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition">Busqueda avanzada</button>
+      </div>
+
+      <!-- Order type tabs -->
+      <div class="flex gap-0 border-b border-zinc-200 mb-5 overflow-x-auto">
+        <button class="order-tab active flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-blue-600 text-blue-600 bg-transparent cursor-pointer" onclick="showOrder('formulacion')">
+          <span class="size-2 rounded-full bg-green-700 shrink-0"></span> Formulacion <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600">3</span>
+        </button>
+        <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('laboratorio')">
+          <span class="size-2 rounded-full bg-blue-700 shrink-0"></span> Laboratorio <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">2</span>
+        </button>
+        <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('radiologia')">
+          <span class="size-2 rounded-full bg-violet-600 shrink-0"></span> Radiologia <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">1</span>
+        </button>
+        <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('procedimientos')">
+          <span class="size-2 rounded-full bg-sky-700 shrink-0"></span> Procedimientos <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">1</span>
+        </button>
+        <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('pqx')">
+          <span class="size-2 rounded-full bg-rose-700 shrink-0"></span> PQX <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">0</span>
+        </button>
+        <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('interconsulta')">
+          <span class="size-2 rounded-full bg-orange-600 shrink-0"></span> Interconsulta <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">1</span>
+        </button>
+        <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('incapacidad')">
+          <span class="size-2 rounded-full bg-zinc-500 shrink-0"></span> Incapacidad <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">1</span>
+        </button>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- FORMULACION -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="order-content active" id="order-formulacion">
+
+        <!-- Add form -->
+        <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Medicamento</h3>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Medicamento <span class="text-red-500">*</span></label>
+              <input type="text" value="Metformina 850mg Tableta" readonly class="h-9 w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm font-medium text-zinc-900">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Cantidad</label>
+              <input type="number" value="30" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Unidad formulacion</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>Tableta</option><option>Capsula</option><option>Ampolla</option><option>Frasco</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Dosis</label>
+              <input type="number" value="1" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Via de administracion</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>Oral</option><option>Intravenosa</option><option>Intramuscular</option><option>Topica</option><option>Subcutanea</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Frecuencia</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>Cada 8 horas</option><option>Cada 12 horas</option><option>Cada 24 horas</option><option>PRN</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Duracion tratamiento</label>
+              <textarea rows="1" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">30 dias</textarea>
+            </div>
+            <div class="col-span-2">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Indicaciones</label>
+              <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Tomar con las comidas. No suspender sin indicacion medica.</textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-3 justify-end">
+            <button class="h-8 rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition">Limpiar</button>
+            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="size-3.5"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- Table: DataTable 4 pattern -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-zinc-200">
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-10">#</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Medicamento</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Dosis</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Via</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Frecuencia</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Cantidad</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">POS</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
+                <th class="h-12 px-4 w-14"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+                <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">Metformina 850mg Tableta</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1 tab</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Oral</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Cada 12h</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">60</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600">POS</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">2</td>
+                <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">Losartan 50mg Tableta</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1 tab</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Oral</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Cada 24h</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">30</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600">POS</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">3</td>
+                <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">Atorvastatina 20mg Tableta</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1 tab</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Oral</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Cada 24h</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">30</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600">POS</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- LABORATORIO -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="order-content" id="order-laboratorio">
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Examen de Laboratorio</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Examen <span class="text-red-500">*</span></label>
+              <input type="text" value="903841 - Hemoglobina glicosilada" readonly class="h-9 w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm font-medium text-zinc-900">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Orden temporal</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>Consulta externa</option><option>PYP</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Observacion</label>
+              <textarea rows="2" placeholder="Indicaciones para el laboratorio..." class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Control trimestral diabetes</textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-3 justify-end">
+            <button class="h-8 rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition">Limpiar</button>
+            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="size-3.5"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-zinc-200">
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-10">#</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">CUPS</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Examen</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Observacion</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
+                <th class="h-12 px-4 w-14"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+                <td class="py-3.5 px-4 text-sm font-semibold text-blue-600">903841</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Hemoglobina glicosilada</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Control trimestral diabetes</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">2</td>
+                <td class="py-3.5 px-4 text-sm font-semibold text-blue-600">903818</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Perfil lipidico completo</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Control dislipidemia</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- RADIOLOGIA -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="order-content" id="order-radiologia">
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Imagen / Radiologia</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Examen <span class="text-red-500">*</span></label>
+              <input type="text" placeholder="Buscar examen CUPS..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Lateralidad</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>No aplica</option><option>Derecho</option><option>Izquierdo</option><option>Bilateral</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Indicaciones</label>
+              <textarea rows="2" placeholder="Indicaciones clinicas..." class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y"></textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-3 justify-end">
+            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="size-3.5"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-zinc-200">
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-10">#</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">CUPS</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Examen</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Lateralidad</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Indicaciones</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
+                <th class="h-12 px-4 w-14"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+                <td class="py-3.5 px-4 text-sm font-semibold text-violet-600">871121</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Radiografia de torax (PA y lateral)</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">No aplica</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Descartar patologia pulmonar</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-violet-500/10 px-2.5 py-1 text-xs font-medium text-violet-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- PROCEDIMIENTOS -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="order-content" id="order-procedimientos">
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Procedimiento</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Procedimiento <span class="text-red-500">*</span></label>
+              <input type="text" placeholder="Buscar procedimiento CUPS..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Cantidad</label>
+              <input type="number" value="1" min="0" max="10" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div class="col-span-2">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Observacion</label>
+              <textarea rows="2" placeholder="Observaciones..." class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y"></textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-3 justify-end">
+            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="size-3.5"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-zinc-200">
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-10">#</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">CUPS</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Procedimiento</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Cant</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Observacion</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
+                <th class="h-12 px-4 w-14"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+                <td class="py-3.5 px-4 text-sm font-semibold text-sky-700">890201</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Consulta de control por medicina especializada</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">Seguimiento en 3 meses</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-sky-500/10 px-2.5 py-1 text-xs font-medium text-sky-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- PQX -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="order-content" id="order-pqx">
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Procedimiento Quirurgico</h3>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="col-span-3">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Procedimiento quirurgico <span class="text-red-500">*</span></label>
+              <input type="text" placeholder="Buscar procedimiento CUPS..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Duracion (minutos)</label>
+              <input type="text" placeholder="Ej: 120" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Tipo anestesia</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>Seleccione...</option><option>General</option><option>Regional</option><option>Local</option><option>Sedacion</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Tipo procedimiento</label>
+              <div class="flex gap-3 mt-1.5">
+                <label class="flex items-center gap-1.5 text-xs text-zinc-700 cursor-pointer"><input type="radio" name="tipoPqx" class="accent-blue-600"> Urgente</label>
+                <label class="flex items-center gap-1.5 text-xs text-zinc-700 cursor-pointer"><input type="radio" name="tipoPqx" class="accent-blue-600"> Reintervencion</label>
+                <label class="flex items-center gap-1.5 text-xs text-zinc-700 cursor-pointer"><input type="radio" name="tipoPqx" checked class="accent-blue-600"> Ordinario</label>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Lateralidad</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>No aplica</option><option>Derecho</option><option>Izquierdo</option><option>Bilateral</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Materiales especiales</label>
+              <textarea rows="2" placeholder="Materiales requeridos..." class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y"></textarea>
+            </div>
+            <div class="col-span-3">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Observacion</label>
+              <textarea rows="2" placeholder="Observaciones..." class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y"></textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-3 justify-end">
+            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="size-3.5"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="text-center py-8 text-zinc-400">
+          <i data-lucide="scissors" class="size-8 mx-auto mb-2 opacity-40"></i>
+          <p class="text-sm">No hay procedimientos quirurgicos registrados</p>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- INTERCONSULTA -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="order-content" id="order-interconsulta">
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Interconsulta</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Especialidad <span class="text-red-500">*</span></label>
+              <input type="text" value="Endocrinologia" readonly class="h-9 w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm font-medium text-zinc-900">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Prioridad</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option>Normal</option><option>Prioritaria</option><option>Urgente</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Justificacion</label>
+              <textarea rows="2" placeholder="Motivo de la interconsulta..." class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Paciente con DM2 de dificil control, HbA1c > 9%. Requiere valoracion por endocrinologia.</textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-3 justify-end">
+            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="size-3.5"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-zinc-200">
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-10">#</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Especialidad</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Prioridad</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Justificacion</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
+                <th class="h-12 px-4 w-14"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+                <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">Endocrinologia</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-600">Prioritaria</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">DM2 dificil control, HbA1c > 9%</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-orange-500/10 px-2.5 py-1 text-xs font-medium text-orange-600">Externa CE</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- INCAPACIDAD -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="order-content" id="order-incapacidad">
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Incapacidad</h3>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Fecha inicio <span class="text-red-500">*</span></label>
+              <input type="date" value="2026-04-04" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Fecha fin <span class="text-red-500">*</span></label>
+              <input type="date" value="2026-04-06" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Dias</label>
+              <input type="text" value="3" readonly class="h-9 w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm font-semibold text-zinc-900">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Diagnostico CIE-10 <span class="text-red-500">*</span></label>
+              <input type="text" value="J06.9 - Infeccion resp aguda" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm font-medium text-zinc-900">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Tipo</label>
+              <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
+                <option selected>Inicial</option><option>Prorroga</option>
+              </select>
+            </div>
+            <div class="col-span-3">
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Descripcion</label>
+              <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Reposo medico por cuadro respiratorio agudo</textarea>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-3 justify-end">
+            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+              <i data-lucide="plus" class="size-3.5"></i> Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-zinc-200">
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500 w-10">#</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Desde</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Hasta</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Dias</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Diagnostico</th>
+                <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
+                <th class="h-12 px-4 w-14"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-zinc-50 transition-colors">
+                <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">04/04/2026</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">06/04/2026</td>
+                <td class="py-3.5 px-4 text-sm font-semibold text-zinc-900">3</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">J06.9 - Infeccion respiratoria aguda</td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-md bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-600">Inicial</span></td>
+                <td class="py-3.5 px-4 text-sm text-zinc-700">
+                  <div class="group relative inline-flex">
+                  <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" title="Eliminar"><i data-lucide="trash-2" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
+                </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /main panel -->
+  </div><!-- /page wrapper -->
+
+  <script>
+    lucide.createIcons();
+
+    function showOrder(type) {
+      document.querySelectorAll('.order-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.order-tab').forEach(t => {
+        t.classList.remove('active');
+        t.classList.remove('border-blue-600', 'text-blue-600');
+        t.classList.add('border-transparent', 'text-zinc-500');
+        const count = t.querySelector('.inline-flex');
+        if (count) {
+          count.classList.remove('bg-blue-50', 'text-blue-600');
+          count.classList.add('bg-zinc-100', 'text-zinc-500');
+        }
+      });
+      document.getElementById('order-' + type).classList.add('active');
+      const activeTab = event.target.closest('.order-tab');
+      activeTab.classList.add('active');
+      activeTab.classList.remove('border-transparent', 'text-zinc-500');
+      activeTab.classList.add('border-blue-600', 'text-blue-600');
+      const activeCount = activeTab.querySelector('.inline-flex');
+      if (activeCount) {
+        activeCount.classList.remove('bg-zinc-100', 'text-zinc-500');
+        activeCount.classList.add('bg-blue-50', 'text-blue-600');
+      }
+    }
+  </script>
+</body>
+</html>

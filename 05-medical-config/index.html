@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Configuracion Medica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../_design-tokens.css">
+  <style>
+    /* ── View-specific styles ── */
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .hub-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--border-radius-xl);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 200ms;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .hub-card:hover {
+      border-color: #D4D4D4;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.06);
+      transform: translateY(-1px);
+    }
+    .hub-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hub-card-icon svg { width: 22px; height: 22px; stroke-width: 1.5; }
+    .hub-card-title {
+      font-family: var(--font-heading);
+      font-size: 15px; font-weight: 600;
+      color: var(--color-heading);
+    }
+    .hub-card-desc {
+      font-size: 13px; color: var(--color-muted); line-height: 20px;
+    }
+    .hub-card-meta {
+      font-size: 12px; color: var(--color-muted);
+      display: flex; align-items: center; gap: 4px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-default);
+    }
+    .hub-card-meta svg { width: 13px; height: 13px; }
+    .page-title-row { display: flex; align-items: center; justify-content: space-between; }
+    .page-body { flex: 1; overflow-y: auto; padding: 24px 32px; }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--border-radius-md); cursor: pointer; transition: background 150ms; }
+    .sidebar-user:hover { background: var(--bg-muted); }
+    .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .app-header { height: var(--header-height); background: var(--bg-surface); border-bottom: 1px solid var(--border-default); display: flex; align-items: center; padding: 0 24px; gap: 16px; flex-shrink: 0; }
+    .header-tenant { display: flex; align-items: center; gap: 8px; }
+    .header-tenant-logo { width: 28px; height: 28px; border-radius: 6px; background: var(--bg-muted); display: flex; align-items: center; justify-content: center; }
+    .header-tenant-logo svg { width: 14px; height: 14px; color: var(--color-muted); }
+    .header-tenant-name { font-size: 13px; font-weight: 500; color: var(--color-heading); }
+    .header-separator { width: 1px; height: 24px; background: var(--border-default); }
+    .header-search { flex: 1; max-width: 480px; position: relative; }
+    .header-search-input { width: 100%; height: 36px; padding: 0 12px 0 36px; font-family: var(--font-sans); font-size: 13px; color: var(--color-heading); background: var(--bg-panel); border: 1px solid var(--border-default); border-radius: var(--border-radius-md); outline: none; }
+    .header-search-input::placeholder { color: var(--color-muted); }
+    .header-search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--color-muted); pointer-events: none; }
+    .header-search-icon svg { width: 16px; height: 16px; stroke-width: 1.5; }
+    .header-search-kbd { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); }
+    .kbd { display: inline-flex; align-items: center; justify-content: center; height: 20px; padding: 0 5px; font-size: 11px; font-weight: 500; color: var(--color-muted); background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 4px; }
+    .header-spacer { flex: 1; }
+    .header-actions { display: flex; align-items: center; gap: 4px; }
+    .header-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; border-radius: var(--border-radius-md); cursor: pointer; color: var(--color-muted); position: relative; transition: background 150ms; }
+    .header-btn:hover { background: var(--bg-muted); color: var(--color-heading); }
+    .header-btn svg { width: 18px; height: 18px; stroke-width: 1.5; }
+    .notification-badge { position: absolute; top: 4px; right: 2px; background: #EF4444; color: white; font-size: 9px; font-weight: 600; padding: 0 4px; border-radius: 9999px; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-surface); }
+    .header-user-btn { display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; border: none; background: transparent; border-radius: var(--border-radius-md); cursor: pointer; }
+    .header-user-btn:hover { background: var(--bg-muted); }
+    .header-user-avatar { width: 28px; height: 28px; border-radius: 9999px; background: linear-gradient(135deg, #8B5CF6, #3B82F6); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600; }
+    .header-user-name { font-size: 13px; font-weight: 500; color: var(--color-heading); }
+    .header-user-chevron { color: var(--color-muted); }
+    .header-user-chevron svg { width: 14px; height: 14px; }
+    @media (max-width: 1024px) { .hub-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .hub-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Navegacion principal">
+  <div class="sidebar-header">
+    <a href="../00-shell/shell.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <i data-lucide="heart-pulse" style="width:18px;height:18px;stroke-width:1.5"></i>
+      </div>
+      <span class="sidebar-logo-text">MedicalAdmin</span>
+    </a>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Colapsar menu">
+      <i data-lucide="panel-left-close" style="width:16px;height:16px;stroke-width:1.5"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- ====== INICIO ====== -->
+    <div class="nav-section">
+      <a href="../00-shell/dashboard-medico.html" class="nav-item" data-tooltip="Dashboard">
+        <span class="nav-item-icon"><i data-lucide="layout-dashboard"></i></span>
+        <span class="nav-item-label">Dashboard</span>
+      </a>
+    </div>
+
+    <!-- ====== MODULO 1: CONSULTA EXTERNA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Consulta Externa</div>
+
+      <!-- Agendamiento -->
+      <button class="nav-item" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda-group')">
+        <span class="nav-item-icon"><i data-lucide="calendar-days"></i></span>
+        <span class="nav-item-label">Agendamiento</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="cit-agenda-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="cit-agenda-group">
+        <a href="../01-calendar/index.html" class="nav-item" data-tooltip="Agenda">Agenda</a>
+        <span class="nav-item nav-disabled" data-tooltip="Creacion de Citas" title="Disponible en version anterior">Creacion de Citas</span>
+        <a href="../03-reception/index.html" class="nav-item" data-tooltip="Recepcion de Paciente">Recepcion de Paciente</a>
+        <span class="nav-item nav-disabled" data-tooltip="Motivos de Cancelacion" title="Disponible en version anterior">Motivos de Cancelacion</span>
+      </div>
+
+      <!-- Configuracion CIT -->
+      <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('cit-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="cit-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="cit-config-group">
+        <a href="../02-appointments/admin-horarios.html" class="nav-item" data-tooltip="Horarios">Horarios</a>
+        <a href="../02-appointments/admin-consultorios.html" class="nav-item" data-tooltip="Consultorios">Consultorios</a>
+        <a href="../02-appointments/admin-duraciones.html" class="nav-item" data-tooltip="Duracion de Citas">Duracion de Citas</a>
+      </div>
+    </div>
+
+    <!-- ====== MODULO 2: HISTORIA CLINICA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Historia Clinica</div>
+
+      <!-- Historia Clinica -->
+      <button class="nav-item" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc-group')">
+        <span class="nav-item-icon"><i data-lucide="file-heart"></i></span>
+        <span class="nav-item-label">Historia Clinica</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="his-hc-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="his-hc-group">
+        <span class="nav-item nav-disabled" data-tooltip="Adm. Pacientes" title="Disponible en version anterior">Adm. Pacientes</span>
+        <a href="../04-clinical/attention-queue.html" class="nav-item" data-tooltip="Atencion de Pacientes">Atencion de Pacientes</a>
+        <span class="nav-item nav-disabled" data-tooltip="HC Externa" title="Disponible en version anterior">HC Externa</span>
+        <span class="nav-item nav-disabled" data-tooltip="Evaluacion Enfermeria" title="Disponible en version anterior">Evaluacion Enfermeria</span>
+      </div>
+
+      <!-- Configuracion General HIS -->
+      <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('his-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion General</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle open" id="his-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items open" id="his-config-group">
+        <a href="../04-clinical/format-list.html" class="nav-item" data-tooltip="Formatos HC">Formatos HC</a>
+        <span class="nav-item nav-disabled" data-tooltip="Profesionales de la Salud" title="Disponible en version anterior">Profesionales de la Salud</span>
+        <a href="../05-medical-config/index.html" class="nav-item active" data-tooltip="Areas Funcionales">Areas Funcionales</a>
+        <a href="../05-medical-config/servicios.html" class="nav-item" data-tooltip="Servicios">Servicios</a>
+        <a href="../05-medical-config/procedimientos.html" class="nav-item" data-tooltip="Otros Procedimientos">Otros Procedimientos</a>
+        <a href="../05-medical-config/checklist.html" class="nav-item" data-tooltip="Lista de Chequeo">Lista de Chequeo</a>
+        <a href="../05-medical-config/ocupaciones.html" class="nav-item" data-tooltip="Ocupaciones">Ocupaciones</a>
+        <span class="nav-item nav-disabled" data-tooltip="Especialidades" title="Disponible en version anterior">Especialidades</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo de Cita" title="Disponible en version anterior">Tipo de Cita</span>
+        <span class="nav-item nav-disabled" data-tooltip="Formulas Consultorios" title="Disponible en version anterior">Formulas Consultorios</span>
+      </div>
+
+      <!-- Configuracion Hospitalizacion (fuera scope) -->
+      <span class="nav-item nav-module-disabled" data-tooltip="Configuracion Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="bed"></i></span>
+        <span class="nav-item-label">Config. Hospitalizacion</span>
+      </span>
+
+      <!-- Hospitalizacion sub-modulo (fuera scope) -->
+      <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
+        <span class="nav-item-label">Hospitalizacion</span>
+      </span>
+    </div>
+
+    <!-- ====== MODULO 3: FACTURACION ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Facturacion</div>
+
+      <!-- Ejecucion de Procesos -->
+      <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec-group')">
+        <span class="nav-item-icon"><i data-lucide="receipt"></i></span>
+        <span class="nav-item-label">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="pos-exec-group">
+        <a href="../07-billing/crear-orden.html" class="nav-item" data-tooltip="Ordenes de Facturacion">Ordenes de Facturacion</a>
+        <a href="../07-billing/admin-facturas.html" class="nav-item" data-tooltip="Facturas">Facturas</a>
+        <a href="../07-billing/rips.html" class="nav-item" data-tooltip="RIPS">RIPS</a>
+        <a href="../07-billing/clientes.html" class="nav-item" data-tooltip="Clientes">Clientes</a>
+        <span class="nav-item nav-disabled" data-tooltip="Lista de Pacientes" title="Disponible en version anterior">Lista de Pacientes</span>
+      </div>
+
+      <!-- Configuracion General POS -->
+      <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion General</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="pos-config-group">
+        <a href="../07-billing/medios-pago.html" class="nav-item" data-tooltip="Medios de Pago">Medios de Pago</a>
+        <a href="../07-billing/rangos-facturacion.html" class="nav-item" data-tooltip="Rangos de Facturacion">Rangos de Facturacion</a>
+        <a href="../07-billing/tarifas.html" class="nav-item" data-tooltip="Manuales Tarifarios">Manuales Tarifarios</a>
+        <span class="nav-item nav-disabled" data-tooltip="Tarifas de Facturacion" title="Proximamente">Tarifas de Facturacion</span>
+        <a href="../07-billing/plm.html" class="nav-item" data-tooltip="Lista Precios Medicamentos">Lista Precios Medicamentos</a>
+        <a href="../07-billing/tarifas-medicamentos.html" class="nav-item" data-tooltip="Tarifas de Medicamentos">Tarifas de Medicamentos</a>
+        <a href="../07-billing/convenios.html" class="nav-item" data-tooltip="Convenios">Convenios</a>
+        <span class="nav-item nav-disabled" data-tooltip="Sedes" title="Disponible en version anterior">Sedes</span>
+      </div>
+    </div>
+
+    <!-- ====== MODULO 4: FARMACIA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Farmacia</div>
+
+      <!-- Ejecucion de Procesos FAR -->
+      <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec-group')">
+        <span class="nav-item-icon"><i data-lucide="pill"></i></span>
+        <span class="nav-item-label">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-exec-group">
+        <a href="../06-pharmacy/despacho.html" class="nav-item" data-tooltip="Entrega de Articulos">Entrega de Articulos</a>
+        <a href="../06-pharmacy/inventario.html" class="nav-item" data-tooltip="Movimientos Inventario">Movimientos Inventario</a>
+        <span class="nav-item nav-disabled" data-tooltip="Articulos" title="Disponible en version anterior">Articulos</span>
+      </div>
+
+      <!-- Configuracion FAR -->
+      <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('far-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-config-group">
+        <span class="nav-item nav-disabled" data-tooltip="Bodegas" title="Disponible en version anterior">Bodegas</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo Articulos" title="Disponible en version anterior">Tipo Articulos</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo Movimientos" title="Disponible en version anterior">Tipo Movimientos</span>
+      </div>
+
+      <!-- Reporte FAR -->
+      <button class="nav-item" data-tooltip="Reporte" onclick="toggleGroup('far-report-group')">
+        <span class="nav-item-icon"><i data-lucide="file-bar-chart"></i></span>
+        <span class="nav-item-label">Reporte</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-report-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-report-group">
+        <span class="nav-item nav-disabled" data-tooltip="Kardex" title="Disponible en version anterior">Kardex</span>
+      </div>
+    </div>
+
+    <!-- ====== COMUNICACION (nuevo, no existe en BD legacy) ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Comunicacion</div>
+      <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-item" data-tooltip="WhatsApp">
+        <span class="nav-item-icon"><i data-lucide="message-circle"></i></span>
+        <span class="nav-item-label">WhatsApp</span>
+      </a>
+    </div>
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="nav-separator"></div>
+
+    <!-- ====== MODULOS FUERA DE SCOPE (5-13, 15) ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Otros Modulos</div>
+      <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
+        <span class="nav-item-label">Hospitalizacion</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Reportes" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="file-text"></i></span>
+        <span class="nav-item-label">Reportes</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="PyP" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="heart"></i></span>
+        <span class="nav-item-label">PyP</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Laboratorio" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="flask-conical"></i></span>
+        <span class="nav-item-label">Laboratorio</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Radiologia" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="scan"></i></span>
+        <span class="nav-item-label">Radiologia</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Quirurgicos" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="scissors"></i></span>
+        <span class="nav-item-label">Quirurgicos</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Banco Sangre" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="droplets"></i></span>
+        <span class="nav-item-label">Banco Sangre</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="CRM" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="folder"></i></span>
+        <span class="nav-item-label">CRM</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Integracion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="puzzle"></i></span>
+        <span class="nav-item-label">Integracion</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Control de Accesos" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="key-round"></i></span>
+        <span class="nav-item-label">Control de Accesos</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Tablero / Estadisticas" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="bar-chart-3"></i></span>
+        <span class="nav-item-label">Tablero / Estadisticas</span>
+      </span>
+    </div>
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="nav-separator"></div>
+
+    <!-- ====== PREFERENCIAS ====== -->
+    <div class="nav-section">
+      <a href="../09-settings/settings.html" class="nav-item" data-tooltip="Preferencias">
+        <span class="nav-item-icon"><i data-lucide="sliders-horizontal"></i></span>
+        <span class="nav-item-label">Preferencias</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Footer: Accessibility + User -->
+  <div class="sidebar-footer">
+    <div class="sidebar-footer-section">
+      <div class="sidebar-footer-label">Accesibilidad</div>
+      <div class="accessibility-controls">
+        <button class="access-btn active-opt" onclick="setFontSize('normal')" title="Normal">
+          <span>A</span>
+        </button>
+        <button class="access-btn" onclick="setFontSize('large')" title="Grande">
+          <span>A+</span>
+        </button>
+        <button class="access-btn" onclick="setFontSize('xlarge')" title="Extra Grande">
+          <span>A++</span>
+        </button>
+      </div>
+      <div class="accessibility-controls" style="margin-top:4px">
+        <button class="access-btn" onclick="toggleContrast()" title="Alto Contraste">
+          <i data-lucide="contrast" style="width:12px;height:12px;stroke-width:1.5"></i>
+          <span>Contraste</span>
+        </button>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">JP</div>
+      <div class="user-info">
+        <div class="user-name">Dr. Juan P. Rodriguez</div>
+        <div class="user-role">Medicina General</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+    <div class="main-area">
+      <header class="app-header">
+        <div class="header-tenant">
+          <div class="header-tenant-logo"><i data-lucide="building-2"></i></div>
+          <span class="header-tenant-name">Clinica San Rafael</span>
+        </div>
+        <div class="header-separator"></div>
+        <div class="header-search">
+          <span class="header-search-icon"><i data-lucide="search"></i></span>
+          <input type="text" class="header-search-input" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly>
+          <span class="header-search-kbd"><span class="kbd">&#8984;K</span></span>
+        </div>
+        <div class="header-spacer"></div>
+        <div class="header-actions">
+          <button class="header-btn" title="Notificaciones">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge">5</span>
+          </button>
+          <button class="header-btn" title="Ayuda"><i data-lucide="circle-help"></i></button>
+        </div>
+        <button class="header-user-btn">
+          <div class="header-user-avatar">JP</div>
+          <span class="header-user-name">Dr. Rodriguez</span>
+          <span class="header-user-chevron"><i data-lucide="chevron-down"></i></span>
+        </button>
+      </header>
+
+      <main style="flex:1;overflow-y:auto;">
+        <div class="page-header">
+          <div class="page-breadcrumb">
+            <a href="../00-shell/dashboard-medico.html">Inicio</a>
+            <i data-lucide="chevron-right"></i>
+            <a href="#">Admin</a>
+            <i data-lucide="chevron-right"></i>
+            <span>Configuracion Medica</span>
+          </div>
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Configuracion Medica</h1>
+              <p class="page-subtitle">Administre los catalogos maestros del sistema clinico</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-body">
+          <div class="hub-grid">
+            <!-- R08: Formatos HC -->
+            <a href="../04-clinical/format-list.html" class="hub-card">
+              <div class="hub-card-icon" style="background:var(--purple-light);color:var(--purple);">
+                <i data-lucide="file-text"></i>
+              </div>
+              <div class="hub-card-title">Formatos Historia Clinica</div>
+              <div class="hub-card-desc">Administre los formatos de historia clinica: areas, grupos, preguntas y plantillas.</div>
+              <div class="hub-card-meta">
+                <i data-lucide="layers"></i> R08 — 24 formatos activos
+              </div>
+            </a>
+
+            <!-- R09: Servicios -->
+            <a href="servicios.html" class="hub-card">
+              <div class="hub-card-icon" style="background:var(--accent-light);color:var(--accent);">
+                <i data-lucide="stethoscope"></i>
+              </div>
+              <div class="hub-card-title">Servicios Medicos</div>
+              <div class="hub-card-desc">Catalogo de servicios medicos con codigos CUPS, tipos y grupos de servicio.</div>
+              <div class="hub-card-meta">
+                <i data-lucide="database"></i> R09 — 192,000 registros
+              </div>
+            </a>
+
+            <!-- R10: Procedimientos -->
+            <a href="procedimientos.html" class="hub-card">
+              <div class="hub-card-icon" style="background:var(--success-light);color:var(--success);">
+                <i data-lucide="clipboard-list"></i>
+              </div>
+              <div class="hub-card-title">Otros Procedimientos</div>
+              <div class="hub-card-desc">Procedimientos adicionales no incluidos en el catalogo de servicios CUPS.</div>
+              <div class="hub-card-meta">
+                <i data-lucide="list"></i> R10 — Procedimientos
+              </div>
+            </a>
+
+            <!-- R11: Checklist -->
+            <a href="checklist.html" class="hub-card">
+              <div class="hub-card-icon" style="background:var(--warning-light);color:var(--warning);">
+                <i data-lucide="check-square"></i>
+              </div>
+              <div class="hub-card-title">Lista de Chequeo</div>
+              <div class="hub-card-desc">Items de verificacion utilizados en procesos clinicos y de calidad.</div>
+              <div class="hub-card-meta">
+                <i data-lucide="check-circle"></i> R11 — Checklist
+              </div>
+            </a>
+
+            <!-- R12: Ocupaciones -->
+            <a href="ocupaciones.html" class="hub-card">
+              <div class="hub-card-icon" style="background:var(--danger-light);color:var(--danger);">
+                <i data-lucide="briefcase"></i>
+              </div>
+              <div class="hub-card-title">Ocupaciones</div>
+              <div class="hub-card-desc">Catalogo de ocupaciones para clasificacion demografica de pacientes.</div>
+              <div class="hub-card-meta">
+                <i data-lucide="users"></i> R12 — Ocupaciones
+              </div>
+            </a>
+
+            <!-- Areas Funcionales (part of R08, but useful as shortcut) -->
+            <a href="../04-clinical/format-list.html" class="hub-card" style="border-style:dashed;">
+              <div class="hub-card-icon" style="background:var(--bg-muted);color:var(--text-muted);">
+                <i data-lucide="layout-grid"></i>
+              </div>
+              <div class="hub-card-title">Areas Funcionales</div>
+              <div class="hub-card-desc">Las areas se gestionan dentro de cada formato de HC. Acceda desde el editor de formatos.</div>
+              <div class="hub-card-meta">
+                <i data-lucide="info"></i> Dentro de Formatos HC (R08)
+              </div>
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+    function toggleGroup(id) {
+      document.getElementById(id).classList.toggle('open');
+      document.getElementById(id + '-toggle').classList.toggle('open');
+    }
+    function setFontSize(size) {
+      var root = document.documentElement;
+      document.querySelectorAll('.accessibility-controls .access-btn').forEach(function(b) { b.classList.remove('active-opt'); });
+      event.target.closest('.access-btn').classList.add('active-opt');
+      switch(size) {
+        case 'normal': root.style.setProperty('--font-size-base', '13px'); document.querySelector('html').style.fontSize = '13px'; break;
+        case 'large': root.style.setProperty('--font-size-base', '16px'); document.querySelector('html').style.fontSize = '16px'; break;
+        case 'xlarge': root.style.setProperty('--font-size-base', '18px'); document.querySelector('html').style.fontSize = '18px'; break;
+      }
+    }
+    function toggleContrast() {
+      document.documentElement.classList.toggle('high-contrast');
+      event.target.closest('.access-btn').classList.toggle('active-opt');
+    }
+  </script>
+</body>
+</html>

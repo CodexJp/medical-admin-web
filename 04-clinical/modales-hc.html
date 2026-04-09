@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Modales HC (Showcase)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-6">
+
+  <h1 class="text-xl font-bold text-zinc-900 mb-1">Modales — Historia Clinica</h1>
+  <p class="text-zinc-400 text-sm mb-6">Showcase de todos los modales documentados en el journey de HC Temporal</p>
+
+  <div class="flex flex-col gap-6">
+
+    <!-- 1. Copiar desde otra atencion -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="copy" style="width:14px;height:14px"></i>
+        Modal: Copiar desde otra atencion (seleccion granular)
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[600px]">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200 bg-white">
+            <h3 class="text-sm font-semibold text-zinc-900">Copiar desde otra atencion</h3>
+            <button class="w-7 h-7 rounded-md flex items-center justify-center text-zinc-400 hover:bg-zinc-100 border-none bg-transparent cursor-pointer"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+          </div>
+          <div class="px-5 py-4">
+            <p class="text-xs text-zinc-400 mb-3">Seleccione una atencion previa y las secciones que desea copiar</p>
+            <table class="w-full text-sm">
+              <thead>
+                <tr>
+                  <th class="text-left px-2.5 py-1.5 font-semibold text-[11px] text-zinc-400 border-b border-zinc-200 bg-zinc-50"></th>
+                  <th class="text-left px-2.5 py-1.5 font-semibold text-[11px] text-zinc-400 border-b border-zinc-200 bg-zinc-50">Fecha</th>
+                  <th class="text-left px-2.5 py-1.5 font-semibold text-[11px] text-zinc-400 border-b border-zinc-200 bg-zinc-50">Formato</th>
+                  <th class="text-left px-2.5 py-1.5 font-semibold text-[11px] text-zinc-400 border-b border-zinc-200 bg-zinc-50">Doctor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-blue-50"><td class="px-2.5 py-2 border-b border-zinc-200"><input type="radio" name="copyFrom" checked></td><td class="px-2.5 py-2 border-b border-zinc-200">15/03/2026</td><td class="px-2.5 py-2 border-b border-zinc-200">Control Cronico</td><td class="px-2.5 py-2 border-b border-zinc-200">Dr. Carlos Mendez</td></tr>
+                <tr><td class="px-2.5 py-2 border-b border-zinc-200"><input type="radio" name="copyFrom"></td><td class="px-2.5 py-2 border-b border-zinc-200">12/02/2026</td><td class="px-2.5 py-2 border-b border-zinc-200">Control Cronico</td><td class="px-2.5 py-2 border-b border-zinc-200">Dra. Laura Torres</td></tr>
+                <tr><td class="px-2.5 py-2 border-b border-zinc-200"><input type="radio" name="copyFrom"></td><td class="px-2.5 py-2 border-b border-zinc-200">10/01/2026</td><td class="px-2.5 py-2 border-b border-zinc-200">Urgencias</td><td class="px-2.5 py-2 border-b border-zinc-200">Dr. Carlos Mendez</td></tr>
+              </tbody>
+            </table>
+            <div class="mt-4 pt-3 border-t border-zinc-200">
+              <label class="text-xs font-medium text-zinc-900 block mb-2">Secciones a copiar</label>
+              <div class="grid grid-cols-2 gap-1">
+                <div class="flex items-center gap-2 py-1.5 text-xs"><input type="checkbox" id="s1" checked class="accent-blue-600 w-[15px] h-[15px]"><label for="s1">Antecedentes</label></div>
+                <div class="flex items-center gap-2 py-1.5 text-xs"><input type="checkbox" id="s2" checked class="accent-blue-600 w-[15px] h-[15px]"><label for="s2">Examen fisico</label></div>
+                <div class="flex items-center gap-2 py-1.5 text-xs"><input type="checkbox" id="s3" checked class="accent-blue-600 w-[15px] h-[15px]"><label for="s3">Revision por sistemas</label></div>
+                <div class="flex items-center gap-2 py-1.5 text-xs"><input type="checkbox" id="s4" class="accent-blue-600 w-[15px] h-[15px]"><label for="s4">Motivo consulta</label></div>
+                <div class="flex items-center gap-2 py-1.5 text-xs"><input type="checkbox" id="s5" class="accent-blue-600 w-[15px] h-[15px]"><label for="s5">Enfermedad actual</label></div>
+                <div class="flex items-center gap-2 py-1.5 text-xs"><input type="checkbox" id="s6" class="accent-blue-600 w-[15px] h-[15px]"><label for="s6">Diagnosticos</label></div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cancelar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-blue-600 text-white border-none cursor-pointer hover:bg-blue-700"><i data-lucide="copy" style="width:13px;height:13px"></i> Copiar seleccion</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Busqueda CIE-10 avanzada -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="search" style="width:14px;height:14px"></i>
+        Modal: Busqueda CIE-10 avanzada
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[600px]">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200 bg-white">
+            <h3 class="text-sm font-semibold text-zinc-900">Busqueda avanzada CIE-10</h3>
+            <button class="w-7 h-7 rounded-md flex items-center justify-center text-zinc-400 hover:bg-zinc-100 border-none bg-transparent cursor-pointer"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+          </div>
+          <div class="px-5 py-4">
+            <div class="flex items-center gap-2 h-9 rounded-md border border-zinc-200 bg-white px-3 mb-3">
+              <i data-lucide="search" style="width:14px;height:14px" class="text-zinc-400"></i>
+              <input type="text" class="border-none outline-none flex-1 text-sm bg-transparent" placeholder="Buscar por codigo o nombre..." value="diabetes">
+            </div>
+            <div class="text-[11px] text-zinc-400 mb-2">18 resultados para "diabetes"</div>
+            <div class="max-h-[200px] overflow-y-auto border border-zinc-200 rounded-md">
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 bg-blue-50 border-b border-zinc-200"><span class="font-semibold text-blue-600 text-xs min-w-[50px]">E11.9</span> <span class="text-sm">Diabetes mellitus tipo 2, sin complicaciones</span></div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50 border-b border-zinc-200"><span class="font-semibold text-blue-600 text-xs min-w-[50px]">E11.0</span> <span class="text-sm">Diabetes mellitus tipo 2, con coma</span></div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50 border-b border-zinc-200"><span class="font-semibold text-blue-600 text-xs min-w-[50px]">E11.2</span> <span class="text-sm">Diabetes mellitus tipo 2, con complicaciones renales</span></div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50 border-b border-zinc-200"><span class="font-semibold text-blue-600 text-xs min-w-[50px]">E11.5</span> <span class="text-sm">Diabetes mellitus tipo 2, con complicaciones circulatorias</span></div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50 border-b border-zinc-200"><span class="font-semibold text-blue-600 text-xs min-w-[50px]">E10.9</span> <span class="text-sm">Diabetes mellitus tipo 1, sin complicaciones</span></div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50 border-b border-zinc-200"><span class="font-semibold text-blue-600 text-xs min-w-[50px]">E14.9</span> <span class="text-sm">Diabetes mellitus no especificada, sin complicaciones</span></div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50"><span class="font-semibold text-blue-600 text-xs min-w-[50px]">O24.4</span> <span class="text-sm">Diabetes mellitus que surge durante el embarazo</span></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cancelar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-blue-600 text-white border-none cursor-pointer hover:bg-blue-700">Seleccionar E11.9</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Busqueda CUPS avanzada -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="search" style="width:14px;height:14px"></i>
+        Modal: Busqueda CUPS avanzada
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[600px]">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200 bg-white">
+            <h3 class="text-sm font-semibold text-zinc-900">Busqueda avanzada CUPS</h3>
+            <button class="w-7 h-7 rounded-md flex items-center justify-center text-zinc-400 hover:bg-zinc-100 border-none bg-transparent cursor-pointer"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+          </div>
+          <div class="px-5 py-4">
+            <div class="flex items-center gap-2 h-9 rounded-md border border-zinc-200 bg-white px-3 mb-3">
+              <i data-lucide="search" style="width:14px;height:14px" class="text-zinc-400"></i>
+              <input type="text" class="border-none outline-none flex-1 text-sm bg-transparent" placeholder="Buscar por codigo CUPS o nombre..." value="hemoglobina">
+            </div>
+            <div class="max-h-[200px] overflow-y-auto border border-zinc-200 rounded-md">
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 bg-blue-50 border-b border-zinc-200">
+                <span class="font-semibold text-blue-600 text-xs min-w-[50px]">903841</span> <span class="text-sm">Hemoglobina glicosilada</span>
+                <span class="ml-auto inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Lab</span>
+              </div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50 border-b border-zinc-200">
+                <span class="font-semibold text-blue-600 text-xs min-w-[50px]">902210</span> <span class="text-sm">Hemoglobina, concentracion</span>
+                <span class="ml-auto inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Lab</span>
+              </div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50">
+                <span class="font-semibold text-blue-600 text-xs min-w-[50px]">902016</span> <span class="text-sm">Hemograma completo (incluye recuento de plaquetas)</span>
+                <span class="ml-auto inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Lab</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cancelar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-blue-600 text-white border-none cursor-pointer hover:bg-blue-700">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Busqueda medicamento -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="pill" style="width:14px;height:14px"></i>
+        Modal: Busqueda medicamento
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[600px]">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200 bg-white">
+            <h3 class="text-sm font-semibold text-zinc-900">Buscar Medicamento</h3>
+            <button class="w-7 h-7 rounded-md flex items-center justify-center text-zinc-400 hover:bg-zinc-100 border-none bg-transparent cursor-pointer"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+          </div>
+          <div class="px-5 py-4">
+            <div class="flex items-center gap-2 h-9 rounded-md border border-zinc-200 bg-white px-3 mb-3">
+              <i data-lucide="search" style="width:14px;height:14px" class="text-zinc-400"></i>
+              <input type="text" class="border-none outline-none flex-1 text-sm bg-transparent" placeholder="Nombre, principio activo o presentacion..." value="metformina">
+            </div>
+            <div class="max-h-[220px] overflow-y-auto border border-zinc-200 rounded-md">
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 bg-blue-50 border-b border-zinc-200">
+                <div>
+                  <div class="font-medium text-zinc-900 text-sm">Metformina 850mg Tableta</div>
+                  <div class="text-[11px] text-zinc-400">Principio activo: Metformina HCl</div>
+                </div>
+                <span class="ml-auto inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">POS</span>
+              </div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50 border-b border-zinc-200">
+                <div>
+                  <div class="font-medium text-zinc-900 text-sm">Metformina 500mg Tableta</div>
+                  <div class="text-[11px] text-zinc-400">Principio activo: Metformina HCl</div>
+                </div>
+                <span class="ml-auto inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">POS</span>
+              </div>
+              <div class="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-zinc-50">
+                <div>
+                  <div class="font-medium text-zinc-900 text-sm">Metformina 1000mg Tableta LP</div>
+                  <div class="text-[11px] text-zinc-400">Liberacion prolongada</div>
+                </div>
+                <span class="ml-auto inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">POS</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cancelar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-blue-600 text-white border-none cursor-pointer hover:bg-blue-700">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Confirmar cancelacion -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="alert-triangle" style="width:14px;height:14px"></i>
+        Modal: Confirmar cancelacion
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[420px]">
+          <div class="text-center px-6 py-8">
+            <div class="w-12 h-12 rounded-full bg-amber-50 inline-flex items-center justify-center mb-3">
+              <i data-lucide="alert-triangle" style="width:24px;height:24px" class="text-amber-600"></i>
+            </div>
+            <h3 class="text-base font-bold text-zinc-900 mb-2">Cancelar atencion?</h3>
+            <p class="text-zinc-400 text-sm mb-1">Los cambios no guardados se perderan.</p>
+            <p class="text-zinc-400 text-xs">Las respuestas del formato temporal seran eliminadas permanentemente.</p>
+          </div>
+          <div class="flex items-center justify-center gap-3 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50 min-w-[120px]">Continuar editando</button>
+            <button class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-red-600 text-white border-none cursor-pointer hover:bg-red-700 min-w-[120px]">
+              <i data-lucide="trash-2" style="width:13px;height:13px"></i> Si, cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Confirmar eliminacion de orden -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="trash-2" style="width:14px;height:14px"></i>
+        Modal: Confirmar eliminacion de orden
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[400px]">
+          <div class="text-center px-6 py-8">
+            <div class="w-12 h-12 rounded-full bg-red-50 inline-flex items-center justify-center mb-3">
+              <i data-lucide="trash-2" style="width:24px;height:24px" class="text-red-600"></i>
+            </div>
+            <h3 class="text-base font-bold text-zinc-900 mb-2">Eliminar orden?</h3>
+            <p class="text-zinc-400 text-sm">Se eliminara la orden de <strong>Metformina 850mg</strong> de la formulacion.</p>
+          </div>
+          <div class="flex items-center justify-center gap-3 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cancelar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-red-600 text-white border-none cursor-pointer hover:bg-red-700"><i data-lucide="trash-2" style="width:13px;height:13px"></i> Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Alertas de riesgo del paciente -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="shield-alert" style="width:14px;height:14px"></i>
+        Modal: Alertas de riesgo del paciente
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[480px]">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200 bg-red-50">
+            <h3 class="text-sm font-semibold text-red-600 flex items-center gap-1"><i data-lucide="shield-alert" style="width:16px;height:16px;vertical-align:middle"></i> Alertas de riesgo del paciente</h3>
+            <button class="w-7 h-7 rounded-md flex items-center justify-center text-zinc-400 hover:bg-red-100 border-none bg-transparent cursor-pointer"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+          </div>
+          <div class="px-5 py-4">
+            <div class="flex flex-col gap-2.5">
+              <div class="flex items-center gap-3 p-2.5 rounded-md bg-zinc-50">
+                <div class="w-4 h-4 rounded-full bg-red-500 shrink-0"></div>
+                <span class="text-sm">Alergia a penicilina y derivados</span>
+              </div>
+              <div class="flex items-center gap-3 p-2.5 rounded-md bg-zinc-50">
+                <div class="w-4 h-4 rounded-full bg-orange-500 shrink-0"></div>
+                <span class="text-sm">Antecedente de reaccion adversa a AINES</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cerrar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-blue-600 text-white border-none cursor-pointer hover:bg-blue-700">Editar alertas</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Modal Embarazo -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+      <div class="px-5 py-3 bg-zinc-50 border-b border-zinc-200/60 font-semibold text-xs text-zinc-400 uppercase tracking-wide flex items-center gap-2">
+        <i data-lucide="baby" style="width:14px;height:14px"></i>
+        Modal: Datos de Embarazo
+      </div>
+      <div class="p-6">
+        <div class="border border-zinc-200 rounded-xl overflow-hidden shadow-md max-w-[500px]">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200 bg-white">
+            <h3 class="text-sm font-semibold text-zinc-900 flex items-center gap-1.5"><i data-lucide="baby" style="width:16px;height:16px;vertical-align:middle" class="text-pink-600"></i> Datos de Embarazo</h3>
+            <button class="w-7 h-7 rounded-md flex items-center justify-center text-zinc-400 hover:bg-zinc-100 border-none bg-transparent cursor-pointer"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+          </div>
+          <div class="px-5 py-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-medium text-zinc-900">Fecha Ultima Menstruacion (FUM) <span class="text-red-500">*</span></label>
+                <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" value="2026-01-15">
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-medium text-zinc-900">Semanas de gestacion</label>
+                <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm" value="11 semanas + 5 dias" readonly>
+              </div>
+              <div class="flex flex-col gap-1.5 col-span-2">
+                <label class="text-xs font-medium text-zinc-900">Alto riesgo</label>
+                <div class="flex items-center gap-3">
+                  <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                  <span class="text-sm text-zinc-700">Si, embarazo de alto riesgo</span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-medium text-zinc-900">Fecha finalizacion</label>
+                <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-medium text-zinc-900">Motivo finalizacion</label>
+                <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                  <option value="">Seleccione...</option>
+                  <option>Parto vaginal</option>
+                  <option>Cesarea</option>
+                  <option>Aborto espontaneo</option>
+                  <option>Aborto terapeutico</option>
+                  <option>Embarazo ectopico</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-white text-zinc-600 border border-zinc-200 cursor-pointer hover:bg-zinc-50">Cancelar</button>
+            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-blue-600 text-white border-none cursor-pointer hover:bg-blue-700">Guardar datos</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    .toggle-switch { width: 36px; height: 20px; background: #d4d4d4; border-radius: 999px; position: relative; cursor: pointer; transition: background 0.2s; display: inline-block; }
+    .toggle-switch.active { background: #1d4ed8; }
+    .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1); }
+    .toggle-switch.active::after { transform: translateX(16px); }
+  </style>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

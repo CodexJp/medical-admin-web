@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estados Recepcion — MedicalAdmin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .skeleton { background: linear-gradient(90deg, #f4f4f5 25%, #e4e4e7 50%, #f4f4f5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-8">
+  <h1 class="text-xl font-semibold text-zinc-900 mb-1">Estados — Recepcion de Pacientes</h1>
+  <p class="text-sm text-zinc-500 mb-8">Todos los estados posibles de la vista de recepcion: loading, empty, error y skeleton del formulario</p>
+
+  <div class="space-y-8">
+
+    <!-- STATE 1: Loading — Table Skeleton -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="loader" class="size-4 text-blue-500 animate-spin"></i>
+        <span class="text-sm font-medium text-zinc-900">Estado: Loading (Skeleton de la lista)</span>
+      </div>
+      <!-- Filters skeleton -->
+      <div class="flex gap-3 mb-4">
+        <div class="skeleton h-9 w-32"></div>
+        <div class="skeleton h-9 w-48"></div>
+        <div class="skeleton h-9 w-48"></div>
+        <div class="skeleton h-9 w-24"></div>
+        <div class="skeleton h-9 w-20"></div>
+      </div>
+      <!-- Table skeleton -->
+      <div class="space-y-3">
+        <div class="flex gap-4">
+          <div class="skeleton h-4 w-12"></div>
+          <div class="skeleton h-4 w-32"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-4 w-32"></div>
+          <div class="skeleton h-4 w-24"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-4 w-16"></div>
+          <div class="skeleton h-4 w-24"></div>
+        </div>
+        <div class="border-t border-zinc-100"></div>
+        <div class="flex gap-4 items-center" style="animation-delay:0.1s">
+          <div class="skeleton h-4 w-12"></div>
+          <div class="skeleton h-4 w-40"></div>
+          <div class="skeleton h-4 w-24"></div>
+          <div class="skeleton h-4 w-36"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-4 w-24"></div>
+          <div class="skeleton h-6 w-16 rounded-full"></div>
+          <div class="skeleton h-8 w-20"></div>
+        </div>
+        <div class="flex gap-4 items-center" style="animation-delay:0.2s">
+          <div class="skeleton h-4 w-12"></div>
+          <div class="skeleton h-4 w-44"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-4 w-32"></div>
+          <div class="skeleton h-4 w-24"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-6 w-16 rounded-full"></div>
+          <div class="skeleton h-8 w-20"></div>
+        </div>
+        <div class="flex gap-4 items-center" style="animation-delay:0.3s">
+          <div class="skeleton h-4 w-12"></div>
+          <div class="skeleton h-4 w-48"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-4 w-28"></div>
+          <div class="skeleton h-4 w-28"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-6 w-16 rounded-full"></div>
+          <div class="skeleton h-8 w-20"></div>
+        </div>
+        <div class="flex gap-4 items-center" style="animation-delay:0.4s">
+          <div class="skeleton h-4 w-12"></div>
+          <div class="skeleton h-4 w-36"></div>
+          <div class="skeleton h-4 w-24"></div>
+          <div class="skeleton h-4 w-40"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-4 w-24"></div>
+          <div class="skeleton h-6 w-16 rounded-full"></div>
+          <div class="skeleton h-8 w-20"></div>
+        </div>
+        <div class="flex gap-4 items-center" style="animation-delay:0.5s">
+          <div class="skeleton h-4 w-12"></div>
+          <div class="skeleton h-4 w-44"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-4 w-32"></div>
+          <div class="skeleton h-4 w-24"></div>
+          <div class="skeleton h-4 w-20"></div>
+          <div class="skeleton h-6 w-16 rounded-full"></div>
+          <div class="skeleton h-8 w-20"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE 2: Empty -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="inbox" class="size-4 text-zinc-400"></i>
+        <span class="text-sm font-medium text-zinc-900">Estado: Empty (Sin citas para recepcionar)</span>
+      </div>
+      <div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="flex size-14 items-center justify-center rounded-xl bg-zinc-100 mb-4">
+          <i data-lucide="calendar-x" class="size-7 text-zinc-400"></i>
+        </div>
+        <p class="text-sm font-semibold text-zinc-900 mb-1">No hay citas para recepcionar</p>
+        <p class="text-xs text-zinc-500 mb-5 max-w-sm">No se encontraron citas programadas para la fecha y filtros seleccionados. Intente cambiar la fecha o limpiar los filtros de busqueda.</p>
+        <div class="flex gap-2">
+          <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-50 transition">
+            <i data-lucide="filter-x" class="size-3.5"></i> Limpiar Filtros
+          </button>
+          <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-800 transition">
+            <i data-lucide="calendar" class="size-3.5"></i> Cambiar Fecha
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE 3: Error -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="alert-circle" class="size-4 text-red-500"></i>
+        <span class="text-sm font-medium text-zinc-900">Estado: Error</span>
+      </div>
+      <div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="flex size-14 items-center justify-center rounded-xl bg-red-50 mb-4">
+          <i data-lucide="alert-triangle" class="size-7 text-red-400"></i>
+        </div>
+        <p class="text-sm font-semibold text-zinc-900 mb-1">No se pudieron cargar las citas</p>
+        <p class="text-xs text-zinc-500 mb-3 max-w-sm">Ocurrio un problema al consultar las citas del dia. Por favor, intente nuevamente. Si el problema persiste, contacte al administrador del sistema.</p>
+        <details class="text-xs text-zinc-400 mb-5 max-w-sm">
+          <summary class="cursor-pointer hover:text-zinc-600 transition">Ver detalle tecnico</summary>
+          <code class="block mt-2 p-3 rounded-md bg-zinc-50 border border-zinc-100 text-left font-mono text-[11px]">
+            Error: POST /api/v1/cit/reception/loadByReception<br>
+            Status: 503 Service Unavailable<br>
+            Timestamp: 2026-04-04T07:15:23.456Z<br>
+            Request ID: req_abc123def456
+          </code>
+        </details>
+        <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-800 transition">
+          <i data-lucide="refresh-cw" class="size-3.5"></i> Reintentar
+        </button>
+      </div>
+    </div>
+
+    <!-- STATE 4: Loading — Form Skeleton -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="loader" class="size-4 text-blue-500 animate-spin"></i>
+        <span class="text-sm font-medium text-zinc-900">Estado: Loading (Skeleton del formulario)</span>
+      </div>
+      <!-- Patient banner skeleton -->
+      <div class="flex items-center gap-3 mb-6 p-4 rounded-lg border border-zinc-100">
+        <div class="skeleton size-10 rounded-full shrink-0"></div>
+        <div class="flex-1">
+          <div class="skeleton h-4 w-48 mb-2"></div>
+          <div class="skeleton h-3 w-32"></div>
+        </div>
+        <div class="skeleton h-7 w-24 rounded-full"></div>
+      </div>
+      <!-- Section skeletons -->
+      <div class="space-y-4">
+        <div class="border-b border-zinc-100 pb-4">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="skeleton size-5 rounded"></div>
+            <div class="skeleton h-4 w-32"></div>
+            <div class="skeleton h-5 w-16 rounded-full ml-auto"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div><div class="skeleton h-3 w-16 mb-2"></div><div class="skeleton h-9 w-full"></div></div>
+            <div><div class="skeleton h-3 w-20 mb-2"></div><div class="skeleton h-9 w-full"></div></div>
+            <div><div class="skeleton h-3 w-16 mb-2"></div><div class="skeleton h-9 w-full"></div></div>
+            <div><div class="skeleton h-3 w-24 mb-2"></div><div class="skeleton h-9 w-full"></div></div>
+            <div><div class="skeleton h-3 w-20 mb-2"></div><div class="skeleton h-9 w-full"></div></div>
+            <div><div class="skeleton h-3 w-16 mb-2"></div><div class="skeleton h-9 w-full"></div></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 py-3">
+          <div class="skeleton size-5 rounded"></div>
+          <div class="skeleton h-4 w-36"></div>
+          <div class="skeleton h-5 w-16 rounded-full ml-auto"></div>
+        </div>
+        <div class="flex items-center gap-2 py-3">
+          <div class="skeleton size-5 rounded"></div>
+          <div class="skeleton h-4 w-48"></div>
+          <div class="skeleton h-5 w-12 rounded-full ml-auto"></div>
+        </div>
+        <div class="flex items-center gap-2 py-3">
+          <div class="skeleton size-5 rounded"></div>
+          <div class="skeleton h-4 w-28"></div>
+          <div class="skeleton h-5 w-12 rounded-full ml-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

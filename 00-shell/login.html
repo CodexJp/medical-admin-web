@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Iniciar Sesion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex min-h-screen">
+
+    <!-- Left: Branding -->
+    <div class="hidden lg:flex lg:w-1/2 flex-col justify-between bg-zinc-900 p-12 text-white">
+      <div>
+        <div class="flex items-center gap-3 mb-16">
+          <div class="flex size-10 items-center justify-center rounded-lg bg-white/10">
+            <i data-lucide="heart-pulse" class="size-5 text-white"></i>
+          </div>
+          <span class="text-xl font-semibold">MedicalAdmin</span>
+        </div>
+        <h1 class="text-4xl font-semibold leading-tight tracking-tight mb-4">Gestion clinica moderna.<br>Rapida. Confiable. Premium.</h1>
+        <div class="mt-12 space-y-5">
+          <div class="flex items-center gap-3">
+            <div class="flex size-9 items-center justify-center rounded-lg bg-white/10">
+              <i data-lucide="zap" class="size-4 text-white/80"></i>
+            </div>
+            <span class="text-sm text-white/70">Carga de historias clinicas en menos de 1 segundo</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex size-9 items-center justify-center rounded-lg bg-white/10">
+              <i data-lucide="shield-check" class="size-4 text-white/80"></i>
+            </div>
+            <span class="text-sm text-white/70">Auto-guardado cada 30 segundos, nunca pierdas trabajo</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex size-9 items-center justify-center rounded-lg bg-white/10">
+              <i data-lucide="calendar-check" class="size-4 text-white/80"></i>
+            </div>
+            <span class="text-sm text-white/70">Confirmacion de citas por WhatsApp automatizada</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-xs text-white/30">MedicalAdmin v2.0 &copy; 2026 Hypersoft</p>
+    </div>
+
+    <!-- Right: Login Form -->
+    <div class="flex flex-1 flex-col items-center justify-center px-6 py-12">
+      <div class="w-full max-w-sm">
+
+        <!-- Tenant logo -->
+        <div class="flex items-center gap-2.5 mb-8">
+          <div class="flex size-9 items-center justify-center rounded-lg bg-zinc-100">
+            <i data-lucide="building-2" class="size-4 text-zinc-500"></i>
+          </div>
+          <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+        </div>
+
+        <!-- Login step -->
+        <div id="step-login">
+          <h1 class="text-2xl font-semibold text-zinc-900 mb-1">Bienvenido</h1>
+          <p class="text-sm text-zinc-500 mb-6">Ingresa tus credenciales para acceder al sistema</p>
+
+          <!-- Error states (hidden by default) -->
+          <div id="error-wrong-password" class="hidden mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
+            <div class="flex items-center gap-2">
+              <i data-lucide="alert-circle" class="size-4 text-red-500 shrink-0"></i>
+              <p class="text-sm text-red-700">Credenciales incorrectas. Verifica tu correo y contrasena.</p>
+            </div>
+          </div>
+          <div id="error-account-locked" class="hidden mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+            <div class="flex items-center gap-2">
+              <i data-lucide="lock" class="size-4 text-amber-500 shrink-0"></i>
+              <p class="text-sm text-amber-700">Cuenta bloqueada por multiples intentos fallidos. Contacta al administrador.</p>
+            </div>
+          </div>
+          <div id="error-server" class="hidden mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
+            <div class="flex items-center gap-2">
+              <i data-lucide="server-crash" class="size-4 text-red-500 shrink-0"></i>
+              <p class="text-sm text-red-700">Error del servidor. Intenta de nuevo en unos minutos.</p>
+            </div>
+          </div>
+
+          <form onsubmit="event.preventDefault(); showRoleSelector();">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-zinc-700 mb-1.5" for="email">Correo electronico</label>
+              <input class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" type="email" id="email" placeholder="doctor@clinicasanrafael.com" autocomplete="username">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-zinc-700 mb-1.5" for="password">Contrasena</label>
+              <input class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" type="password" id="password" placeholder="Ingresa tu contrasena" autocomplete="current-password">
+            </div>
+            <div class="flex items-center justify-between mb-6">
+              <label class="flex items-center gap-2 text-sm text-zinc-600 cursor-pointer">
+                <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900">
+                Recordarme
+              </label>
+              <a href="#" class="text-sm font-medium text-zinc-900 hover:text-zinc-700 transition">Olvidaste tu contrasena?</a>
+            </div>
+            <button type="submit" class="h-9 w-full rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-zinc-800 transition">
+              <i data-lucide="log-in" class="size-4"></i> Iniciar Sesion
+            </button>
+          </form>
+
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-zinc-200"></div></div>
+            <div class="relative flex justify-center"><span class="bg-zinc-50 px-3 text-xs text-zinc-400">o continuar con</span></div>
+          </div>
+
+          <button class="h-9 w-full rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium inline-flex items-center justify-center gap-2 hover:bg-zinc-50 transition" onclick="alert('Redirect a Cognito SSO')">
+            <i data-lucide="key-round" class="size-4"></i> Inicio de sesion corporativo (SSO)
+          </button>
+
+          <!-- Error toggle demo buttons -->
+          <div class="mt-6 flex gap-2">
+            <button onclick="toggleError('wrong-password')" class="text-[10px] text-zinc-400 hover:text-zinc-600 transition">Demo: Wrong pass</button>
+            <button onclick="toggleError('account-locked')" class="text-[10px] text-zinc-400 hover:text-zinc-600 transition">Demo: Locked</button>
+            <button onclick="toggleError('server')" class="text-[10px] text-zinc-400 hover:text-zinc-600 transition">Demo: Server</button>
+          </div>
+        </div>
+
+        <!-- Role selector step (P0) -->
+        <div id="step-role" class="hidden">
+          <h1 class="text-2xl font-semibold text-zinc-900 mb-1">Selecciona tu rol</h1>
+          <p class="text-sm text-zinc-500 mb-6">Elige el perfil con el que deseas ingresar</p>
+
+          <div class="space-y-3">
+            <a href="dashboard-medico.html" class="flex items-center gap-4 rounded-xl border border-zinc-200/60 bg-white p-4 shadow-sm hover:border-zinc-300 hover:shadow-md transition cursor-pointer">
+              <div class="flex size-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500">
+                <i data-lucide="stethoscope" class="size-5"></i>
+              </div>
+              <div class="flex-1">
+                <span class="text-sm font-semibold text-zinc-900">Medico</span>
+                <p class="text-xs text-zinc-500">Consultas, historias clinicas, ordenes medicas</p>
+              </div>
+              <i data-lucide="chevron-right" class="size-4 text-zinc-400"></i>
+            </a>
+            <a href="dashboard-recepcionista.html" class="flex items-center gap-4 rounded-xl border border-zinc-200/60 bg-white p-4 shadow-sm hover:border-zinc-300 hover:shadow-md transition cursor-pointer">
+              <div class="flex size-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+                <i data-lucide="clipboard-list" class="size-5"></i>
+              </div>
+              <div class="flex-1">
+                <span class="text-sm font-semibold text-zinc-900">Recepcionista</span>
+                <p class="text-xs text-zinc-500">Recepcion de pacientes, agenda, confirmaciones</p>
+              </div>
+              <i data-lucide="chevron-right" class="size-4 text-zinc-400"></i>
+            </a>
+            <a href="dashboard-admin.html" class="flex items-center gap-4 rounded-xl border border-zinc-200/60 bg-white p-4 shadow-sm hover:border-zinc-300 hover:shadow-md transition cursor-pointer">
+              <div class="flex size-10 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500">
+                <i data-lucide="shield" class="size-5"></i>
+              </div>
+              <div class="flex-1">
+                <span class="text-sm font-semibold text-zinc-900">Administrador</span>
+                <p class="text-xs text-zinc-500">Configuracion, facturacion, reportes del sistema</p>
+              </div>
+              <i data-lucide="chevron-right" class="size-4 text-zinc-400"></i>
+            </a>
+          </div>
+
+          <!-- P3: Empresa/Sede selector -->
+          <div class="mt-6 rounded-xl border border-zinc-200/60 bg-white p-4 shadow-sm">
+            <label class="block text-xs font-medium text-zinc-500 mb-1.5">Empresa / Sede</label>
+            <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <option>Clinica San Rafael — Sede Norte</option>
+              <option>Clinica San Rafael — Sede Centro</option>
+              <option>Clinica San Rafael — Sede Sur</option>
+            </select>
+          </div>
+
+          <button onclick="showLogin()" class="mt-4 text-sm text-zinc-500 hover:text-zinc-900 transition inline-flex items-center gap-1">
+            <i data-lucide="arrow-left" class="size-3.5"></i> Volver al login
+          </button>
+        </div>
+
+        <div class="mt-8 text-center">
+          <p class="text-xs text-zinc-400">MedicalAdmin v2.0 &copy; 2026 Hypersoft</p>
+          <p class="text-xs text-zinc-400 mt-1"><a href="#" class="hover:text-zinc-600">Terminos</a> &middot; <a href="#" class="hover:text-zinc-600">Privacidad</a> &middot; <a href="#" class="hover:text-zinc-600">Soporte</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function showRoleSelector() {
+      document.getElementById('step-login').classList.add('hidden');
+      document.getElementById('step-role').classList.remove('hidden');
+    }
+
+    function showLogin() {
+      document.getElementById('step-role').classList.add('hidden');
+      document.getElementById('step-login').classList.remove('hidden');
+    }
+
+    function toggleError(type) {
+      const errors = ['wrong-password', 'account-locked', 'server'];
+      errors.forEach(e => {
+        const el = document.getElementById('error-' + e);
+        if (e === type) el.classList.toggle('hidden');
+        else el.classList.add('hidden');
+      });
+    }
+  </script>
+</body>
+</html>

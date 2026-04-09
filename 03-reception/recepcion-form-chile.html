@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Recepcion Chile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: #18181B; color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 150ms; z-index: 99; }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+
+<div class="shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Navegacion principal">
+  <div class="sidebar-header">
+    <a href="../00-shell/shell.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <i data-lucide="heart-pulse" style="width:18px;height:18px;stroke-width:1.5"></i>
+      </div>
+      <span class="sidebar-logo-text">MedicalAdmin</span>
+    </a>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Colapsar menu">
+      <i data-lucide="panel-left-close" style="width:16px;height:16px;stroke-width:1.5"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- ====== INICIO ====== -->
+    <div class="nav-section">
+      <a href="../00-shell/dashboard-medico.html" class="nav-item" data-tooltip="Dashboard">
+        <span class="nav-item-icon"><i data-lucide="layout-dashboard"></i></span>
+        <span class="nav-item-label">Dashboard</span>
+      </a>
+    </div>
+
+    <!-- ====== MODULO 1: CONSULTA EXTERNA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Consulta Externa</div>
+
+      <!-- Agendamiento -->
+      <button class="nav-item" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda-group')">
+        <span class="nav-item-icon"><i data-lucide="calendar-days"></i></span>
+        <span class="nav-item-label">Agendamiento</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle open" id="cit-agenda-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items open" id="cit-agenda-group">
+        <a href="../01-calendar/index.html" class="nav-item" data-tooltip="Agenda">Agenda</a>
+        <span class="nav-item nav-disabled" data-tooltip="Creacion de Citas" title="Disponible en version anterior">Creacion de Citas</span>
+        <a href="../03-reception/index.html" class="nav-item active" data-tooltip="Recepcion de Paciente">Recepcion de Paciente</a>
+        <span class="nav-item nav-disabled" data-tooltip="Motivos de Cancelacion" title="Disponible en version anterior">Motivos de Cancelacion</span>
+      </div>
+
+      <!-- Configuracion CIT -->
+      <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('cit-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="cit-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="cit-config-group">
+        <a href="../02-appointments/admin-horarios.html" class="nav-item" data-tooltip="Horarios">Horarios</a>
+        <a href="../02-appointments/admin-consultorios.html" class="nav-item" data-tooltip="Consultorios">Consultorios</a>
+        <a href="../02-appointments/admin-duraciones.html" class="nav-item" data-tooltip="Duracion de Citas">Duracion de Citas</a>
+      </div>
+    </div>
+
+    <!-- ====== MODULO 2: HISTORIA CLINICA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Historia Clinica</div>
+
+      <!-- Historia Clinica -->
+      <button class="nav-item" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc-group')">
+        <span class="nav-item-icon"><i data-lucide="file-heart"></i></span>
+        <span class="nav-item-label">Historia Clinica</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="his-hc-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="his-hc-group">
+        <span class="nav-item nav-disabled" data-tooltip="Adm. Pacientes" title="Disponible en version anterior">Adm. Pacientes</span>
+        <a href="../04-clinical/attention-queue.html" class="nav-item" data-tooltip="Atencion de Pacientes">Atencion de Pacientes</a>
+        <span class="nav-item nav-disabled" data-tooltip="HC Externa" title="Disponible en version anterior">HC Externa</span>
+        <span class="nav-item nav-disabled" data-tooltip="Evaluacion Enfermeria" title="Disponible en version anterior">Evaluacion Enfermeria</span>
+      </div>
+
+      <!-- Configuracion General HIS -->
+      <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('his-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion General</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="his-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="his-config-group">
+        <a href="../04-clinical/format-list.html" class="nav-item" data-tooltip="Formatos HC">Formatos HC</a>
+        <span class="nav-item nav-disabled" data-tooltip="Profesionales de la Salud" title="Disponible en version anterior">Profesionales de la Salud</span>
+        <a href="../05-medical-config/index.html" class="nav-item" data-tooltip="Areas Funcionales">Areas Funcionales</a>
+        <a href="../05-medical-config/servicios.html" class="nav-item" data-tooltip="Servicios">Servicios</a>
+        <a href="../05-medical-config/procedimientos.html" class="nav-item" data-tooltip="Otros Procedimientos">Otros Procedimientos</a>
+        <a href="../05-medical-config/checklist.html" class="nav-item" data-tooltip="Lista de Chequeo">Lista de Chequeo</a>
+        <a href="../05-medical-config/ocupaciones.html" class="nav-item" data-tooltip="Ocupaciones">Ocupaciones</a>
+        <span class="nav-item nav-disabled" data-tooltip="Especialidades" title="Disponible en version anterior">Especialidades</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo de Cita" title="Disponible en version anterior">Tipo de Cita</span>
+        <span class="nav-item nav-disabled" data-tooltip="Formulas Consultorios" title="Disponible en version anterior">Formulas Consultorios</span>
+      </div>
+
+      <!-- Configuracion Hospitalizacion (fuera scope) -->
+      <span class="nav-item nav-module-disabled" data-tooltip="Configuracion Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="bed"></i></span>
+        <span class="nav-item-label">Config. Hospitalizacion</span>
+      </span>
+
+      <!-- Hospitalizacion sub-modulo (fuera scope) -->
+      <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
+        <span class="nav-item-label">Hospitalizacion</span>
+      </span>
+    </div>
+
+    <!-- ====== MODULO 3: FACTURACION ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Facturacion</div>
+
+      <!-- Ejecucion de Procesos -->
+      <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec-group')">
+        <span class="nav-item-icon"><i data-lucide="receipt"></i></span>
+        <span class="nav-item-label">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="pos-exec-group">
+        <a href="../07-billing/crear-orden.html" class="nav-item" data-tooltip="Ordenes de Facturacion">Ordenes de Facturacion</a>
+        <a href="../07-billing/admin-facturas.html" class="nav-item" data-tooltip="Facturas">Facturas</a>
+        <a href="../07-billing/rips.html" class="nav-item" data-tooltip="RIPS">RIPS</a>
+        <a href="../07-billing/clientes.html" class="nav-item" data-tooltip="Clientes">Clientes</a>
+        <span class="nav-item nav-disabled" data-tooltip="Lista de Pacientes" title="Disponible en version anterior">Lista de Pacientes</span>
+      </div>
+
+      <!-- Configuracion General POS -->
+      <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion General</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="pos-config-group">
+        <a href="../07-billing/medios-pago.html" class="nav-item" data-tooltip="Medios de Pago">Medios de Pago</a>
+        <a href="../07-billing/rangos-facturacion.html" class="nav-item" data-tooltip="Rangos de Facturacion">Rangos de Facturacion</a>
+        <a href="../07-billing/tarifas.html" class="nav-item" data-tooltip="Manuales Tarifarios">Manuales Tarifarios</a>
+        <span class="nav-item nav-disabled" data-tooltip="Tarifas de Facturacion" title="Proximamente">Tarifas de Facturacion</span>
+        <a href="../07-billing/plm.html" class="nav-item" data-tooltip="Lista Precios Medicamentos">Lista Precios Medicamentos</a>
+        <a href="../07-billing/tarifas-medicamentos.html" class="nav-item" data-tooltip="Tarifas de Medicamentos">Tarifas de Medicamentos</a>
+        <a href="../07-billing/convenios.html" class="nav-item" data-tooltip="Convenios">Convenios</a>
+        <span class="nav-item nav-disabled" data-tooltip="Sedes" title="Disponible en version anterior">Sedes</span>
+      </div>
+    </div>
+
+    <!-- ====== MODULO 4: FARMACIA ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Farmacia</div>
+
+      <!-- Ejecucion de Procesos FAR -->
+      <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec-group')">
+        <span class="nav-item-icon"><i data-lucide="pill"></i></span>
+        <span class="nav-item-label">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-exec-group">
+        <a href="../06-pharmacy/despacho.html" class="nav-item" data-tooltip="Entrega de Articulos">Entrega de Articulos</a>
+        <a href="../06-pharmacy/inventario.html" class="nav-item" data-tooltip="Movimientos Inventario">Movimientos Inventario</a>
+        <span class="nav-item nav-disabled" data-tooltip="Articulos" title="Disponible en version anterior">Articulos</span>
+      </div>
+
+      <!-- Configuracion FAR -->
+      <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('far-config-group')">
+        <span class="nav-item-icon"><i data-lucide="settings"></i></span>
+        <span class="nav-item-label">Configuracion</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-config-group">
+        <span class="nav-item nav-disabled" data-tooltip="Bodegas" title="Disponible en version anterior">Bodegas</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo Articulos" title="Disponible en version anterior">Tipo Articulos</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo Movimientos" title="Disponible en version anterior">Tipo Movimientos</span>
+      </div>
+
+      <!-- Reporte FAR -->
+      <button class="nav-item" data-tooltip="Reporte" onclick="toggleGroup('far-report-group')">
+        <span class="nav-item-icon"><i data-lucide="file-bar-chart"></i></span>
+        <span class="nav-item-label">Reporte</span>
+        <i data-lucide="chevron-right" class="nav-group-toggle" id="far-report-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
+      </button>
+      <div class="nav-group-items" id="far-report-group">
+        <span class="nav-item nav-disabled" data-tooltip="Kardex" title="Disponible en version anterior">Kardex</span>
+      </div>
+    </div>
+
+    <!-- ====== COMUNICACION (nuevo, no existe en BD legacy) ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Comunicacion</div>
+      <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-item" data-tooltip="WhatsApp">
+        <span class="nav-item-icon"><i data-lucide="message-circle"></i></span>
+        <span class="nav-item-label">WhatsApp</span>
+      </a>
+    </div>
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="nav-separator"></div>
+
+    <!-- ====== MODULOS FUERA DE SCOPE (5-13, 15) ====== -->
+    <div class="nav-section">
+      <div class="nav-section-label">Otros Modulos</div>
+      <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
+        <span class="nav-item-label">Hospitalizacion</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Reportes" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="file-text"></i></span>
+        <span class="nav-item-label">Reportes</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="PyP" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="heart"></i></span>
+        <span class="nav-item-label">PyP</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Laboratorio" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="flask-conical"></i></span>
+        <span class="nav-item-label">Laboratorio</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Radiologia" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="scan"></i></span>
+        <span class="nav-item-label">Radiologia</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Quirurgicos" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="scissors"></i></span>
+        <span class="nav-item-label">Quirurgicos</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Banco Sangre" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="droplets"></i></span>
+        <span class="nav-item-label">Banco Sangre</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="CRM" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="folder"></i></span>
+        <span class="nav-item-label">CRM</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Integracion" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="puzzle"></i></span>
+        <span class="nav-item-label">Integracion</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Control de Accesos" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="key-round"></i></span>
+        <span class="nav-item-label">Control de Accesos</span>
+      </span>
+      <span class="nav-item nav-module-disabled" data-tooltip="Tablero / Estadisticas" title="Modulo disponible en version anterior">
+        <span class="nav-item-icon"><i data-lucide="bar-chart-3"></i></span>
+        <span class="nav-item-label">Tablero / Estadisticas</span>
+      </span>
+    </div>
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="nav-separator"></div>
+
+    <!-- ====== PREFERENCIAS ====== -->
+    <div class="nav-section">
+      <a href="../09-settings/settings.html" class="nav-item" data-tooltip="Preferencias">
+        <span class="nav-item-icon"><i data-lucide="sliders-horizontal"></i></span>
+        <span class="nav-item-label">Preferencias</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Footer: Accessibility + User -->
+  <div class="sidebar-footer">
+    <div class="sidebar-footer-section">
+      <div class="sidebar-footer-label">Accesibilidad</div>
+      <div class="accessibility-controls">
+        <button class="access-btn active-opt" onclick="setFontSize('normal')" title="Normal">
+          <span>A</span>
+        </button>
+        <button class="access-btn" onclick="setFontSize('large')" title="Grande">
+          <span>A+</span>
+        </button>
+        <button class="access-btn" onclick="setFontSize('xlarge')" title="Extra Grande">
+          <span>A++</span>
+        </button>
+      </div>
+      <div class="accessibility-controls" style="margin-top:4px">
+        <button class="access-btn" onclick="toggleContrast()" title="Alto Contraste">
+          <i data-lucide="contrast" style="width:12px;height:12px;stroke-width:1.5"></i>
+          <span>Contraste</span>
+        </button>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">JP</div>
+      <div class="user-info">
+        <div class="user-name">Dr. Juan P. Rodriguez</div>
+        <div class="user-role">Medicina General</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-search"><i data-lucide="search" style="width:16px;height:16px;"></i><span>Buscar paciente, cita...</span><kbd>Cmd+K</kbd></div>
+      <div class="header-actions"><button class="icon-btn"><i data-lucide="bell" style="width:18px;height:18px;"></i></button></div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="breadcrumb">
+            <a href="../00-shell/dashboard-medico.html">Inicio</a>
+            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+            <a href="index.html">Recepcion</a>
+            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+            <span style="color:var(--text-heading);">Formulario de Recepcion</span>
+          </div>
+          <h1 class="page-title">Recepcion de Paciente <span class="country-flag">Chile</span></h1>
+          <p class="page-subtitle">Variante Chile: RUT, Prevision, Fonasa/Isapre</p>
+        </div>
+      </div>
+
+      <div class="patient-banner">
+        <div class="patient-avatar">JM</div>
+        <div class="patient-info">
+          <div class="patient-name">Joaquin Andres Muoz Soto</div>
+          <div class="patient-meta">
+            <span><i data-lucide="id-card" style="width:13px;height:13px;"></i> <strong>RUT 12.345.678-5</strong></span>
+            <span><i data-lucide="calendar" style="width:13px;height:13px;"></i> 42 anos</span>
+            <span><i data-lucide="user" style="width:13px;height:13px;"></i> Masculino</span>
+            <span><i data-lucide="building" style="width:13px;height:13px;"></i> Fonasa</span>
+          </div>
+        </div>
+        <span class="event-badge"><i data-lucide="check-circle" style="width:13px;height:13px;"></i> Confirmada</span>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-bar-container">
+        <span class="progress-text" id="progress-text">Seccion 1 de 6 — Informacion del Evento</span>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width: 16.6%"></div></div>
+        <span class="progress-pct" id="progress-pct">17%</span>
+      </div>
+
+      <!-- Form layout with nav sidebar -->
+      <div class="form-layout">
+        <!-- Section navigation -->
+        <nav class="form-nav" aria-label="Secciones del formulario">
+          <div class="form-nav-inner">
+            <div class="form-nav-title">Secciones</div>
+            <a class="form-nav-item active" data-target="sec-evento" onclick="scrollToSection('sec-evento')">
+              <span class="form-nav-dot">1</span>
+              <span class="form-nav-label">Evento</span>
+              <span class="form-nav-count">8/8</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-paciente" onclick="scrollToSection('sec-paciente')">
+              <span class="form-nav-dot">2</span>
+              <span class="form-nav-label">Paciente</span>
+              <span class="form-nav-count">25/30</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-responsable" onclick="scrollToSection('sec-responsable')">
+              <span class="form-nav-dot">3</span>
+              <span class="form-nav-label">Responsable</span>
+              <span class="form-nav-count">Opcional</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-acompanante" onclick="scrollToSection('sec-acompanante')">
+              <span class="form-nav-dot">4</span>
+              <span class="form-nav-label">Acompanante</span>
+              <span class="form-nav-count">Opcional</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-facturacion" onclick="scrollToSection('sec-facturacion')">
+              <span class="form-nav-dot">5</span>
+              <span class="form-nav-label">Facturacion</span>
+              <span class="form-nav-count">3/15</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-servicios" onclick="scrollToSection('sec-servicios')">
+              <span class="form-nav-dot">6</span>
+              <span class="form-nav-label">Servicios</span>
+              <span class="form-nav-count">1 servicio</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-productos" onclick="scrollToSection('sec-productos')">
+              <span class="form-nav-dot">7</span>
+              <span class="form-nav-label">Productos</span>
+              <span class="form-nav-count">2 productos</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-items" onclick="scrollToSection('sec-items')">
+              <span class="form-nav-dot">8</span>
+              <span class="form-nav-label">Items Agregados</span>
+              <span class="form-nav-count">3 items</span>
+            </a>
+            <a class="form-nav-item" data-target="sec-recaudo" onclick="scrollToSection('sec-recaudo')">
+              <span class="form-nav-dot">9</span>
+              <span class="form-nav-label">Recaudo</span>
+              <span class="form-nav-count"></span>
+            </a>
+          </div>
+        </nav>
+
+        <!-- Form content -->
+        <div class="form-content">
+      <div class="accordion">
+
+        <!-- SECTION 1: Evento -->
+        <div class="accordion-item open" id="sec-evento">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-evento')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="calendar-clock"></i>
+              <span>Informacion del Evento</span>
+              <span class="accordion-badge">8/8</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Profesional</label>
+                <div class="form-readonly">Dr. Sebastian Valenzuela</div>
+              </div>
+              <div class="form-group">
+                <label>Fecha y Hora</label>
+                <div class="form-readonly">04/04/2026 — 09:00 - 09:30</div>
+              </div>
+              <div class="form-group">
+                <label>Especialidad</label>
+                <div class="form-readonly">Medicina Interna</div>
+              </div>
+              <div class="form-group">
+                <label>Tipo de Consulta<span class="required">*</span></label>
+                <select class="form-select">
+                  <option selected>Consulta General</option>
+                  <option>Control</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label>Motivo / Observacion</label>
+                <textarea class="form-textarea form-input" style="height:56px;">Control anual chequeo general</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Paciente (Chile variant) -->
+        <div class="accordion-item" id="sec-paciente">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-paciente')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="user"></i>
+              <span>Datos del Paciente</span>
+              <span class="accordion-badge">25/30</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="section-note"><i data-lucide="id-card"></i> Identificacion</div>
+            <div class="form-grid">
+              <div class="form-group chile-field">
+                <label>Tipo de Documento<span class="required">*</span></label>
+                <select class="form-select" disabled>
+                  <option selected>RUT</option>
+                  <option>Pasaporte</option>
+                  <option>DNI Extranjero</option>
+                </select>
+              </div>
+              <div class="form-group chile-field">
+                <label>RUT<span class="required">*</span></label>
+                <div style="display:flex;gap:8px;">
+                  <input type="text" class="form-input" value="12345678" style="flex:1;">
+                  <input type="text" class="form-input" value="5" style="width:60px;text-align:center;" disabled title="Digito verificador calculado automaticamente">
+                </div>
+                <span class="form-hint">Digito verificador calculado automaticamente</span>
+              </div>
+              <div class="form-group">
+                <label>Primer Nombre<span class="required">*</span></label>
+                <input type="text" class="form-input" value="Joaquin">
+              </div>
+              <div class="form-group">
+                <label>Segundo Nombre</label>
+                <input type="text" class="form-input" value="Andres">
+              </div>
+              <div class="form-group">
+                <label>Primer Apellido<span class="required">*</span></label>
+                <input type="text" class="form-input" value="Muoz">
+              </div>
+              <div class="form-group">
+                <label>Segundo Apellido</label>
+                <input type="text" class="form-input" value="Soto">
+              </div>
+            </div>
+
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="heart"></i> Datos Personales</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Fecha de Nacimiento<span class="required">*</span></label>
+                <input type="date" class="form-input" value="1984-07-22">
+              </div>
+              <div class="form-group">
+                <label>Edad</label>
+                <div class="age-display">42 anos</div>
+              </div>
+              <div class="form-group">
+                <label>Genero<span class="required">*</span></label>
+                <div class="radio-group">
+                  <label class="radio-label"><input type="radio" name="gender" checked> Masculino</label>
+                  <label class="radio-label"><input type="radio" name="gender"> Femenino</label>
+                </div>
+              </div>
+              <div class="form-group chile-field">
+                <label>Tipo de Persona<span class="required">*</span></label>
+                <select class="form-select">
+                  <option selected>Natural</option>
+                  <option>Juridica</option>
+                </select>
+                <span class="form-hint">Solo aplica para Chile</span>
+              </div>
+            </div>
+
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="map-pin"></i> Ubicacion</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Pais<span class="required">*</span></label>
+                <select class="form-select"><option selected>Chile</option></select>
+              </div>
+              <div class="form-group chile-field">
+                <label>Region<span class="required">*</span></label>
+                <select class="form-select">
+                  <option>-- Seleccione --</option>
+                  <option>Arica y Parinacota</option>
+                  <option>Tarapaca</option>
+                  <option>Valparaiso</option>
+                  <option selected>Metropolitana de Santiago</option>
+                  <option>Biobio</option>
+                </select>
+              </div>
+              <div class="form-group chile-field">
+                <label>Comuna<span class="required">*</span></label>
+                <select class="form-select">
+                  <option>-- Seleccione --</option>
+                  <option selected>Providencia</option>
+                  <option>Las Condes</option>
+                  <option>Santiago Centro</option>
+                  <option>unoa</option>
+                  <option>Vitacura</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Direccion</label>
+                <input type="text" class="form-input" value="Av. Providencia 1234, Depto 56">
+              </div>
+            </div>
+
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="phone"></i> Contacto</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Telefono Fijo</label>
+                <input type="text" class="form-input" value="+56 2 2345 6789" maxlength="10">
+              </div>
+              <div class="form-group">
+                <label>Celular</label>
+                <input type="text" class="form-input" value="+56 9 8765 4321" maxlength="10">
+              </div>
+              <div class="form-group">
+                <label>Email<span class="required">*</span></label>
+                <input type="email" class="form-input" value="joaquin.munoz@email.cl">
+              </div>
+            </div>
+
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="shield"></i> Prevision de Salud</div>
+            <div class="form-grid">
+              <div class="form-group chile-field">
+                <label>Prevision<span class="required">*</span></label>
+                <select class="form-select">
+                  <option selected>Fonasa</option>
+                  <option>Isapre</option>
+                  <option>Particular</option>
+                </select>
+                <span class="form-hint">Este campo reemplaza EPS (solo Chile)</span>
+              </div>
+              <div class="form-group chile-field">
+                <label>Tramo Fonasa<span class="required">*</span></label>
+                <select class="form-select">
+                  <option>Tramo A</option>
+                  <option selected>Tramo B</option>
+                  <option>Tramo C</option>
+                  <option>Tramo D</option>
+                </select>
+                <span class="form-hint">Solo visible cuando la prevision es Fonasa</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Responsable -->
+        <div class="accordion-item" id="sec-responsable">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-responsable')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="user-check"></i>
+              <span>Responsable del Paciente</span>
+              <span class="accordion-badge">0/11</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div style="padding:16px 0;color:var(--text-muted);font-size:13px;display:flex;align-items:center;gap:8px;">
+              <i data-lucide="info" style="width:16px;height:16px;"></i>
+              Marque la casilla si el paciente no es responsable de si mismo.
+              Los campos del responsable siguen el mismo patron que Colombia con campo RUT en lugar de CC.
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Acompanante -->
+        <div class="accordion-item" id="sec-acompanante">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-acompanante')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="users"></i>
+              <span>Acompanante</span>
+              <span class="accordion-badge">0/11</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div style="padding:16px 0;color:var(--text-muted);font-size:13px;display:flex;align-items:center;gap:8px;">
+              <i data-lucide="info" style="width:16px;height:16px;"></i>
+              Misma estructura que la seccion Colombia. Activar checkbox para habilitar campos.
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Facturacion (Chile) -->
+        <div class="accordion-item" id="sec-facturacion">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-facturacion')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="receipt"></i>
+              <span>Informacion de Facturacion</span>
+              <span class="accordion-badge">3/15</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="section-note" style="padding-top:16px;"><i data-lucide="file-text"></i> Convenio</div>
+            <div class="form-grid">
+              <div class="form-group chile-field">
+                <label>Convenio<span class="required">*</span></label>
+                <div style="display:flex;gap:8px;">
+                  <input type="text" class="form-input" value="Fonasa - Convenio Institucional" style="flex:1;" readonly>
+                  <button class="btn btn-outline" style="height:36px;padding:0 10px;">
+                    <i data-lucide="search" style="width:15px;height:15px;"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Contrato</label>
+                <select class="form-select"><option selected>Contrato General Fonasa 2026</option></select>
+              </div>
+            </div>
+
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="dollar-sign"></i> Valores</div>
+            <div class="form-grid-3">
+              <div class="form-group chile-field">
+                <label>Copago</label>
+                <input type="text" class="form-input" value="$3.500 CLP" disabled>
+                <span class="form-hint">Copago segun tramo Fonasa</span>
+              </div>
+              <div class="form-group">
+                <label>Bonificacion Fonasa</label>
+                <input type="text" class="form-input" value="75%" disabled>
+              </div>
+              <div class="form-group">
+                <label>Valor Total</label>
+                <input type="text" class="form-input" value="$14.000 CLP" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 6: Servicios (NEW) -->
+        <div class="accordion-item" id="sec-servicios">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-servicios')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="clipboard-list"></i>
+              <span>Servicios</span>
+              <span class="accordion-badge">1 servicio</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="section-note" style="padding-top:16px;"><i data-lucide="search"></i> Agregar Servicio</div>
+            <div class="form-grid" style="padding-top:8px;">
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label>Buscar Servicio (CUPS)<span class="required">*</span></label>
+                <div style="display:flex;gap:8px;">
+                  <input type="text" class="form-input" placeholder="Escriba codigo CUPS o nombre del servicio..." style="flex:1;" id="service-search">
+                  <button class="btn btn-outline" style="height:36px;padding:0 12px;" title="Buscar servicio">
+                    <i data-lucide="search" style="width:15px;height:15px;"></i>
+                  </button>
+                </div>
+                <span class="form-hint">Minimo 3 caracteres. Busca por codigo CUPS o descripcion del servicio.</span>
+              </div>
+            </div>
+
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="list"></i> Servicios Agregados</div>
+            <table class="services-table">
+              <thead>
+                <tr>
+                  <th style="width:100px;">Cod. CUPS</th>
+                  <th>Servicio</th>
+                  <th style="width:80px;text-align:center;">Cant.</th>
+                  <th style="width:110px;text-align:right;">Valor Unit.</th>
+                  <th style="width:110px;text-align:right;">Copago</th>
+                  <th style="width:110px;text-align:right;">Total</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">890201</span></td>
+                  <td>Consulta de primera vez - Medicina General</td>
+                  <td style="text-align:center;">
+                    <input type="number" class="form-input" value="1" min="1" style="width:60px;height:30px;text-align:center;padding:0 4px;">
+                  </td>
+                  <td style="text-align:right;">$14.000</td>
+                  <td style="text-align:right;">$3.500</td>
+                  <td style="text-align:right;font-weight:500;">$14.000</td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn-remove" title="Eliminar servicio">
+                      <i data-lucide="x" style="width:14px;height:14px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div>
+                </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="btn-add-service" onclick="document.getElementById('service-search').focus()">
+              <i data-lucide="plus" style="width:15px;height:15px;"></i> Agregar Servicio
+            </button>
+
+            <div class="services-summary">
+              <div class="summary-item">
+                <div class="summary-item-label">Subtotal</div>
+                <div class="summary-item-value">$14.000</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item-label">Copago Total</div>
+                <div class="summary-item-value">$3.500</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item-label">Total a Pagar</div>
+                <div class="summary-item-value total">$10.500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 7: Productos Disponibles -->
+        <div class="accordion-item" id="sec-productos">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-productos')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="pill"></i>
+              <span>Productos Disponibles</span>
+              <span class="accordion-badge">2 productos</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="form-grid" style="padding-top:16px;">
+              <div class="form-group">
+                <label>Area Funcional</label>
+                <select class="form-select">
+                  <option value="">Todas las areas</option>
+                  <option>Farmacia General</option>
+                  <option>Farmacia Especializada</option>
+                  <option>Insumos Medicos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Buscar Producto</label>
+                <div style="display:flex;gap:8px;">
+                  <input type="text" class="form-input" placeholder="Nombre generico, comercial o codigo ATC..." style="flex:1;" id="product-search">
+                  <button class="btn btn-outline" style="height:36px;padding:0 12px;" title="Buscar producto">
+                    <i data-lucide="search" style="width:15px;height:15px;"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <table class="services-table" style="margin-top:16px;">
+              <thead>
+                <tr>
+                  <th style="width:90px;">Cod. ATC</th>
+                  <th>Nombre Generico</th>
+                  <th>Nombre Comercial</th>
+                  <th style="width:70px;text-align:center;">MIPRES</th>
+                  <th style="width:60px;text-align:center;">Dias Tto.</th>
+                  <th>Concentracion</th>
+                  <th style="width:55px;text-align:center;">POS</th>
+                  <th style="width:90px;text-align:right;">Valor</th>
+                  <th style="width:70px;text-align:center;">Cant.</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">N02BE01</span></td>
+                  <td>Acetaminofen</td>
+                  <td>Acetaminofen 500mg Tab</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:center;">5</td>
+                  <td>500 mg</td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:right;">$150</td>
+                  <td style="text-align:center;">
+                    <input type="number" class="form-input" value="10" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
+                  </td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn btn-outline" style="height:28px;padding:0 8px;font-size:11px;" title="Agregar producto">
+                      <i data-lucide="plus" style="width:13px;height:13px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div>
+                </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">C09CA01</span></td>
+                  <td>Losartan</td>
+                  <td>Losartan 50mg Tab</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:center;">30</td>
+                  <td>50 mg</td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:right;">$280</td>
+                  <td style="text-align:center;">
+                    <input type="number" class="form-input" value="10" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
+                  </td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn btn-outline" style="height:28px;padding:0 8px;font-size:11px;" title="Agregar producto">
+                      <i data-lucide="plus" style="width:13px;height:13px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div>
+                </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">A10BA02</span></td>
+                  <td>Metformina</td>
+                  <td>Metformina 850mg Tab</td>
+                  <td style="text-align:center;"><span class="badge-mipres">MIPRES</span></td>
+                  <td style="text-align:center;">30</td>
+                  <td>850 mg</td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:right;">$190</td>
+                  <td style="text-align:center;">
+                    <input type="number" class="form-input" value="1" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
+                  </td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn btn-outline" style="height:28px;padding:0 8px;font-size:11px;" title="Agregar producto">
+                      <i data-lucide="plus" style="width:13px;height:13px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div>
+                </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">A02BC01</span></td>
+                  <td>Omeprazol</td>
+                  <td>Omeprazol 20mg Cap</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:center;">15</td>
+                  <td>20 mg</td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:right;">$320</td>
+                  <td style="text-align:center;">
+                    <input type="number" class="form-input" value="1" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
+                  </td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn btn-outline" style="height:28px;padding:0 8px;font-size:11px;" title="Agregar producto">
+                      <i data-lucide="plus" style="width:13px;height:13px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div>
+                </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">J01CA04</span></td>
+                  <td>Amoxicilina</td>
+                  <td>Amoxicilina 500mg Cap</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:center;">7</td>
+                  <td>500 mg</td>
+                  <td style="text-align:center;"><span class="badge-pos-no">No</span></td>
+                  <td style="text-align:right;">$450</td>
+                  <td style="text-align:center;">
+                    <input type="number" class="form-input" value="1" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
+                  </td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn btn-outline" style="height:28px;padding:0 8px;font-size:11px;" title="Agregar producto">
+                      <i data-lucide="plus" style="width:13px;height:13px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div>
+                </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SECTION 8: Servicios y Productos Agregados -->
+        <div class="accordion-item" id="sec-items">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-items')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="shopping-cart"></i>
+              <span>Servicios y Productos Agregados</span>
+              <span class="accordion-badge">3 items</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <table class="services-table" style="margin-top:16px;">
+              <thead>
+                <tr>
+                  <th style="width:90px;">Codigo</th>
+                  <th style="width:75px;">Tipo</th>
+                  <th>Nombre</th>
+                  <th style="width:70px;text-align:center;">MIPRES</th>
+                  <th style="width:60px;text-align:center;">Dias Tto.</th>
+                  <th style="width:95px;text-align:right;">Valor Unit.</th>
+                  <th style="width:55px;text-align:center;">Cant.</th>
+                  <th style="width:95px;text-align:right;">Valor Bruto</th>
+                  <th style="width:55px;text-align:center;">% IVA</th>
+                  <th style="width:80px;text-align:right;">Valor IVA</th>
+                  <th style="width:100px;text-align:right;">Total a Pagar</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">890201</span></td>
+                  <td><span class="badge-service">Servicio</span></td>
+                  <td>Consulta de primera vez - Medicina General</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:right;">$14.000</td>
+                  <td style="text-align:center;">1</td>
+                  <td style="text-align:right;">$14.000</td>
+                  <td style="text-align:center;">0%</td>
+                  <td style="text-align:right;">$0</td>
+                  <td style="text-align:right;font-weight:500;">$14.000</td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn-remove" title="Eliminar">
+                      <i data-lucide="x" style="width:14px;height:14px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div>
+                </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">N02BE01</span></td>
+                  <td><span class="badge-product">Producto</span></td>
+                  <td>Acetaminofen 500mg Tab</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:center;">5</td>
+                  <td style="text-align:right;">$150</td>
+                  <td style="text-align:center;">10</td>
+                  <td style="text-align:right;">$1.500</td>
+                  <td style="text-align:center;">0%</td>
+                  <td style="text-align:right;">$0</td>
+                  <td style="text-align:right;font-weight:500;">$1.500</td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn-remove" title="Eliminar">
+                      <i data-lucide="x" style="width:14px;height:14px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div>
+                </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">C09CA01</span></td>
+                  <td><span class="badge-product">Producto</span></td>
+                  <td>Losartan 50mg Tab</td>
+                  <td style="text-align:center;">—</td>
+                  <td style="text-align:center;">30</td>
+                  <td style="text-align:right;">$280</td>
+                  <td style="text-align:center;">10</td>
+                  <td style="text-align:right;">$2.800</td>
+                  <td style="text-align:center;">0%</td>
+                  <td style="text-align:right;">$0</td>
+                  <td style="text-align:right;font-weight:500;">$2.800</td>
+                  <td class="col-action">
+                    <div class="group relative inline-flex">
+                  <button class="btn-remove" title="Eliminar">
+                      <i data-lucide="x" style="width:14px;height:14px;"></i>
+                    </button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div>
+                </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="services-summary">
+              <div class="summary-item">
+                <div class="summary-item-label">Subtotal Servicios</div>
+                <div class="summary-item-value">$14.000</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item-label">Subtotal Productos</div>
+                <div class="summary-item-value">$4.300</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-item-label">TOTAL A PAGAR</div>
+                <div class="summary-item-value total">$18.300</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 9: Recaudo del Paciente -->
+        <div class="accordion-item" id="sec-recaudo">
+          <button class="accordion-trigger" onclick="toggleAccordion('sec-recaudo')">
+            <div class="accordion-trigger-left">
+              <i data-lucide="banknote"></i>
+              <span>Recaudo del Paciente</span>
+              <span class="accordion-badge">$3.500</span>
+            </div>
+            <i data-lucide="chevron-down" class="accordion-chevron"></i>
+          </button>
+          <div class="accordion-content">
+            <div class="recaudo-grid">
+              <div class="recaudo-field">
+                <label>Forma de Pago<span class="required">*</span></label>
+                <select class="form-select">
+                  <option value="">Seleccione...</option>
+                  <option selected>Efectivo</option>
+                  <option>Tarjeta Debito</option>
+                  <option>Tarjeta Credito</option>
+                  <option>Transferencia</option>
+                </select>
+              </div>
+              <div class="recaudo-field">
+                <label>Cuota Moderadora</label>
+                <div class="recaudo-inline">
+                  <input type="text" class="form-input" value="$0" style="width:120px;">
+                  <label class="exempt-check"><input type="checkbox"> Exento</label>
+                </div>
+              </div>
+              <div class="recaudo-field">
+                <label>Copago</label>
+                <div class="recaudo-inline">
+                  <input type="text" class="form-input" value="$3.500" style="width:120px;">
+                  <label class="exempt-check"><input type="checkbox"> Exento</label>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding-top:16px;">
+              <button class="btn-calculate" onclick="alert('Calculo simulado: Copago $3.500')">
+                <i data-lucide="calculator" style="width:15px;height:15px;"></i> Calcular
+              </button>
+            </div>
+
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="list"></i> Detalle de Pagos</div>
+            <table class="services-table" style="margin-top:8px;">
+              <thead>
+                <tr>
+                  <th>Servicio / Producto</th>
+                  <th style="width:140px;">Tipo Pago</th>
+                  <th style="width:110px;text-align:right;">Valor Pago</th>
+                  <th>Observacion</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Consulta de primera vez - Medicina General</td>
+                  <td>Copago</td>
+                  <td style="text-align:right;">$3.500</td>
+                  <td style="color:var(--text-muted);font-size:12px;">Copago segun contrato</td>
+                </tr>
+                <tr class="total-row-grand">
+                  <td colspan="2" style="text-align:right;font-weight:600;">Total Recaudado</td>
+                  <td style="text-align:right;font-weight:600;">$3.500</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="form-group" style="padding-top:16px;">
+              <label>Justificacion <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(Obligatoria si hay exencion)</span></label>
+              <textarea class="form-textarea" placeholder="Ingrese la justificacion de la exencion o notas adicionales..." style="height:64px;"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /accordion -->
+      </div><!-- /form-content -->
+      </div><!-- /form-layout -->
+
+      <div class="form-actions">
+        <a href="index.html" class="btn btn-outline btn-lg">
+          <i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Cancelar
+        </a>
+        <a href="post-confirmacion.html" class="btn btn-primary btn-lg">
+          <i data-lucide="check" style="width:16px;height:16px;"></i> Confirmar Recepcion
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+  function toggleGroup(id) {
+    document.getElementById(id).classList.toggle('open');
+    document.getElementById(id + '-toggle').classList.toggle('open');
+  }
+
+  function setFontSize(size) {
+      var root = document.documentElement;
+      document.querySelectorAll('.accessibility-controls .access-btn').forEach(function(b) { b.classList.remove('active-opt'); });
+      event.target.closest('.access-btn').classList.add('active-opt');
+      switch(size) {
+        case 'normal': root.style.setProperty('--font-size-base', '13px'); document.querySelector('html').style.fontSize = '13px'; break;
+        case 'large': root.style.setProperty('--font-size-base', '16px'); document.querySelector('html').style.fontSize = '16px'; break;
+        case 'xlarge': root.style.setProperty('--font-size-base', '18px'); document.querySelector('html').style.fontSize = '18px'; break;
+      }
+    }
+
+  function toggleContrast() {
+    document.documentElement.classList.toggle('high-contrast');
+    event.target.closest('.access-btn').classList.toggle('active-opt');
+  }
+
+  function toggleAccordion(id) { document.getElementById(id).classList.toggle('open'); }
+
+  // Section navigation — scroll to section and expand
+  function scrollToSection(id) {
+    var section = document.getElementById(id);
+    if (!section) return;
+    if (!section.classList.contains('open')) {
+      section.classList.add('open');
+    }
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // IntersectionObserver for active section tracking
+  var sectionNames = {
+    'sec-evento': 'Informacion del Evento',
+    'sec-paciente': 'Datos del Paciente',
+    'sec-responsable': 'Responsable del Paciente',
+    'sec-acompanante': 'Acompanante',
+    'sec-facturacion': 'Informacion de Facturacion',
+    'sec-servicios': 'Servicios',
+    'sec-productos': 'Productos Disponibles',
+    'sec-items': 'Items Agregados',
+    'sec-recaudo': 'Recaudo del Paciente'
+  };
+  var sectionIds = Object.keys(sectionNames);
+
+  function updateActiveNav(activeId) {
+    document.querySelectorAll('.form-nav-item').forEach(function(item) {
+      item.classList.remove('active');
+      if (item.dataset.target === activeId) {
+        item.classList.add('active');
+      }
+    });
+    var idx = sectionIds.indexOf(activeId);
+    if (idx >= 0) {
+      var pct = Math.round(((idx + 1) / sectionIds.length) * 100);
+      document.getElementById('progress-text').textContent = 'Seccion ' + (idx + 1) + ' de ' + sectionIds.length + ' — ' + sectionNames[activeId];
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-pct').textContent = pct + '%';
+    }
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+        updateActiveNav(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-80px 0px -60% 0px', threshold: [0.1, 0.5] });
+
+  sectionIds.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>
+</body>
+</html>

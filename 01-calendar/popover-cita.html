@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popover Cita — MedicalAdmin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-8">
+  <a href="index.html" class="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 transition mb-6">
+    <i data-lucide="arrow-left" class="size-4"></i> Volver al Calendario
+  </a>
+  <h1 class="text-xl font-semibold text-zinc-900 mb-1">Popover de Cita</h1>
+  <p class="text-sm text-zinc-500 mb-8">Detalle que aparece al hacer click en un evento del calendario. Cinco variantes por tipo de cita.</p>
+
+  <div class="grid gap-6 lg:grid-cols-3 xl:grid-cols-5">
+
+    <!-- CONSULTA -->
+    <div>
+      <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-3">Consulta General</p>
+      <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100">
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-pink-50 px-2 py-0.5 text-xs font-medium text-pink-700">
+            <i data-lucide="stethoscope" class="size-3"></i> Consulta General
+          </span>
+          <button class="text-zinc-400 hover:text-zinc-900 transition"><i data-lucide="x" class="size-4"></i></button>
+        </div>
+        <div class="px-4 py-3 space-y-3">
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Paciente</p>
+              <p class="text-sm font-medium text-zinc-900">Gina Tuiran</p>
+              <p class="text-xs text-zinc-400">CC 1081153930 &middot; 312 456 7890</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="clock" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Horario</p>
+              <p class="text-sm font-medium text-zinc-900">Lun 31 Mar, 7:30 — 8:00 AM</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user-round-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Profesional</p>
+              <p class="text-sm font-medium text-zinc-900">Dr. Enrique Lopez Guzman</p>
+              <p class="text-xs text-zinc-400">Medicina General</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="building-2" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Convenio</p>
+              <p class="text-sm font-medium text-zinc-900">Particular</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="circle-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Estado</p>
+              <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600">
+                <span class="size-1.5 rounded-full bg-emerald-500"></span> Confirmada
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 border-t border-zinc-100 px-4 py-2.5">
+          <button class="h-7 px-2 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 inline-flex items-center gap-1 hover:bg-zinc-50 transition"><i data-lucide="move" class="size-3"></i> Mover</button>
+          <button class="h-7 px-2 rounded-md border border-red-200 text-xs font-medium text-red-600 inline-flex items-center gap-1 hover:bg-red-50 transition"><i data-lucide="x-circle" class="size-3"></i> Cancelar</button>
+          <button class="h-7 px-2 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 inline-flex items-center gap-1 hover:bg-zinc-50 transition"><i data-lucide="user-x" class="size-3"></i> Inasistencia</button>
+          <button class="h-7 px-2 rounded-md bg-zinc-900 text-xs font-medium text-white inline-flex items-center gap-1 hover:bg-zinc-800 transition"><i data-lucide="clipboard-check" class="size-3"></i> Ir a Recepcion</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCEDIMIENTO -->
+    <div>
+      <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-3">Procedimiento</p>
+      <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100">
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-violet-50 px-2 py-0.5 text-xs font-medium text-violet-700">
+            <i data-lucide="syringe" class="size-3"></i> Procedimiento
+          </span>
+          <button class="text-zinc-400 hover:text-zinc-900 transition"><i data-lucide="x" class="size-4"></i></button>
+        </div>
+        <div class="px-4 py-3 space-y-3">
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Paciente</p>
+              <p class="text-sm font-medium text-zinc-900">Kelys Hernandez</p>
+              <p class="text-xs text-zinc-400">CC 1067885080 &middot; 300 123 4567</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="clock" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Horario</p>
+              <p class="text-sm font-medium text-zinc-900">Mar 1 Abr, 7:00 — 8:30 AM</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user-round-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Profesional</p>
+              <p class="text-sm font-medium text-zinc-900">Dra. Ella Barrios Johnson</p>
+              <p class="text-xs text-zinc-400">Medicina General</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="building-2" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Convenio</p>
+              <p class="text-sm font-medium text-zinc-900">CLINICA INFANTIL DEL COUNTRY S.A.S</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="circle-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Estado</p>
+              <span class="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-600">
+                <span class="size-1.5 rounded-full bg-amber-500"></span> Pendiente
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 border-t border-zinc-100 px-4 py-2.5">
+          <button class="h-7 px-2 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 inline-flex items-center gap-1 hover:bg-zinc-50 transition"><i data-lucide="move" class="size-3"></i> Mover</button>
+          <button class="h-7 px-2 rounded-md border border-red-200 text-xs font-medium text-red-600 inline-flex items-center gap-1 hover:bg-red-50 transition"><i data-lucide="x-circle" class="size-3"></i> Cancelar</button>
+          <button class="h-7 px-2 rounded-md bg-zinc-900 text-xs font-medium text-white inline-flex items-center gap-1 hover:bg-zinc-800 transition"><i data-lucide="clipboard-check" class="size-3"></i> Ir a Recepcion</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- URGENTE -->
+    <div>
+      <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-3">Urgente</p>
+      <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100">
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
+            <i data-lucide="alert-circle" class="size-3"></i> Urgente
+          </span>
+          <button class="text-zinc-400 hover:text-zinc-900 transition"><i data-lucide="x" class="size-4"></i></button>
+        </div>
+        <div class="px-4 py-3 space-y-3">
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Paciente</p>
+              <p class="text-sm font-medium text-zinc-900">Elida Begambre</p>
+              <p class="text-xs text-zinc-400">CC 25857269 &middot; 315 789 0123</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="clock" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Horario</p>
+              <p class="text-sm font-medium text-zinc-900">Mie 2 Abr, 8:00 — 8:30 AM</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user-round-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Profesional</p>
+              <p class="text-sm font-medium text-zinc-900">Dr. Jose Miranda Villada</p>
+              <p class="text-xs text-zinc-400">Medicina General</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="building-2" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Convenio</p>
+              <p class="text-sm font-medium text-zinc-900">GETSEMANI IPS</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="circle-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Estado</p>
+              <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600">
+                <span class="size-1.5 rounded-full bg-emerald-500"></span> Confirmada
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 border-t border-zinc-100 px-4 py-2.5">
+          <button class="h-7 px-2 rounded-md border border-red-200 text-xs font-medium text-red-600 inline-flex items-center gap-1 hover:bg-red-50 transition"><i data-lucide="x-circle" class="size-3"></i> Cancelar</button>
+          <button class="h-7 px-2 rounded-md bg-zinc-900 text-xs font-medium text-white inline-flex items-center gap-1 hover:bg-zinc-800 transition"><i data-lucide="clipboard-check" class="size-3"></i> Ir a Recepcion</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGUIMIENTO -->
+    <div>
+      <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-3">Seguimiento</p>
+      <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100">
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+            <i data-lucide="repeat" class="size-3"></i> Seguimiento
+          </span>
+          <button class="text-zinc-400 hover:text-zinc-900 transition"><i data-lucide="x" class="size-4"></i></button>
+        </div>
+        <div class="px-4 py-3 space-y-3">
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Paciente</p>
+              <p class="text-sm font-medium text-zinc-900">Daniel Paternina</p>
+              <p class="text-xs text-zinc-400">CC 1067934614 &middot; 318 234 5678</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="clock" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Horario</p>
+              <p class="text-sm font-medium text-zinc-900">Lun 31 Mar, 11:00 — 11:30 AM</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user-round-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Profesional</p>
+              <p class="text-sm font-medium text-zinc-900">Dr. Enrique Lopez Guzman</p>
+              <p class="text-xs text-zinc-400">Medicina General</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="building-2" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Convenio</p>
+              <p class="text-sm font-medium text-zinc-900">Particular</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="circle-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Estado</p>
+              <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600">
+                <span class="size-1.5 rounded-full bg-emerald-500"></span> Confirmada
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 border-t border-zinc-100 px-4 py-2.5">
+          <button class="h-7 px-2 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 inline-flex items-center gap-1 hover:bg-zinc-50 transition"><i data-lucide="move" class="size-3"></i> Mover</button>
+          <button class="h-7 px-2 rounded-md border border-red-200 text-xs font-medium text-red-600 inline-flex items-center gap-1 hover:bg-red-50 transition"><i data-lucide="x-circle" class="size-3"></i> Cancelar</button>
+          <button class="h-7 px-2 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 inline-flex items-center gap-1 hover:bg-zinc-50 transition"><i data-lucide="user-x" class="size-3"></i> Inasistencia</button>
+          <button class="h-7 px-2 rounded-md bg-zinc-900 text-xs font-medium text-white inline-flex items-center gap-1 hover:bg-zinc-800 transition"><i data-lucide="clipboard-check" class="size-3"></i> Ir a Recepcion</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTRO EVENTO -->
+    <div>
+      <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-3">Otro Evento (no cita)</p>
+      <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100">
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700">
+            <i data-lucide="calendar-clock" class="size-3"></i> Otro Evento
+          </span>
+          <button class="text-zinc-400 hover:text-zinc-900 transition"><i data-lucide="x" class="size-4"></i></button>
+        </div>
+        <div class="px-4 py-3 space-y-3">
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="text" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Evento</p>
+              <p class="text-sm font-medium text-zinc-900">Reunion Equipo Medico</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="clock" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Horario</p>
+              <p class="text-sm font-medium text-zinc-900">Jue 3 Abr, 9:00 — 11:00 AM</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="user-round-check" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Profesional</p>
+              <p class="text-sm font-medium text-zinc-900">Dr. Enrique Lopez Guzman</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="message-square" class="size-4 text-zinc-400 mt-0.5 shrink-0"></i>
+            <div>
+              <p class="text-[10px] font-medium text-zinc-400 uppercase">Nota</p>
+              <p class="text-sm text-zinc-700">Revision de casos clinicos y planeacion semanal del equipo.</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 border-t border-zinc-100 px-4 py-2.5">
+          <button class="h-7 px-2 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 inline-flex items-center gap-1 hover:bg-zinc-50 transition"><i data-lucide="pencil" class="size-3"></i> Editar</button>
+          <button class="h-7 px-2 rounded-md border border-red-200 text-xs font-medium text-red-600 inline-flex items-center gap-1 hover:bg-red-50 transition"><i data-lucide="trash-2" class="size-3"></i> Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — WhatsApp Log Mensajes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Only custom CSS for sidebar collapse behavior — everything else is Tailwind */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    /* Scrollbar */
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+    /* Pulse animation for API status */
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .animate-pulse-dot { animation: pulse-dot 2s infinite; }
+    /* Expand row detail */
+    .row-detail { display: none; }
+    .row-detail.open { display: table-row; }
+    .expand-icon { transition: transform 200ms; }
+    .expand-icon.open { transform: rotate(90deg); }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SIDEBAR -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+
+      <!-- Sidebar Header -->
+      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
+            <i data-lucide="heart-pulse" class="size-4 text-white"></i>
+          </div>
+          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+        </a>
+        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
+          <i data-lucide="panel-left-close" class="size-4"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+
+        <!-- Dashboard -->
+        <div class="mb-1">
+          <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
+            <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Dashboard</span>
+          </a>
+        </div>
+
+        <!-- CONSULTA EXTERNA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
+          <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
+          <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-agenda">
+          <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
+          <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Recepcion de Paciente</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-config">
+          <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
+          <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
+          <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
+        </div>
+
+        <!-- HISTORIA CLINICA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
+          <i data-lucide="file-heart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
+          <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-hc">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
+          <a href="../04-clinical/attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Evaluacion Enfermeria</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-config">
+          <a href="../04-clinical/format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Profesionales de la Salud</span>
+          <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
+          <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
+          <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
+          <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
+          <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Especialidades</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tipo de Cita</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Formulas Consultorios</span>
+        </div>
+
+        <!-- Modulos HIS disabled -->
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Configuracion Hospitalizacion"><i data-lucide="bed" class="size-4 shrink-0"></i><span class="sidebar-hide">Config. Hospitalizacion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+
+        <!-- FACTURACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
+          <i data-lucide="receipt" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-exec">
+          <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
+          <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
+          <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
+          <a href="../07-billing/clientes.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Clientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Lista de Pacientes</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-config">
+          <a href="../07-billing/medios-pago.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Medios de Pago</a>
+          <a href="../07-billing/rangos-facturacion.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Rangos de Facturacion</a>
+          <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tarifas de Facturacion</span>
+          <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
+          <a href="../07-billing/tarifas-medicamentos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Tarifas de Medicamentos</a>
+          <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Sedes</span>
+        </div>
+
+        <!-- FARMACIA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
+          <i data-lucide="pill" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-exec">
+          <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
+          <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Articulos</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('far-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="far-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-config">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Bodegas</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tipo Articulos</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tipo Movimientos</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Reporte" onclick="toggleGroup('far-report')">
+          <i data-lucide="file-bar-chart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Reporte</span>
+          <i data-lucide="chevron-right" id="far-report-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-report">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Kardex</span>
+        </div>
+
+        <!-- COMUNICACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp" onclick="toggleGroup('wsp-nav')">
+          <i data-lucide="message-circle" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">WhatsApp</span>
+          <i data-lucide="chevron-right" id="wsp-nav-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400 open"></i>
+        </button>
+        <div class="nav-group-items pl-5 open" id="wsp-nav">
+          <a href="../08-whatsapp/whatsapp-dashboard.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Dashboard</a>
+          <a href="../08-whatsapp/whatsapp-templates.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Templates</a>
+          <a href="../08-whatsapp/whatsapp-log.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-900 font-medium bg-zinc-900/10 transition">Log Mensajes</a>
+          <a href="../08-whatsapp/whatsapp-config.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Configuracion</a>
+        </div>
+
+        <!-- OTROS MODULOS -->
+        <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
+        </div>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Banco Sangre"><i data-lucide="droplets" class="size-4 shrink-0"></i><span class="sidebar-hide">Banco Sangre</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="CRM"><i data-lucide="folder" class="size-4 shrink-0"></i><span class="sidebar-hide">CRM</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Integracion"><i data-lucide="puzzle" class="size-4 shrink-0"></i><span class="sidebar-hide">Integracion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Control de Accesos"><i data-lucide="key-round" class="size-4 shrink-0"></i><span class="sidebar-hide">Control de Accesos</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Tablero / Estadisticas"><i data-lucide="bar-chart-3" class="size-4 shrink-0"></i><span class="sidebar-hide">Tablero / Estadisticas</span></span>
+
+        <!-- PREFERENCIAS -->
+        <div class="mt-4 mb-1">
+          <a href="../09-settings/settings.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Preferencias">
+            <i data-lucide="sliders-horizontal" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Preferencias</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="border-t border-zinc-200 p-3 shrink-0">
+        <div class="sidebar-hide mb-2">
+          <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
+          <div class="flex gap-1">
+            <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
+            <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
+            <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
+          </div>
+          <div class="flex gap-1 mt-1">
+            <button onclick="toggleContrast()" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition flex items-center justify-center gap-1">
+              <i data-lucide="contrast" class="size-3"></i>
+              Contraste
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+          <div class="sidebar-hide overflow-hidden">
+            <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
+            <p class="text-xs text-zinc-400">Medicina General</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- MAIN AREA -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+
+      <!-- ══ STANDARD HEADER (matches all modules) ══ -->
+      <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+        <div class="flex items-center justify-between gap-6 px-6 py-2">
+          <div class="flex items-center gap-2">
+            <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-3.5 text-zinc-500"></i></div>
+            <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+          </div>
+          <div class="h-4 w-px bg-zinc-200"></div>
+          <div class="relative flex-1 max-w-md">
+            <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            <input type="text" placeholder="Buscar paciente, cita, CIE-10..." readonly class="h-9 w-full rounded-md border border-zinc-200 bg-zinc-50 pl-9 pr-12 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+            <span class="absolute right-2.5 top-1/2 -translate-y-1/2"><kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-white px-1 text-[10px] font-medium text-zinc-400">&#8984;K</kbd></span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="relative flex size-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition">
+              <i data-lucide="bell" class="size-[18px]"></i>
+              <span class="absolute top-1 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-semibold text-white ring-2 ring-white">3</span>
+            </button>
+            <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-[11px] font-semibold text-white">JP</div>
+              <span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ══ MAIN CONTENT ══ -->
+      <main class="flex-1 overflow-y-auto bg-zinc-50 px-6 py-6">
+        <div class="max-w-7xl mx-auto">
+
+
+        <!-- Filters + Table Card -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+
+          <!-- Filters -->
+          <div class="p-6 border-b border-zinc-100">
+            <h3 class="text-sm font-semibold text-zinc-900 mb-4">Filtros</h3>
+            <div class="grid grid-cols-5 gap-4 items-end">
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wide mb-1.5">Fecha</label>
+                <input type="date" value="2026-04-04" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition">
+              </div>
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wide mb-1.5">Estado</label>
+                <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition appearance-none">
+                  <option value="">Todos los estados</option>
+                  <option>Enviado</option>
+                  <option>Entregado</option>
+                  <option>Leido</option>
+                  <option>Fallido</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wide mb-1.5">Template</label>
+                <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition appearance-none">
+                  <option value="">Todos los templates</option>
+                  <option>Recordatorio 24h</option>
+                  <option>Confirmacion Cita</option>
+                  <option>Cancelacion</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wide mb-1.5">Paciente</label>
+                <div class="relative">
+                  <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-zinc-400 pointer-events-none"></i>
+                  <input type="text" placeholder="Buscar paciente..." class="w-full h-9 rounded-md border border-zinc-200 bg-white pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition">
+                </div>
+              </div>
+              <div>
+                <button class="inline-flex items-center justify-center gap-1.5 h-9 rounded-lg bg-zinc-900 px-4 text-xs font-medium text-white hover:bg-zinc-800 transition">
+                  <i data-lucide="search" class="size-3.5"></i>
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-zinc-200">
+                  <th class="h-12 w-10 px-4 text-left text-sm font-medium text-zinc-500"></th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Fecha / Hora</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Paciente</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Template</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Estado</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Cita</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100">
+
+                <!-- Row 1: Maria Garcia Lopez - Leido -->
+                <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="toggleRow('row-1')">
+                  <td class="px-4 py-3"><i data-lucide="chevron-right" class="size-3.5 text-zinc-400 expand-icon" id="row-1-icon"></i></td>
+                  <td class="px-4 py-3 text-sm text-zinc-900">04 Abr, 08:15 AM</td>
+                  <td class="px-4 py-3 text-sm font-medium text-zinc-900">Maria Garcia Lopez</td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">Recordatorio 24h</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">
+                      <i data-lucide="check-check" class="size-3"></i> Leido
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">05 Abr, 08:00 AM</td>
+                  <td class="px-4 py-3">
+                    <button onclick="event.stopPropagation()" class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 transition">
+                      <i data-lucide="rotate-ccw" class="size-3"></i> Reenviar
+                    </button>
+                  </td>
+                </tr>
+                <tr class="row-detail" id="row-1">
+                  <td colspan="7" class="px-4 py-4 bg-zinc-50/50">
+                    <div class="flex items-center gap-6 pl-10">
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="file-text" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Creado</p><p class="text-[11px] text-zinc-400">08:15:00</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="send" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Enviado</p><p class="text-[11px] text-zinc-400">08:15:02</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Entregado</p><p class="text-[11px] text-zinc-400">08:15:04</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="check-check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Leido</p><p class="text-[11px] text-zinc-400">08:22:31</p></div></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 2: Carlos Hernandez R. - Entregado -->
+                <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="toggleRow('row-2')">
+                  <td class="px-4 py-3"><i data-lucide="chevron-right" class="size-3.5 text-zinc-400 expand-icon" id="row-2-icon"></i></td>
+                  <td class="px-4 py-3 text-sm text-zinc-900">04 Abr, 08:15 AM</td>
+                  <td class="px-4 py-3 text-sm font-medium text-zinc-900">Carlos Hernandez R.</td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">Recordatorio 24h</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">
+                      <i data-lucide="check" class="size-3"></i> Entregado
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">05 Abr, 09:30 AM</td>
+                  <td class="px-4 py-3">
+                    <button onclick="event.stopPropagation()" class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 transition">
+                      <i data-lucide="rotate-ccw" class="size-3"></i> Reenviar
+                    </button>
+                  </td>
+                </tr>
+                <tr class="row-detail" id="row-2">
+                  <td colspan="7" class="px-4 py-4 bg-zinc-50/50">
+                    <div class="flex items-center gap-6 pl-10">
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="file-text" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Creado</p><p class="text-[11px] text-zinc-400">08:15:00</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="send" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Enviado</p><p class="text-[11px] text-zinc-400">08:15:01</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Entregado</p><p class="text-[11px] text-zinc-400">08:15:03</p></div></div>
+                      <div class="w-8 h-px bg-zinc-200"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-zinc-100 text-zinc-400"><i data-lucide="check-check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-400">Leido</p><p class="text-[11px] text-zinc-300">--</p></div></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 3: Ana Sofia Restrepo - Leido -->
+                <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="toggleRow('row-3')">
+                  <td class="px-4 py-3"><i data-lucide="chevron-right" class="size-3.5 text-zinc-400 expand-icon" id="row-3-icon"></i></td>
+                  <td class="px-4 py-3 text-sm text-zinc-900">04 Abr, 08:15 AM</td>
+                  <td class="px-4 py-3 text-sm font-medium text-zinc-900">Ana Sofia Restrepo</td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">Confirmacion</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">
+                      <i data-lucide="check-check" class="size-3"></i> Leido
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">05 Abr, 10:00 AM</td>
+                  <td class="px-4 py-3">
+                    <button onclick="event.stopPropagation()" class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 transition">
+                      <i data-lucide="rotate-ccw" class="size-3"></i> Reenviar
+                    </button>
+                  </td>
+                </tr>
+                <tr class="row-detail" id="row-3">
+                  <td colspan="7" class="px-4 py-4 bg-zinc-50/50">
+                    <div class="flex items-center gap-6 pl-10">
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="file-text" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Creado</p><p class="text-[11px] text-zinc-400">08:15:00</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="send" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Enviado</p><p class="text-[11px] text-zinc-400">08:15:02</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Entregado</p><p class="text-[11px] text-zinc-400">08:15:05</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="check-check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Leido</p><p class="text-[11px] text-zinc-400">08:18:44</p></div></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 4: Lucia Fernandez M. - Fallido -->
+                <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="toggleRow('row-4')">
+                  <td class="px-4 py-3"><i data-lucide="chevron-right" class="size-3.5 text-zinc-400 expand-icon" id="row-4-icon"></i></td>
+                  <td class="px-4 py-3 text-sm text-zinc-900">04 Abr, 08:15 AM</td>
+                  <td class="px-4 py-3 text-sm font-medium text-zinc-900">Lucia Fernandez M.</td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">Recordatorio 24h</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-medium text-red-600">
+                      <i data-lucide="x" class="size-3"></i> Fallido
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">05 Abr, 02:00 PM</td>
+                  <td class="px-4 py-3">
+                    <button onclick="event.stopPropagation()" class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 transition">
+                      <i data-lucide="rotate-ccw" class="size-3"></i> Reenviar
+                    </button>
+                  </td>
+                </tr>
+                <tr class="row-detail" id="row-4">
+                  <td colspan="7" class="px-4 py-4 bg-zinc-50/50">
+                    <div class="flex items-center gap-6 pl-10">
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="file-text" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Creado</p><p class="text-[11px] text-zinc-400">08:15:00</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-red-500/10 text-red-600"><i data-lucide="x" class="size-3"></i></span><div><p class="text-xs font-medium text-red-600">Fallido</p><p class="text-[11px] text-zinc-400">08:15:01</p></div></div>
+                      <div class="w-8 h-px bg-zinc-200"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-zinc-100 text-zinc-400"><i data-lucide="check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-400">Entregado</p><p class="text-[11px] text-zinc-300">--</p></div></div>
+                      <div class="w-8 h-px bg-zinc-200"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-zinc-100 text-zinc-400"><i data-lucide="check-check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-400">Leido</p><p class="text-[11px] text-zinc-300">--</p></div></div>
+                    </div>
+                    <div class="ml-10 mt-3 rounded-lg bg-red-50 border border-red-200/60 px-3 py-2">
+                      <p class="text-xs text-red-600"><span class="font-semibold">Error:</span> Numero de telefono no registrado en WhatsApp (Error 404)</p>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 5: Juan David Mejia - Enviado -->
+                <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="toggleRow('row-5')">
+                  <td class="px-4 py-3"><i data-lucide="chevron-right" class="size-3.5 text-zinc-400 expand-icon" id="row-5-icon"></i></td>
+                  <td class="px-4 py-3 text-sm text-zinc-900">04 Abr, 08:15 AM</td>
+                  <td class="px-4 py-3 text-sm font-medium text-zinc-900">Juan David Mejia</td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">Recordatorio 24h</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">
+                      <i data-lucide="clock" class="size-3"></i> Enviado
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">05 Abr, 11:00 AM</td>
+                  <td class="px-4 py-3">
+                    <button onclick="event.stopPropagation()" class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 transition">
+                      <i data-lucide="rotate-ccw" class="size-3"></i> Reenviar
+                    </button>
+                  </td>
+                </tr>
+                <tr class="row-detail" id="row-5">
+                  <td colspan="7" class="px-4 py-4 bg-zinc-50/50">
+                    <div class="flex items-center gap-6 pl-10">
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="file-text" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Creado</p><p class="text-[11px] text-zinc-400">08:15:00</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-zinc-200 text-zinc-600"><i data-lucide="send" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Enviado</p><p class="text-[11px] text-zinc-400">08:15:02</p></div></div>
+                      <div class="w-8 h-px bg-zinc-200"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-zinc-100 text-zinc-400"><i data-lucide="check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-400">Entregado</p><p class="text-[11px] text-zinc-300">--</p></div></div>
+                      <div class="w-8 h-px bg-zinc-200"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-zinc-100 text-zinc-400"><i data-lucide="check-check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-400">Leido</p><p class="text-[11px] text-zinc-300">--</p></div></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 6: Pedro Ramirez Diaz - Entregado -->
+                <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="toggleRow('row-6')">
+                  <td class="px-4 py-3"><i data-lucide="chevron-right" class="size-3.5 text-zinc-400 expand-icon" id="row-6-icon"></i></td>
+                  <td class="px-4 py-3 text-sm text-zinc-900">04 Abr, 08:15 AM</td>
+                  <td class="px-4 py-3 text-sm font-medium text-zinc-900">Pedro Ramirez Diaz</td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">Confirmacion</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">
+                      <i data-lucide="check" class="size-3"></i> Entregado
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-zinc-500">05 Abr, 03:30 PM</td>
+                  <td class="px-4 py-3">
+                    <button onclick="event.stopPropagation()" class="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 transition">
+                      <i data-lucide="rotate-ccw" class="size-3"></i> Reenviar
+                    </button>
+                  </td>
+                </tr>
+                <tr class="row-detail" id="row-6">
+                  <td colspan="7" class="px-4 py-4 bg-zinc-50/50">
+                    <div class="flex items-center gap-6 pl-10">
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="file-text" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Creado</p><p class="text-[11px] text-zinc-400">08:15:00</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="send" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Enviado</p><p class="text-[11px] text-zinc-400">08:15:01</p></div></div>
+                      <div class="w-8 h-px bg-emerald-300"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600"><i data-lucide="check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-900">Entregado</p><p class="text-[11px] text-zinc-400">08:15:04</p></div></div>
+                      <div class="w-8 h-px bg-zinc-200"></div>
+                      <div class="flex items-center gap-2"><span class="flex size-6 items-center justify-center rounded-full bg-zinc-100 text-zinc-400"><i data-lucide="check-check" class="size-3"></i></span><div><p class="text-xs font-medium text-zinc-400">Leido</p><p class="text-[11px] text-zinc-300">--</p></div></div>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="flex items-center justify-between px-6 py-4 border-t border-zinc-100">
+            <span class="text-sm text-zinc-500">Mostrando 1-6 de 1,284</span>
+            <div class="flex items-center gap-2">
+              <button disabled class="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-400 cursor-not-allowed">
+                <i data-lucide="chevron-left" class="size-3.5"></i> Anterior
+              </button>
+              <button class="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition">
+                Siguiente <i data-lucide="chevron-right" class="size-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        </div><!-- max-w-7xl -->
+      </main>
+    </div><!-- main area -->
+  </div><!-- flex h-screen -->
+
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-collapsed'); }
+    function toggleGroup(id) { document.getElementById(id).classList.toggle('open'); document.getElementById(id + '-chevron').classList.toggle('open'); }
+    function setFontSize(size) {
+      var root = document.documentElement;
+      switch(size) {
+        case 'normal': root.style.fontSize = '13px'; break;
+        case 'large': root.style.fontSize = '16px'; break;
+        case 'xlarge': root.style.fontSize = '18px'; break;
+      }
+    }
+    function toggleContrast() { document.documentElement.classList.toggle('high-contrast'); }
+    function toggleRow(id) {
+      var row = document.getElementById(id);
+      var icon = document.getElementById(id + '-icon');
+      row.classList.toggle('open');
+      icon.classList.toggle('open');
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

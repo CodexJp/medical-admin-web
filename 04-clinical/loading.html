@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Cargando Formato HC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script><script>tailwindcss.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script><script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Sidebar collapse */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+    /* Shimmer animation */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.8s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SIDEBAR -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+
+      <!-- Sidebar Header -->
+      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
+            <i data-lucide="heart-pulse" class="size-4 text-white"></i>
+          </div>
+          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+        </a>
+        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
+          <i data-lucide="panel-left-close" class="size-4"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+
+        <!-- Dashboard -->
+        <div class="mb-1">
+          <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
+            <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Dashboard</span>
+          </a>
+        </div>
+
+        <!-- CONSULTA EXTERNA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
+          <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
+          <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-agenda">
+          <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
+          <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Recepcion de Paciente</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-config">
+          <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
+          <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
+          <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
+        </div>
+
+        <!-- HISTORIA CLINICA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
+          <i data-lucide="file-heart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
+          <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron open sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items open pl-5" id="his-hc">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
+          <a href="attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-zinc-900 bg-zinc-900/10">Atencion de Pacientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Evaluacion Enfermeria</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-config">
+          <a href="format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
+          <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
+          <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
+          <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
+          <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
+          <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
+        </div>
+
+        <!-- FACTURACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
+          <i data-lucide="receipt" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-exec">
+          <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
+          <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
+          <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
+          <a href="../07-billing/clientes.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Clientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Lista de Pacientes</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-config">
+          <a href="../07-billing/medios-pago.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Medios de Pago</a>
+          <a href="../07-billing/rangos-facturacion.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Rangos de Facturacion</a>
+          <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Proximamente">Tarifas de Facturacion</span>
+          <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
+          <a href="../07-billing/tarifas-medicamentos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Tarifas de Medicamentos</a>
+          <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Sedes</span>
+        </div>
+
+        <!-- FARMACIA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
+          <i data-lucide="pill" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-exec">
+          <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
+          <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Articulos</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('far-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="far-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-config">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Bodegas</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Tipo Articulos</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Tipo Movimientos</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Reporte" onclick="toggleGroup('far-report')">
+          <i data-lucide="file-bar-chart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Reporte</span>
+          <i data-lucide="chevron-right" id="far-report-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-report">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Kardex</span>
+        </div>
+
+        <!-- COMUNICACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
+        </div>
+        <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
+          <i data-lucide="message-circle" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">WhatsApp</span>
+        </a>
+
+        <!-- OTROS MODULOS -->
+        <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
+        </div>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Banco Sangre"><i data-lucide="droplets" class="size-4 shrink-0"></i><span class="sidebar-hide">Banco Sangre</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="CRM"><i data-lucide="folder" class="size-4 shrink-0"></i><span class="sidebar-hide">CRM</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Integracion"><i data-lucide="puzzle" class="size-4 shrink-0"></i><span class="sidebar-hide">Integracion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Control de Accesos"><i data-lucide="key-round" class="size-4 shrink-0"></i><span class="sidebar-hide">Control de Accesos</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Tablero / Estadisticas"><i data-lucide="bar-chart-3" class="size-4 shrink-0"></i><span class="sidebar-hide">Tablero / Estadisticas</span></span>
+
+        <!-- PREFERENCIAS -->
+        <div class="mt-4 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Preferencias</p>
+        </div>
+        <a href="../09-settings/settings.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Preferencias">
+          <i data-lucide="sliders-horizontal" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">Preferencias</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="border-t border-zinc-200 p-3 shrink-0">
+        <div class="sidebar-hide mb-2">
+          <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
+          <div class="flex gap-1">
+            <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
+            <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
+            <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+          <div class="sidebar-hide overflow-hidden">
+            <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
+            <p class="text-xs text-zinc-400">Medicina General</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- MAIN AREA -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+
+      <!-- Header -->
+      <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+        <div class="flex items-center justify-between gap-6 px-6 py-2">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100 text-zinc-500">
+                <i data-lucide="building-2" class="size-3.5"></i>
+              </div>
+              <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+            </div>
+            <div class="h-5 w-px bg-zinc-200"></div>
+            <div class="relative flex-1 max-w-md">
+              <i data-lucide="search" class="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-zinc-400"></i>
+              <input type="text" class="h-8 w-full rounded-md border border-zinc-200 bg-zinc-50 pl-8 pr-16 text-sm text-zinc-600 placeholder-zinc-400 outline-none focus:border-zinc-300 focus:bg-white" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly>
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-zinc-200 bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-400">&#8984;K</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button class="relative flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition" title="Notificaciones">
+              <i data-lucide="bell" class="size-4"></i>
+              <span class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">5</span>
+            </button>
+            <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition" title="Ayuda">
+              <i data-lucide="circle-help" class="size-4"></i>
+            </button>
+            <div class="ml-2 h-5 w-px bg-zinc-200"></div>
+            <button class="ml-2 flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+              <span class="text-sm font-medium text-zinc-700">Dr. Rodriguez</span>
+              <i data-lucide="chevron-down" class="size-3.5 text-zinc-400"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- HC Layout -->
+      <div class="flex flex-1 overflow-hidden">
+
+        <!-- Left sidebar — skeleton areas -->
+        <aside class="w-[200px] bg-zinc-50/80 border-r border-zinc-200 shrink-0 p-4 max-lg:w-0 max-lg:overflow-hidden max-lg:border-none max-lg:p-0">
+          <div class="w-[60px] h-3.5 bg-zinc-200 rounded shimmer mb-4"></div>
+          <div class="h-10 bg-zinc-200 rounded-lg shimmer mb-2"></div>
+          <div class="h-10 bg-zinc-200 rounded-lg shimmer mb-2" style="width:85%"></div>
+          <div class="h-10 bg-zinc-200 rounded-lg shimmer mb-2" style="width:90%"></div>
+          <div class="h-10 bg-zinc-200 rounded-lg shimmer mb-2" style="width:75%"></div>
+          <div class="h-10 bg-zinc-200 rounded-lg shimmer mb-2" style="width:95%"></div>
+          <div class="h-10 bg-zinc-200 rounded-lg shimmer mb-2" style="width:80%"></div>
+        </aside>
+
+        <!-- Center — skeleton form -->
+        <main class="flex-1 bg-white flex flex-col overflow-hidden relative">
+          <!-- Skeleton tabs L1 -->
+          <div class="flex gap-0 px-6 border-b border-zinc-200 bg-zinc-50/80">
+            <div class="w-[120px] h-3.5 bg-zinc-300 rounded shimmer my-3.5 mr-4"></div>
+            <div class="w-[100px] h-3.5 bg-zinc-200 rounded shimmer my-3.5 mr-4"></div>
+            <div class="w-[90px] h-3.5 bg-zinc-200 rounded shimmer my-3.5 mr-4"></div>
+            <div class="w-[110px] h-3.5 bg-zinc-200 rounded shimmer my-3.5"></div>
+          </div>
+
+          <!-- Skeleton sub-tabs -->
+          <div class="flex gap-0 px-6 border-b border-zinc-200">
+            <div class="w-[130px] h-3 bg-zinc-300 rounded shimmer my-3 mr-3"></div>
+            <div class="w-[130px] h-3 bg-zinc-200 rounded shimmer my-3 mr-3"></div>
+            <div class="w-[100px] h-3 bg-zinc-200 rounded shimmer my-3 mr-3"></div>
+            <div class="w-[90px] h-3 bg-zinc-200 rounded shimmer my-3"></div>
+          </div>
+
+          <div class="flex-1 p-6 overflow-y-auto">
+            <!-- Section 1 — MC/EA -->
+            <div class="mb-8">
+              <div class="w-[140px] h-4 bg-zinc-300 rounded shimmer mb-4"></div>
+              <div class="mb-4">
+                <div class="w-[140px] h-3 bg-zinc-200 rounded shimmer mb-2"></div>
+                <div class="w-full h-[72px] bg-zinc-200 rounded-lg shimmer"></div>
+              </div>
+              <div class="mb-4">
+                <div class="w-[120px] h-3 bg-zinc-200 rounded shimmer mb-2"></div>
+                <div class="w-full h-[72px] bg-zinc-200 rounded-lg shimmer"></div>
+              </div>
+            </div>
+
+            <!-- Section 2 — ANAMNESIS -->
+            <div class="mb-8">
+              <div class="w-[100px] h-4 bg-zinc-300 rounded shimmer mb-4"></div>
+              <div class="flex gap-4">
+                <div class="flex-1">
+                  <div class="w-[130px] h-3 bg-zinc-200 rounded shimmer mb-2"></div>
+                  <div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div>
+                </div>
+                <div class="flex-1">
+                  <div class="w-[110px] h-3 bg-zinc-200 rounded shimmer mb-2"></div>
+                  <div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div>
+                </div>
+              </div>
+              <div class="flex gap-4 mt-4">
+                <div class="flex-1">
+                  <div class="w-[120px] h-3 bg-zinc-200 rounded shimmer mb-2"></div>
+                  <div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div>
+                </div>
+                <div class="flex-1">
+                  <div class="w-[100px] h-3 bg-zinc-200 rounded shimmer mb-2"></div>
+                  <div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="w-[140px] h-3 bg-zinc-200 rounded shimmer mb-2"></div>
+                <div class="flex gap-4">
+                  <div class="w-20 h-7 bg-zinc-200 rounded-full shimmer"></div>
+                  <div class="w-20 h-7 bg-zinc-200 rounded-full shimmer"></div>
+                  <div class="w-20 h-7 bg-zinc-200 rounded-full shimmer"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3 — Signos Vitales -->
+            <div class="mb-8">
+              <div class="w-[120px] h-4 bg-zinc-300 rounded shimmer mb-4"></div>
+              <div class="flex gap-4">
+                <div class="flex-1"><div class="w-[30px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+                <div class="flex-1"><div class="w-[70px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+                <div class="flex-1"><div class="w-[70px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+                <div class="flex-1"><div class="w-[20px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+              </div>
+              <div class="flex gap-4 mt-4">
+                <div class="flex-1"><div class="w-[20px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+                <div class="flex-1"><div class="w-[40px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+                <div class="flex-1"><div class="w-[35px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+                <div class="flex-1"><div class="w-[30px] h-3 bg-zinc-200 rounded shimmer mb-2"></div><div class="w-full h-9 bg-zinc-200 rounded-lg shimmer"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading indicator -->
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-white border border-zinc-200/60 rounded-full text-xs text-zinc-500 shadow-sm z-10" id="loadingIndicator">
+            <div class="size-3.5 border-2 border-zinc-200 border-t-zinc-900 rounded-full" style="animation: spin 800ms linear infinite"></div>
+            Cargando formato: Consulta General...
+          </div>
+
+          <!-- Timeout indicator (hidden, shown after 8s) -->
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 shadow-sm z-10 hidden" id="timeoutIndicator">
+            <i data-lucide="alert-triangle" class="size-3.5 shrink-0"></i>
+            <span>Esto esta tardando mas de lo esperado.</span>
+            <button class="ml-1 font-medium underline hover:text-amber-900" onclick="window.location.reload()">Reintentar?</button>
+          </div>
+        </main>
+
+        <!-- Right sidebar — patient loaded, format skeleton -->
+        <aside class="w-[280px] bg-zinc-50/80 border-l border-zinc-200 shrink-0 overflow-y-auto max-md:hidden">
+          <div class="p-4 border-b border-zinc-200 flex items-center gap-2.5">
+            <div class="size-8 rounded-full bg-green-50 flex items-center justify-center">
+              <i data-lucide="clock" class="size-4 text-green-600"></i>
+            </div>
+            <div>
+              <div class="text-xl font-semibold text-zinc-900" style="font-family: 'JetBrains Mono', 'Consolas', monospace">0:01:12</div>
+              <div class="text-[11px] text-zinc-400">Tiempo de atencion</div>
+            </div>
+          </div>
+
+          <div class="p-4 border-b border-zinc-200">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="size-12 rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center">
+                <i data-lucide="user" class="size-6 text-zinc-500"></i>
+              </div>
+              <div class="text-[15px] font-semibold text-zinc-900">Juan Pablo Melo Alvarez</div>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-zinc-400 min-w-[52px]">Edad</span>
+                <span class="text-zinc-900 font-medium">45 anos</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-zinc-400 min-w-[52px]">Genero</span>
+                <span class="text-zinc-900 font-medium">Masculino</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-zinc-400 min-w-[52px]">Documento</span>
+                <span class="bg-violet-50 text-violet-700 px-2 py-0.5 rounded text-[11px] font-medium">CC 79.456.789</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-zinc-400 min-w-[52px]">Convenio</span>
+                <span class="text-zinc-900 font-medium">Coomeva EPS</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 border-b border-zinc-200">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Formatos</span>
+              <span class="min-w-[20px] h-5 px-1.5 bg-violet-100 text-violet-700 rounded-full text-[11px] font-semibold flex items-center justify-center">1</span>
+            </div>
+            <div class="flex items-center gap-2.5 p-2 bg-white border border-zinc-200 rounded-lg">
+              <div class="size-7 rounded-md bg-violet-100 flex items-center justify-center">
+                <i data-lucide="file-text" class="size-3.5 text-violet-700"></i>
+              </div>
+              <div>
+                <div class="text-[13px] font-medium text-zinc-900">Consulta General</div>
+                <div class="text-[11px] text-zinc-400">Cargando...</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-4 py-3 border-b border-zinc-200 flex items-center gap-1.5 text-xs text-amber-700">
+            <div class="size-3 border-[1.5px] border-zinc-200 border-t-zinc-900 rounded-full shrink-0" style="animation: spin 800ms linear infinite"></div>
+            Cargando formato...
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-collapsed'); }
+    function toggleGroup(id) {
+      document.getElementById(id).classList.toggle('open');
+      document.getElementById(id + '-chevron').classList.toggle('open');
+    }
+    function setFontSize(size) {
+      var root = document.documentElement;
+      switch(size) {
+        case 'normal': root.style.fontSize = '13px'; break;
+        case 'large': root.style.fontSize = '16px'; break;
+        case 'xlarge': root.style.fontSize = '18px'; break;
+      }
+    }
+
+    // Show timeout state after 8 seconds
+    setTimeout(() => {
+      var loadEl = document.getElementById('loadingIndicator');
+      var timeoutEl = document.getElementById('timeoutIndicator');
+      if (loadEl) loadEl.classList.add('hidden');
+      if (timeoutEl) timeoutEl.classList.remove('hidden');
+      lucide.createIcons();
+    }, 8000);
+
+    // Auto-redirect to hc-main after 3 seconds
+    setTimeout(() => {
+      window.location.href = 'hc-main.html';
+    }, 3000);
+  </script>
+</body>
+</html>

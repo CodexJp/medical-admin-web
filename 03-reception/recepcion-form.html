@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Recepcion — MedicalAdmin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Only custom CSS for sidebar collapse behavior — everything else is Tailwind */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    /* Scrollbar */
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+    /* Toggle content */
+    .toggle-content { display: none; }
+    .toggle-content.visible { display: block; }
+    /* PYP section */
+    .pyp-section { display: none; }
+    .pyp-section.visible { display: block; }
+    /* Form nav responsive */
+    @media (max-width: 1200px) { .form-nav-aside { display: none; } }
+    /* Wizard step transitions */
+    .step-content { animation: stepFadeIn 0.25s ease-out; }
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+<div class="flex h-screen overflow-hidden">
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SIDEBAR -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+
+    <!-- Sidebar Header -->
+    <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+      <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+        <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
+          <i data-lucide="heart-pulse" class="size-4 text-white"></i>
+        </div>
+        <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+      </a>
+      <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
+        <i data-lucide="panel-left-close" class="size-4"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar Nav -->
+    <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+
+      <!-- Dashboard -->
+      <div class="mb-1">
+        <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
+          <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">Dashboard</span>
+        </a>
+      </div>
+
+      <!-- CONSULTA EXTERNA -->
+      <div class="mt-4 mb-1">
+        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
+      </div>
+      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
+        <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
+        <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron open sidebar-hide size-3.5 text-zinc-400"></i>
+      </button>
+      <div class="nav-group-items open pl-5" id="cit-agenda">
+        <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
+        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
+        <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-zinc-900 bg-zinc-900/10 transition">Recepcion de Paciente</a>
+        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
+      </div>
+      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
+        <i data-lucide="settings" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+        <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+      </button>
+      <div class="nav-group-items pl-5" id="cit-config">
+        <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
+        <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
+        <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
+      </div>
+
+      <!-- HISTORIA CLINICA -->
+      <div class="mt-4 mb-1">
+        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
+      </div>
+      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
+        <i data-lucide="file-heart" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
+        <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+      </button>
+      <div class="nav-group-items pl-5" id="his-hc">
+        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
+        <a href="../04-clinical/attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
+        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
+      </div>
+      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
+        <i data-lucide="settings" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+        <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+      </button>
+      <div class="nav-group-items pl-5" id="his-config">
+        <a href="../04-clinical/format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
+        <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
+        <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
+        <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
+        <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
+        <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
+      </div>
+
+      <!-- FACTURACION -->
+      <div class="mt-4 mb-1">
+        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
+      </div>
+      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
+        <i data-lucide="receipt" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+      </button>
+      <div class="nav-group-items pl-5" id="pos-exec">
+        <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
+        <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
+        <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
+      </div>
+      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
+        <i data-lucide="settings" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+        <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+      </button>
+      <div class="nav-group-items pl-5" id="pos-config">
+        <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
+        <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
+        <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
+      </div>
+
+      <!-- FARMACIA -->
+      <div class="mt-4 mb-1">
+        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
+      </div>
+      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
+        <i data-lucide="pill" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+        <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+      </button>
+      <div class="nav-group-items pl-5" id="far-exec">
+        <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
+        <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
+      </div>
+
+      <!-- COMUNICACION -->
+      <div class="mt-4 mb-1">
+        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
+      </div>
+      <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
+        <i data-lucide="message-circle" class="size-4 shrink-0"></i>
+        <span class="sidebar-hide">WhatsApp</span>
+      </a>
+
+      <!-- OTROS MODULOS -->
+      <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
+        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
+      </div>
+      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
+      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
+      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
+      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
+      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="border-t border-zinc-200 p-3 shrink-0">
+      <div class="sidebar-hide mb-2">
+        <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
+        <div class="flex gap-1">
+          <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
+          <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
+          <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
+        </div>
+        <div class="flex gap-1 mt-1">
+          <button onclick="toggleContrast()" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition flex items-center justify-center gap-1">
+            <i data-lucide="contrast" class="size-3"></i>
+            <span>Contraste</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+        <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+        <div class="sidebar-hide overflow-hidden">
+          <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
+          <p class="text-xs text-zinc-400">Medicina General</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- MAIN AREA -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="flex flex-1 flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+      <div class="flex items-center justify-between gap-6 px-6 py-2">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-3.5 text-zinc-500"></i></div>
+            <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+          </div>
+          <div class="h-4 w-px bg-zinc-200"></div>
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            <input type="text" placeholder="Buscar paciente, cita, CIE-10..." readonly class="h-9 w-80 rounded-md border border-zinc-200 bg-zinc-50 pl-9 pr-12 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+            <span class="absolute right-2.5 top-1/2 -translate-y-1/2"><kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-white px-1 text-[10px] font-medium text-zinc-400">Cmd+K</kbd></span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button class="relative flex size-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition">
+            <i data-lucide="bell" class="size-[18px]"></i>
+            <span class="absolute top-1 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-semibold text-white ring-2 ring-white">5</span>
+          </button>
+          <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+            <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-[11px] font-semibold text-white">JP</div>
+            <span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-hidden bg-zinc-50 flex flex-col">
+      <div class="flex-1 overflow-y-auto px-6 py-6" id="form-content-scroll">
+        <div class="max-w-[1160px]">
+
+        <!-- Page header -->
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <div class="flex items-center gap-1.5 text-xs text-zinc-400 mb-1">
+              <a href="../00-shell/dashboard-medico.html" class="text-zinc-400 hover:text-zinc-900 no-underline">Inicio</a>
+              <i data-lucide="chevron-right" class="size-3.5"></i>
+              <a href="index.html" class="text-zinc-400 hover:text-zinc-900 no-underline">Recepcion</a>
+              <i data-lucide="chevron-right" class="size-3.5"></i>
+              <span class="text-zinc-900">Formulario de Recepcion</span>
+            </div>
+            <h1 class="text-2xl font-bold text-zinc-900 tracking-tight leading-8">Recepcion de Paciente</h1>
+            <p class="text-sm text-zinc-500 mt-0.5">Complete la informacion requerida para recepcionar al paciente</p>
+          </div>
+          <a href="index.html" class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition inline-flex items-center gap-2">
+            <i data-lucide="x" class="size-4"></i> Cancelar
+          </a>
+        </div>
+
+        <!-- Patient banner -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-4 mb-4 flex items-center gap-4">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-base font-semibold text-zinc-600">LC</div>
+          <div class="flex-1">
+            <div class="text-base font-semibold text-zinc-900 leading-snug">Luis Fernando Castillo Rios</div>
+            <div class="flex gap-4 mt-0.5">
+              <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="id-card" class="size-3.5"></i> <strong class="font-medium text-zinc-600">CC 1032456789</strong></span>
+              <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="calendar" class="size-3.5"></i> 35 anos</span>
+              <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="user" class="size-3.5"></i> Masculino</span>
+              <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="building" class="size-3.5"></i> Nueva EPS</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600"><i data-lucide="clipboard-list" class="size-3.5"></i> En Recepcion</span>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm px-4 py-3 mb-4 flex items-center gap-4">
+          <span class="text-xs font-medium text-zinc-900 whitespace-nowrap" id="progress-text">Seccion 1 de 9 — Informacion del Evento</span>
+          <div class="flex-1 h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+            <div class="h-full bg-zinc-900 rounded-full transition-all duration-400" id="progress-fill" style="width: 11%"></div>
+          </div>
+          <span class="text-xs font-semibold text-zinc-900 whitespace-nowrap" id="progress-pct">11%</span>
+        </div>
+
+        <!-- Form layout with nav sidebar -->
+        <div class="flex gap-6 items-start">
+
+          <!-- Section navigation (stepper) -->
+          <nav class="form-nav-aside w-[200px] shrink-0 sticky top-20" aria-label="Secciones del formulario">
+            <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm py-4">
+              <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 px-4 pb-3">Secciones</div>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-zinc-900 text-zinc-900 font-medium bg-zinc-50 transition" data-target="sec-evento" onclick="scrollToSection('sec-evento')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-900 text-[10px] font-semibold text-zinc-900 bg-zinc-100">1</span>
+                <span class="flex-1 leading-tight">Evento</span>
+                <span class="text-[10px] text-zinc-400">8/8</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-paciente" onclick="scrollToSection('sec-paciente')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">2</span>
+                <span class="flex-1 leading-tight">Paciente</span>
+                <span class="text-[10px] text-zinc-400">28/32</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-responsable" onclick="scrollToSection('sec-responsable')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">3</span>
+                <span class="flex-1 leading-tight">Responsable</span>
+                <span class="text-[10px] text-zinc-400">Opcional</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-acompanante" onclick="scrollToSection('sec-acompanante')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">4</span>
+                <span class="flex-1 leading-tight">Acompanante</span>
+                <span class="text-[10px] text-zinc-400">Opcional</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-facturacion" onclick="scrollToSection('sec-facturacion')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">5</span>
+                <span class="flex-1 leading-tight">Facturacion</span>
+                <span class="text-[10px] text-zinc-400">5/19</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-servicios" onclick="scrollToSection('sec-servicios')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">6</span>
+                <span class="flex-1 leading-tight">Servicios</span>
+                <span class="text-[10px] text-zinc-400">1 servicio</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-productos" onclick="scrollToSection('sec-productos')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">7</span>
+                <span class="flex-1 leading-tight">Productos</span>
+                <span class="text-[10px] text-zinc-400">2 productos</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-items" onclick="scrollToSection('sec-items')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">8</span>
+                <span class="flex-1 leading-tight">Items Agregados</span>
+                <span class="text-[10px] text-zinc-400">3 items</span>
+              </a>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition" data-target="sec-recaudo" onclick="scrollToSection('sec-recaudo')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white">9</span>
+                <span class="flex-1 leading-tight">Recaudo</span>
+                <span class="text-[10px] text-zinc-400"></span>
+              </a>
+            </div>
+          </nav>
+
+          <!-- Form content (wizard steps) -->
+          <div class="flex-1 min-w-0">
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 1: Evento -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content" data-step="1" id="sec-evento">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">1</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Informacion del Evento</h3>
+                      <p class="text-xs text-zinc-500">8 campos completados de 8</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-4">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Profesional</label>
+                      <div class="h-9 flex items-center px-3 bg-zinc-100 border border-zinc-200 rounded-md text-sm text-zinc-600 font-medium">Dr. Carlos Ramirez</div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Fecha y Hora</label>
+                      <div class="h-9 flex items-center px-3 bg-zinc-100 border border-zinc-200 rounded-md text-sm text-zinc-600 font-medium">04/04/2026 &mdash; 07:00 - 07:30</div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Especialidad</label>
+                      <div class="h-9 flex items-center px-3 bg-zinc-100 border border-zinc-200 rounded-md text-sm text-zinc-600 font-medium">Medicina General</div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Consulta<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>Consulta Externa</option>
+                        <option>PYP</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Modalidad<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>Presencial</option>
+                        <option>Telemedicina</option>
+                        <option>Domiciliaria</option>
+                      </select>
+                      <span class="text-[11px] text-zinc-400 flex items-center gap-1"><i data-lucide="info" class="size-3 inline"></i> Solo aplica para Colombia (Res. 2275)</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Programa</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>-- Ninguno --</option>
+                        <option>PYP</option>
+                        <option>Salud Mental</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Origen de la Atencion<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>Remitido</option>
+                        <option>Demanda Espontanea</option>
+                        <option>Urgencias</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Via de Acceso Urgencias</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>-- No aplica --</option>
+                        <option>Demanda espontanea</option>
+                        <option>Remision</option>
+                        <option>Accidente de transito</option>
+                        <option>Accidente laboral</option>
+                        <option>Evento catastrofico</option>
+                        <option>Otro</option>
+                      </select>
+                      <span class="text-[11px] text-zinc-400 flex items-center gap-1"><i data-lucide="info" class="size-3 inline"></i> Colombia - Res. 2275</span>
+                    </div>
+                    <div class="flex flex-col gap-1 col-span-2">
+                      <label class="text-xs font-medium text-zinc-900">Motivo / Observacion de Atencion</label>
+                      <textarea class="h-16 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-vertical focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="Escriba el motivo de la atencion medica...">Control de rutina mensual</textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 2: Paciente -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="2" id="sec-paciente">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">2</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Datos del Paciente</h3>
+                      <p class="text-xs text-zinc-500">28 campos completados de 32</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <!-- Identification -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-4 pb-1"><i data-lucide="id-card" class="size-3.5"></i> Identificacion</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Documento<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-500 appearance-none cursor-not-allowed" disabled>
+                        <option>Cedula de Ciudadania (CC)</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Numero de Documento<span class="text-red-600 ml-0.5">*</span></label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="1032456789">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Primer Nombre<span class="text-red-600 ml-0.5">*</span></label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="Luis">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Segundo Nombre</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="Fernando">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Primer Apellido<span class="text-red-600 ml-0.5">*</span></label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="Castillo">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Segundo Apellido</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="Rios">
+                    </div>
+                  </div>
+
+                  <!-- Personal info -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="heart" class="size-3.5"></i> Datos Personales</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Fecha de Nacimiento<span class="text-red-600 ml-0.5">*</span></label>
+                      <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="1991-03-15">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Edad</label>
+                      <div class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 rounded-md text-xs font-medium text-blue-700"><i data-lucide="calculator" class="size-3.5"></i> 35 anos (calculada automaticamente)</div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Genero<span class="text-red-600 ml-0.5">*</span></label>
+                      <div class="flex gap-4 items-center h-9">
+                        <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="gender" checked class="size-4 accent-zinc-900"> Masculino</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="gender" class="size-4 accent-zinc-900"> Femenino</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="gender" class="size-4 accent-zinc-900"> Indeterminado</label>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Estado Civil<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>Soltero(a)</option>
+                        <option selected>Casado(a)</option>
+                        <option>Union Libre</option>
+                        <option>Divorciado(a)</option>
+                        <option>Viudo(a)</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Grupo Sanguineo</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>A</option><option>B</option><option selected>O</option><option>AB</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">RH</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Positivo (+)</option><option>Negativo (-)</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Ocupacion<span class="text-red-600 ml-0.5">*</span></label>
+                      <div class="flex gap-2">
+                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" value="Ingeniero Civil" readonly>
+                        <button class="h-9 px-2.5 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition" title="Buscar ocupacion"><i data-lucide="search" class="size-4"></i></button>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Escolaridad</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>Ninguna</option><option>Primaria</option><option>Secundaria</option><option>Tecnico</option><option selected>Universitaria</option><option>Posgrado</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Etnia</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Ninguna</option><option>Indigena</option><option>Afrocolombiano</option><option>Raizal</option><option>Palenquero</option><option>ROM/Gitano</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Grupo Raza</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="raceGroup" onchange="document.getElementById('raceOther').classList.toggle('hidden', this.value!=='Otro')">
+                        <option selected>Mestizo</option><option>Blanco</option><option>Negro</option><option>Indigena</option><option>Otro</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Raza</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>-- Cascada desde Grupo Raza --</option><option>Mestizo</option><option>Otro</option>
+                      </select>
+                      <input type="text" id="raceOther" class="hidden h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm mt-1" placeholder="Especifique raza...">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Usuario<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Contributivo</option><option>Subsidiado</option><option>Particular</option><option>Vinculado</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Nivel / Prevision / CEP</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>-- Adaptable por pais --</option><option selected>Nivel 1 - FONASA A (CHL)</option><option>Nivel 2 - FONASA B (CHL)</option><option>Nivel 1 (COL)</option><option>Nivel 2 (COL)</option><option>Nivel 3 (COL)</option>
+                      </select>
+                      <span class="text-[11px] text-zinc-400">Colombia: Nivel | Chile: Prevision | Brasil: CEP</span>
+                    </div>
+                  </div>
+
+                  <!-- Location -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="map-pin" class="size-3.5"></i> Ubicacion</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Pais<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Colombia</option><option>Chile</option><option>Brasil</option><option>Mexico</option><option>Singapur</option><option>Sudafrica</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Departamento<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>-- Seleccione --</option><option>Amazonas</option><option>Antioquia</option><option>Boyaca</option><option selected>Cundinamarca</option><option>Valle del Cauca</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Ciudad<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>-- Seleccione --</option><option selected>Bogota D.C.</option><option>Soacha</option><option>Chia</option><option>Zipaquira</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Barrio</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="Chapinero Alto">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Direccion</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="Cra 7 #45-12 Apto 301">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Zona<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Urbana</option><option>Rural</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Estrato</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Contact -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="phone" class="size-3.5"></i> Contacto</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Telefono Fijo</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="6012345678" maxlength="10">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Celular</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="3101234567" maxlength="10">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Email<span class="text-red-600 ml-0.5">*</span></label>
+                      <input type="email" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="luis.castillo@email.com">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Sede <span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>Sede Norte</option><option>Sede Sur</option><option>Sede Centro</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Insurance -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="shield" class="size-3.5"></i> Afiliacion</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Regimen<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Contributivo</option><option>Subsidiado</option><option>Vinculado</option><option>Particular</option><option>Especial</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">EPS<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Nueva EPS</option><option>Sura EPS</option><option>Coomeva EPS</option><option>Sanitas EPS</option><option>Compensar</option><option>Famisanar</option><option>Medimas</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Afiliado<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option selected>Cotizante</option><option>Beneficiario</option><option>Adicional</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Companion quick -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="users" class="size-3.5"></i> Acompanante (datos rapidos)</div>
+                  <div class="grid grid-cols-3 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Nombre Acompanante</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Nombre completo">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Telefono Acompanante</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Telefono">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Parentesco Acompanante</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option>-- Seleccione --</option><option>Padre/Madre</option><option>Conyugue</option><option>Hijo(a)</option><option>Hermano(a)</option><option>Otro</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Observations -->
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-4">
+                    <div class="flex flex-col gap-1 col-span-2">
+                      <label class="text-xs font-medium text-zinc-900">Observaciones del Paciente</label>
+                      <textarea class="h-14 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-vertical focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="Notas adicionales sobre el paciente..."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 3: Responsable -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="3" id="sec-responsable">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">3</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Responsable del Paciente</h3>
+                      <p class="text-xs text-zinc-500">0 campos completados de 11 — Opcional</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <div class="pt-3">
+                    <div class="pb-2">
+                      <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600">
+                        <input type="checkbox" id="chk-responsable" onchange="toggleSection('responsable-fields', this.checked)" class="size-4 accent-zinc-900 rounded">
+                        El paciente NO es responsable de si mismo (menor de edad, discapacidad, etc.)
+                      </label>
+                    </div>
+                    <div class="toggle-content" id="responsable-fields">
+                      <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Tipo de Documento<span class="text-red-600 ml-0.5">*</span></label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Cedula de Ciudadania (CC)</option><option>Cedula de Extranjeria (CE)</option><option>Pasaporte (PA)</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Numero de Documento<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de documento">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Nombres<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Nombres completos">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Apellidos<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Apellidos completos">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Telefono</label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Telefono fijo o celular">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Email<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="email" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="correo@ejemplo.com">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Parentesco<span class="text-red-600 ml-0.5">*</span></label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Padre/Madre</option><option>Conyugue</option><option>Hijo(a)</option><option>Hermano(a)</option><option>Tutor Legal</option><option>Otro</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Genero<span class="text-red-600 ml-0.5">*</span></label>
+                          <div class="flex gap-4 items-center h-9">
+                            <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="resp-gender" class="size-4 accent-zinc-900"> Masculino</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="resp-gender" class="size-4 accent-zinc-900"> Femenino</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="resp-gender" class="size-4 accent-zinc-900"> Indeterminado</label>
+                          </div>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Direccion</label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Direccion de residencia">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Departamento</label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Cundinamarca</option><option>Antioquia</option><option>Valle del Cauca</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Ciudad</label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Bogota D.C.</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 4: Acompanante -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="4" id="sec-acompanante">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">4</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Acompanante</h3>
+                      <p class="text-xs text-zinc-500">0 campos completados de 11 — Opcional</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <div class="pt-3">
+                    <div class="pb-2">
+                      <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600">
+                        <input type="checkbox" id="chk-acompanante" onchange="toggleSection('acompanante-fields', this.checked)" class="size-4 accent-zinc-900 rounded">
+                        El paciente tiene acompanante
+                      </label>
+                    </div>
+                    <div class="toggle-content" id="acompanante-fields">
+                      <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Tipo de Documento<span class="text-red-600 ml-0.5">*</span></label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Cedula de Ciudadania (CC)</option><option>Cedula de Extranjeria (CE)</option><option>Pasaporte (PA)</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Numero de Documento<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de documento">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Nombres<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Nombres completos">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Apellidos<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Apellidos completos">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Telefono</label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Telefono fijo o celular">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Email<span class="text-red-600 ml-0.5">*</span></label>
+                          <input type="email" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="correo@ejemplo.com">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Parentesco<span class="text-red-600 ml-0.5">*</span></label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Padre/Madre</option><option>Conyugue</option><option>Hijo(a)</option><option>Hermano(a)</option><option>Otro</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Genero<span class="text-red-600 ml-0.5">*</span></label>
+                          <div class="flex gap-4 items-center h-9">
+                            <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="acomp-gender" class="size-4 accent-zinc-900"> Masculino</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="acomp-gender" class="size-4 accent-zinc-900"> Femenino</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="acomp-gender" class="size-4 accent-zinc-900"> Indeterminado</label>
+                          </div>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Direccion</label>
+                          <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Direccion de residencia">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Departamento</label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Cundinamarca</option><option>Antioquia</option><option>Valle del Cauca</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <label class="text-xs font-medium text-zinc-900">Ciudad</label>
+                          <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                            <option>-- Seleccione --</option><option>Bogota D.C.</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 5: Facturacion -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="5" id="sec-facturacion">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">5</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Informacion de Facturacion</h3>
+                      <p class="text-xs text-zinc-500">5 campos completados de 19</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <!-- Tipo atencion -->
+                  <div class="pt-4">
+                    <label class="text-xs font-medium text-zinc-900 block mb-2">Tipo de Atencion<span class="text-red-600 ml-0.5">*</span></label>
+                    <div class="flex gap-4 items-center h-9">
+                      <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="atencion" checked onchange="toggleAtencion('eps')" class="size-4 accent-zinc-900"> EPS / Empresa</label>
+                      <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="atencion" onchange="toggleAtencion('particular')" class="size-4 accent-zinc-900"> Particular</label>
+                    </div>
+                  </div>
+
+                  <!-- Seccion Particular (G2) — visible cuando tipo = Particular -->
+                  <div id="datos-particular" class="hidden mt-4 pt-4 border-t border-zinc-200">
+                    <h4 class="text-sm font-semibold text-zinc-900 mb-3">Datos de Facturacion — Particular</h4>
+                    <label class="flex items-center gap-2 mb-3 text-sm">
+                      <input type="checkbox" class="size-4 accent-zinc-900"> Facturar a nombre del paciente
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Tipo Documento</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm"><option>CC</option><option>NIT</option><option>CE</option><option>PA</option></select></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Numero Documento</label><input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Identificacion"></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Nombre Completo</label><input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Nombre del facturador"></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Telefono</label><input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Telefono"></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Direccion</label><input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Direccion"></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Email</label><input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="correo@ejemplo.com"></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Departamento</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm"><option>Cundinamarca</option></select></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Ciudad</label><select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm"><option>Bogota</option></select></div>
+                      <div class="flex flex-col gap-1"><label class="text-[11px] font-medium text-zinc-500">Barrio</label><input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Barrio"></div>
+                    </div>
+                  </div>
+
+                  <!-- Contract info -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="file-text" class="size-3.5"></i> Convenio y Contrato</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Convenio<span class="text-red-600 ml-0.5">*</span></label>
+                      <div class="flex gap-2">
+                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" value="Nueva EPS - Contrato Principal" readonly id="convenioInput">
+                        <button class="h-9 px-2.5 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition" title="Seleccionar convenio" onclick="openConvenioModal()"><i data-lucide="search" class="size-4"></i></button>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Contrato</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Contrato General 2026</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Plan</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Plan Basico</option><option>Plan Complementario</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1" id="field-autorizacion">
+                      <label class="text-xs font-medium text-zinc-900">Numero de Autorizacion<span class="text-red-600 ml-0.5">*</span></label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de autorizacion EPS">
+                    </div>
+                  </div>
+
+                  <!-- Service info -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="stethoscope" class="size-3.5"></i> Servicio</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Servicio<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Consulta</option><option>Procedimiento</option><option>Cirugia</option><option>Urgencias</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Servicio<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Consulta Medicina General</option><option>Consulta Especializada</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Grupo de Servicio</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Consulta</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Subgrupo de Servicio</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Medicina General</option></select>
+                    </div>
+                  </div>
+
+                  <!-- Financial -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="dollar-sign" class="size-3.5"></i> Valores</div>
+                  <div class="grid grid-cols-3 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Copago</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-500 cursor-not-allowed" value="$0" disabled>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Cuota Moderadora</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-500 cursor-not-allowed" value="$12,500" disabled>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Valor Total</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-500 cursor-not-allowed" value="$65,000" disabled>
+                    </div>
+                  </div>
+
+                  <!-- Billing extras -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="credit-card" class="size-3.5"></i> Datos de Facturacion Complementarios</div>
+                  <div class="grid grid-cols-3 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo Afiliado<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Cotizante</option><option>Beneficiario</option><option>Adicional</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Regimen</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Contributivo</option><option>Subsidiado</option><option>Vinculado</option><option>Particular</option><option>Especial</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">NIT EPS</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-500 cursor-not-allowed" value="900.156.264-2" disabled>
+                      <span class="text-[11px] text-zinc-400">Se autocompleta al seleccionar convenio</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo Copago</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Fijo</option><option>Porcentual</option><option>Exento</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Valor Copago</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-500 cursor-not-allowed" value="$0" disabled>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Valor Cuota Moderadora</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-500 cursor-not-allowed" value="$12,500" disabled>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Bonos</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de bono">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Letra Capital</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Letra" maxlength="2">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Numero Capital</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Cama</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Solo hospitalizacion">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo Ingreso</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Ambulatorio</option><option>Hospitalario</option><option>Urgencias</option></select>
+                    </div>
+                  </div>
+
+                  <!-- Authorization details -->
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="file-check" class="size-3.5"></i> Autorizacion</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Numero de Poliza</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de poliza (si aplica)">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Atencion</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Primera vez</option><option>Control</option><option>Urgencia</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Numero de Orden</label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de orden medica">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Fecha de Autorizacion</label>
+                      <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="2026-04-04">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Fecha Vencimiento Autorizacion</label>
+                      <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="2026-05-04">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Usuario</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Contributivo Cotizante</option><option>Contributivo Beneficiario</option><option>Subsidiado</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Cobertura</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Plan Basico de Salud (PBS)</option><option>No PBS</option><option>Plan Complementario</option></select>
+                    </div>
+                  </div>
+
+                  <!-- Datos Adicionales del Convenio (G1) -->
+                  <div class="mt-6 pt-4 border-t border-zinc-200">
+                    <h4 class="text-sm font-semibold text-zinc-900 mb-3 flex items-center gap-2">
+                      <i data-lucide="database" class="size-4 text-zinc-400"></i>
+                      Datos Adicionales del Convenio
+                      <span class="text-[11px] text-zinc-400 font-normal">(configurados por el convenio)</span>
+                    </h4>
+                    <div class="grid grid-cols-2 gap-3">
+                      <div class="flex flex-col gap-1">
+                        <label class="text-[11px] font-medium text-zinc-500">Grupo de Riesgo</label>
+                        <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm">
+                          <option>-- Seleccionar --</option><option>Alto</option><option>Medio</option><option>Bajo</option>
+                        </select>
+                      </div>
+                      <div class="flex flex-col gap-1">
+                        <label class="text-[11px] font-medium text-zinc-500">Tipo de Vinculacion</label>
+                        <input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Ej: Cotizante">
+                      </div>
+                      <div class="flex flex-col gap-1">
+                        <label class="text-[11px] font-medium text-zinc-500">Numero de Afiliacion</label>
+                        <input class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de afiliado">
+                      </div>
+                      <div class="flex flex-col gap-1">
+                        <label class="text-[11px] font-medium text-zinc-500">Programa Especial</label>
+                        <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm">
+                          <option>-- Ninguno --</option><option>Diabetes</option><option>Hipertension</option><option>Materno Perinatal</option>
+                        </select>
+                      </div>
+                    </div>
+                    <p class="text-[10px] text-zinc-400 mt-2 flex items-center gap-1"><i data-lucide="info" class="size-3"></i> Estos campos son configurados por cada convenio y pueden variar</p>
+                  </div>
+
+                  <!-- PYP conditional section -->
+                  <div class="pyp-section mt-4 pt-4 border-t border-zinc-100" id="pyp-section">
+                    <div class="flex items-center gap-1.5 text-xs text-zinc-400 pb-1"><i data-lucide="heart-pulse" class="size-3.5"></i> Programa PYP (Promocion y Prevencion)</div>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                      <div class="flex flex-col gap-1">
+                        <label class="text-xs font-medium text-zinc-900">Programa PYP<span class="text-red-600 ml-0.5">*</span></label>
+                        <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                          <option>-- Seleccione Programa --</option><option>Programa Cardiovascular</option><option>Control Prenatal</option><option>Crecimiento y Desarrollo</option><option>Planificacion Familiar</option>
+                        </select>
+                      </div>
+                      <div class="flex flex-col gap-1">
+                        <label class="text-xs font-medium text-zinc-900">Actividad</label>
+                        <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                          <option>-- Seleccione Actividad --</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="pt-3">
+                      <label class="text-xs font-medium text-zinc-900 block mb-2">Servicios PYP</label>
+                      <table class="w-full">
+                        <thead>
+                          <tr class="border-b border-zinc-200">
+                            <th class="h-10 w-10 pl-3 pr-1"><input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900"></th>
+                            <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Codigo</th>
+                            <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Servicio</th>
+                            <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Cantidad</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-100">
+                          <tr class="hover:bg-zinc-50 transition-colors">
+                            <td class="py-2 pl-3 pr-1"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"></td>
+                            <td class="py-2 px-3"><span class="font-mono text-xs">890201</span></td>
+                            <td class="py-2 px-3 text-sm">Consulta de primera vez - Medicina General</td>
+                            <td class="py-2 px-3 text-sm">1</td>
+                          </tr>
+                          <tr class="hover:bg-zinc-50 transition-colors">
+                            <td class="py-2 pl-3 pr-1"><input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900"></td>
+                            <td class="py-2 px-3"><span class="font-mono text-xs">903895</span></td>
+                            <td class="py-2 px-3 text-sm">Hemoglobina glicosilada</td>
+                            <td class="py-2 px-3 text-sm">1</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 6: Servicios -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="6" id="sec-servicios">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">6</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Servicios</h3>
+                      <p class="text-xs text-zinc-500">1 servicio agregado</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-4 pb-1"><i data-lucide="search" class="size-3.5"></i> Agregar Servicio</div>
+                  <div class="pt-2">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Buscar Servicio (CUPS)<span class="text-red-600 ml-0.5">*</span></label>
+                      <div class="flex gap-2">
+                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" placeholder="Escriba codigo CUPS o nombre del servicio..." id="service-search">
+                        <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition" title="Buscar servicio"><i data-lucide="search" class="size-4"></i></button>
+                      </div>
+                      <span class="text-[11px] text-zinc-400">Minimo 3 caracteres. Busca por codigo CUPS o descripcion del servicio.</span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="list" class="size-3.5"></i> Servicios Agregados</div>
+                  <table class="w-full">
+                    <thead>
+                      <tr class="border-b border-zinc-200">
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500" style="width:100px;">Cod. CUPS</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Servicio</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:80px;">Cant.</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:110px;">Valor Unit.</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:110px;">Copago</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:110px;">Total</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:40px;"></th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-100">
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">890201</span></td>
+                        <td class="py-2.5 px-3 text-sm">Consulta de primera vez - Medicina General</td>
+                        <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[60px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="1" min="1"></td>
+                        <td class="py-2.5 px-3 text-right text-sm">$65,000</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$12,500</td>
+                        <td class="py-2.5 px-3 text-right text-sm font-medium">$65,000</td>
+                        <td class="py-2.5 px-3 text-center">
+                          <div class="group relative inline-flex">
+                            <button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar servicio"><i data-lucide="x" class="size-3.5"></i></button>
+                            <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button class="inline-flex items-center gap-1.5 px-3.5 py-2 mt-3 border border-dashed border-zinc-300 rounded-md bg-white text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 transition" onclick="document.getElementById('service-search').focus()">
+                    <i data-lucide="plus" class="size-4"></i> Agregar Servicio
+                  </button>
+
+                  <div class="flex gap-6 justify-end mt-4 pt-4 border-t border-zinc-100">
+                    <div class="text-right">
+                      <div class="text-[11px] text-zinc-400 font-medium uppercase tracking-wide">Subtotal</div>
+                      <div class="text-base font-semibold text-zinc-900 mt-0.5">$65,000</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[11px] text-zinc-400 font-medium uppercase tracking-wide">Copago Total</div>
+                      <div class="text-base font-semibold text-zinc-900 mt-0.5">$12,500</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[11px] text-zinc-400 font-medium uppercase tracking-wide">Total a Pagar</div>
+                      <div class="text-xl font-semibold text-zinc-900 mt-0.5">$52,500</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 7: Productos Disponibles -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="7" id="sec-productos">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">7</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Productos Disponibles</h3>
+                      <p class="text-xs text-zinc-500">2 productos disponibles para agregar</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-4">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Area Funcional</label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option value="">Todas las areas</option><option>Farmacia General</option><option>Farmacia Especializada</option><option>Insumos Medicos</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Buscar Producto</label>
+                      <div class="flex gap-2">
+                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" placeholder="Nombre generico, comercial o codigo ATC..." id="product-search">
+                        <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition" title="Buscar producto"><i data-lucide="search" class="size-4"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <table class="w-full mt-4">
+                    <thead>
+                      <tr class="border-b border-zinc-200">
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500" style="width:90px;">Cod. ATC</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Nombre Generico</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Nombre Comercial</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:70px;">MIPRES</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:60px;">Dias Tto.</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Concentracion</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:55px;">POS</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:90px;">Valor</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:70px;">Cant.</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:40px;"></th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-100">
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">N02BE01</span></td>
+                        <td class="py-2.5 px-3 text-sm">Acetaminofen</td>
+                        <td class="py-2.5 px-3 text-sm">Acetaminofen 500mg Tab</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-center text-sm">5</td>
+                        <td class="py-2.5 px-3 text-sm">500 mg</td>
+                        <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
+                        <td class="py-2.5 px-3 text-right text-sm">$150</td>
+                        <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="10" min="1"></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                      </tr>
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">C09CA01</span></td>
+                        <td class="py-2.5 px-3 text-sm">Losartan</td>
+                        <td class="py-2.5 px-3 text-sm">Losartan 50mg Tab</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-center text-sm">30</td>
+                        <td class="py-2.5 px-3 text-sm">50 mg</td>
+                        <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
+                        <td class="py-2.5 px-3 text-right text-sm">$280</td>
+                        <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="10" min="1"></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                      </tr>
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">A10BA02</span></td>
+                        <td class="py-2.5 px-3 text-sm">Metformina</td>
+                        <td class="py-2.5 px-3 text-sm">Metformina 850mg Tab</td>
+                        <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700">MIPRES</span></td>
+                        <td class="py-2.5 px-3 text-center text-sm">30</td>
+                        <td class="py-2.5 px-3 text-sm">850 mg</td>
+                        <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
+                        <td class="py-2.5 px-3 text-right text-sm">$190</td>
+                        <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="1" min="1"></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                      </tr>
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">A02BC01</span></td>
+                        <td class="py-2.5 px-3 text-sm">Omeprazol</td>
+                        <td class="py-2.5 px-3 text-sm">Omeprazol 20mg Cap</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-center text-sm">15</td>
+                        <td class="py-2.5 px-3 text-sm">20 mg</td>
+                        <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
+                        <td class="py-2.5 px-3 text-right text-sm">$320</td>
+                        <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="1" min="1"></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                      </tr>
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">J01CA04</span></td>
+                        <td class="py-2.5 px-3 text-sm">Amoxicilina</td>
+                        <td class="py-2.5 px-3 text-sm">Amoxicilina 500mg Cap</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-center text-sm">7</td>
+                        <td class="py-2.5 px-3 text-sm">500 mg</td>
+                        <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-600">No</span></td>
+                        <td class="py-2.5 px-3 text-right text-sm">$450</td>
+                        <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="1" min="1"></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 8: Items Agregados -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="8" id="sec-items">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">8</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Servicios y Productos Agregados</h3>
+                      <p class="text-xs text-zinc-500">3 items en total</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <table class="w-full mt-4">
+                    <thead>
+                      <tr class="border-b border-zinc-200">
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500" style="width:90px;">Codigo</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500" style="width:75px;">Tipo</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Nombre</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:70px;">MIPRES</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:60px;">Dias Tto.</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:95px;">Valor Unit.</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:55px;">Cant.</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:95px;">Valor Bruto</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:55px;">% IVA</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:80px;">Valor IVA</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:100px;">Total a Pagar</th>
+                        <th class="h-10 px-3 text-center text-xs font-medium text-zinc-500" style="width:40px;"></th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-100">
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">890201</span></td>
+                        <td class="py-2.5 px-3"><span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-600">Servicio</span></td>
+                        <td class="py-2.5 px-3 text-sm">Consulta de primera vez - Medicina General</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$45,000</td>
+                        <td class="py-2.5 px-3 text-center text-sm">1</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$45,000</td>
+                        <td class="py-2.5 px-3 text-center text-sm">0%</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$0</td>
+                        <td class="py-2.5 px-3 text-right text-sm font-medium">$45,000</td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
+                      </tr>
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">N02BE01</span></td>
+                        <td class="py-2.5 px-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Producto</span></td>
+                        <td class="py-2.5 px-3 text-sm">Acetaminofen 500mg Tab</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-center text-sm">5</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$150</td>
+                        <td class="py-2.5 px-3 text-center text-sm">10</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$1,500</td>
+                        <td class="py-2.5 px-3 text-center text-sm">0%</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$0</td>
+                        <td class="py-2.5 px-3 text-right text-sm font-medium">$1,500</td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
+                      </tr>
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><span class="font-mono text-xs">C09CA01</span></td>
+                        <td class="py-2.5 px-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Producto</span></td>
+                        <td class="py-2.5 px-3 text-sm">Losartan 50mg Tab</td>
+                        <td class="py-2.5 px-3 text-center text-sm">&mdash;</td>
+                        <td class="py-2.5 px-3 text-center text-sm">30</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$280</td>
+                        <td class="py-2.5 px-3 text-center text-sm">10</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$2,800</td>
+                        <td class="py-2.5 px-3 text-center text-sm">0%</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$0</td>
+                        <td class="py-2.5 px-3 text-right text-sm font-medium">$2,800</td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="flex gap-6 justify-end mt-4 pt-4 border-t border-zinc-100">
+                    <div class="text-right">
+                      <div class="text-[11px] text-zinc-400 font-medium uppercase tracking-wide">Subtotal Servicios</div>
+                      <div class="text-base font-semibold text-zinc-900 mt-0.5">$45,000</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[11px] text-zinc-400 font-medium uppercase tracking-wide">Subtotal Productos</div>
+                      <div class="text-base font-semibold text-zinc-900 mt-0.5">$4,300</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[11px] text-zinc-400 font-medium uppercase tracking-wide">TOTAL A PAGAR</div>
+                      <div class="text-xl font-semibold text-zinc-900 mt-0.5">$49,300</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- STEP 9: Recaudo del Paciente -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="step-content hidden" data-step="9" id="sec-recaudo">
+              <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+                <div class="px-4 pt-4 pb-2">
+                  <div class="flex items-center gap-2.5 mb-4">
+                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">9</div>
+                    <div>
+                      <h3 class="text-sm font-semibold text-zinc-900">Recaudo del Paciente</h3>
+                      <p class="text-xs text-zinc-500">Total a recaudar: $12,500</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-zinc-100 px-4 pb-4">
+                  <!-- Banner: Recaudo no aplica (G7) — hidden by default -->
+                  <div id="recaudo-na" class="hidden p-4 rounded-lg bg-zinc-100 text-center text-sm text-zinc-500 mt-4">
+                    <i data-lucide="info" class="size-4 inline"></i>
+                    El recaudo no aplica para atenciones de tipo Particular o PYP
+                  </div>
+                  <div id="recaudo-content">
+                  <div class="grid grid-cols-3 gap-4 pt-4">
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Forma de Pago<span class="text-red-600 ml-0.5">*</span></label>
+                      <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                        <option value="">Seleccione...</option><option selected>Efectivo</option><option>Tarjeta Debito</option><option>Tarjeta Credito</option><option>Transferencia</option>
+                      </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Cuota Moderadora</label>
+                      <div class="flex items-center gap-2">
+                        <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" id="select-cuota">
+                          <option>$0 — Exento</option>
+                          <option>$3,400 — Nivel 1 (1-2 SMLV)</option>
+                          <option>$12,500 — Nivel 2 (2-5 SMLV)</option>
+                          <option>$17,300 — Nivel 3 (5+ SMLV)</option>
+                          <option value="custom">Otro valor...</option>
+                        </select>
+                        <label class="flex items-center gap-1.5 text-xs text-zinc-500 cursor-pointer"><input type="checkbox" class="size-3.5 accent-zinc-900"> Exento</label>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-zinc-900">Copago</label>
+                      <div class="flex items-center gap-2">
+                        <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" id="select-copago">
+                          <option>$0 — Exento</option>
+                          <option>$3,400 — Nivel 1 (1-2 SMLV)</option>
+                          <option selected>$12,500 — Nivel 2 (2-5 SMLV)</option>
+                          <option>$17,300 — Nivel 3 (5+ SMLV)</option>
+                          <option value="custom">Otro valor...</option>
+                        </select>
+                        <label class="flex items-center gap-1.5 text-xs text-zinc-500 cursor-pointer"><input type="checkbox" class="size-3.5 accent-zinc-900"> Exento</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="pt-4">
+                    <button class="inline-flex items-center gap-1.5 h-9 px-4 rounded-md bg-zinc-100 border border-zinc-200 text-sm font-medium text-zinc-900 hover:bg-zinc-200 transition" onclick="alert('Calculo simulado: Copago $12,500')">
+                      <i data-lucide="calculator" class="size-4"></i> Calcular
+                    </button>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="list" class="size-3.5"></i> Detalle de Pagos</div>
+                  <table class="w-full mt-2">
+                    <thead>
+                      <tr class="border-b border-zinc-200">
+                        <th class="h-10 w-10 pl-3 pr-1"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900" title="Seleccionar todos"></th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Servicio / Producto</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500" style="width:140px;">Tipo Pago</th>
+                        <th class="h-10 px-3 text-right text-xs font-medium text-zinc-500" style="width:110px;">Valor Pago</th>
+                        <th class="h-10 px-3 text-left text-xs font-medium text-zinc-500">Observacion</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-100">
+                      <tr class="hover:bg-zinc-50 transition-colors">
+                        <td class="py-2.5 px-3"><input type="checkbox" checked class="size-4 accent-zinc-900"></td>
+                        <td class="py-2.5 px-3 text-sm">Consulta de primera vez - Medicina General</td>
+                        <td class="py-2.5 px-3 text-sm">Copago</td>
+                        <td class="py-2.5 px-3 text-right text-sm">$12,500</td>
+                        <td class="py-2.5 px-3 text-xs text-zinc-400">Copago segun contrato</td>
+                      </tr>
+                      <tr class="bg-zinc-50">
+                        <td class="py-3 px-3"></td>
+                        <td class="py-3 px-3 text-right text-sm font-semibold text-zinc-900" colspan="2">Total Recaudado</td>
+                        <td class="py-3 px-3 text-right text-sm font-semibold text-zinc-900">$12,500</td>
+                        <td class="py-3 px-3"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="flex flex-col gap-1 pt-4">
+                    <label class="text-xs font-medium text-zinc-900">Justificacion <span class="text-[11px] text-zinc-400 font-normal">(Obligatoria si hay exencion)</span></label>
+                    <textarea class="h-16 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-vertical focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="Ingrese la justificacion de la exencion o notas adicionales..."></textarea>
+                  </div>
+                  </div><!-- /recaudo-content -->
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /form-content -->
+        </div><!-- /form-layout -->
+
+        <!-- Spacer for wizard footer -->
+        <div class="h-20"></div>
+
+        </div><!-- /max-w -->
+      </div><!-- /scroll area -->
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- WIZARD FOOTER (sticky at bottom of main content area) -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <div class="shrink-0 border-t border-zinc-200 bg-white px-6 py-3">
+        <div class="max-w-[1160px] flex items-center justify-between">
+          <!-- Anterior -->
+          <button onclick="prevStep()" id="btn-prev" class="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" style="display:none;">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            Anterior
+          </button>
+          <div id="btn-prev-placeholder" class="w-[120px]"></div>
+
+          <!-- Step indicator dots -->
+          <div class="flex items-center gap-1.5">
+            <span class="step-dot size-2 rounded-full bg-zinc-900"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+            <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
+          </div>
+
+          <!-- Siguiente / Confirmar -->
+          <div class="flex items-center gap-2">
+            <button onclick="nextStep()" id="btn-next" class="inline-flex h-9 items-center gap-2 rounded-md bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-800 transition">
+              Siguiente
+              <i data-lucide="arrow-right" class="size-4"></i>
+            </button>
+            <a href="post-confirmacion.html" onclick="confirmReception()" id="btn-confirm" class="hidden inline-flex h-9 items-center gap-2 rounded-md bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700 transition no-underline">
+              <i data-lucide="check" class="size-4"></i>
+              Confirmar Recepcion
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CONVENIO SELECTION MODAL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="convenioModal" class="hidden">
+  <div class="fixed inset-0 bg-black/50 z-40" onclick="closeConvenioModal()"></div>
+  <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-xl z-50 w-[640px] max-w-[90vw] max-h-[80vh] flex flex-col">
+    <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4 shrink-0">
+      <h2 class="text-base font-semibold text-zinc-900">Seleccionar Convenio</h2>
+      <button onclick="closeConvenioModal()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition"><i data-lucide="x" class="size-4"></i></button>
+    </div>
+    <div class="px-6 py-3 border-b border-zinc-100 shrink-0">
+      <div class="relative">
+        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+        <input type="text" placeholder="Buscar por nombre de convenio, NIT o codigo..." class="h-9 w-full rounded-md border border-zinc-200 bg-white pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" id="convenioSearch">
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto">
+      <table class="w-full">
+        <thead class="sticky top-0 bg-white">
+          <tr class="border-b border-zinc-200">
+            <th class="h-10 px-4 text-left text-xs font-medium text-zinc-500">Codigo</th>
+            <th class="h-10 px-4 text-left text-xs font-medium text-zinc-500">Convenio</th>
+            <th class="h-10 px-4 text-left text-xs font-medium text-zinc-500">NIT</th>
+            <th class="h-10 px-4 text-left text-xs font-medium text-zinc-500">Estado</th>
+            <th class="h-10 px-4 text-center text-xs font-medium text-zinc-500"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-100">
+          <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="selectConvenio('Nueva EPS - Contrato Principal')">
+            <td class="py-2.5 px-4 text-xs font-mono text-zinc-700">CON-001</td>
+            <td class="py-2.5 px-4 text-sm font-medium text-zinc-900">Nueva EPS - Contrato Principal</td>
+            <td class="py-2.5 px-4 text-xs text-zinc-500">900.156.264-2</td>
+            <td class="py-2.5 px-4"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Activo</span></td>
+            <td class="py-2.5 px-4 text-center"><button class="h-7 px-3 rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="selectConvenio('Nueva EPS - Contrato Principal')">Seleccionar</button></td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="selectConvenio('Sura EPS - Plan Basico')">
+            <td class="py-2.5 px-4 text-xs font-mono text-zinc-700">CON-002</td>
+            <td class="py-2.5 px-4 text-sm font-medium text-zinc-900">Sura EPS - Plan Basico</td>
+            <td class="py-2.5 px-4 text-xs text-zinc-500">800.088.702-2</td>
+            <td class="py-2.5 px-4"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Activo</span></td>
+            <td class="py-2.5 px-4 text-center"><button class="h-7 px-3 rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="selectConvenio('Sura EPS - Plan Basico')">Seleccionar</button></td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="selectConvenio('Coomeva EPS')">
+            <td class="py-2.5 px-4 text-xs font-mono text-zinc-700">CON-003</td>
+            <td class="py-2.5 px-4 text-sm font-medium text-zinc-900">Coomeva EPS</td>
+            <td class="py-2.5 px-4 text-xs text-zinc-500">805.000.427-1</td>
+            <td class="py-2.5 px-4"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Activo</span></td>
+            <td class="py-2.5 px-4 text-center"><button class="h-7 px-3 rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="selectConvenio('Coomeva EPS')">Seleccionar</button></td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="selectConvenio('Sanitas EPS')">
+            <td class="py-2.5 px-4 text-xs font-mono text-zinc-700">CON-004</td>
+            <td class="py-2.5 px-4 text-sm font-medium text-zinc-900">Sanitas EPS</td>
+            <td class="py-2.5 px-4 text-xs text-zinc-500">800.251.440-6</td>
+            <td class="py-2.5 px-4"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Activo</span></td>
+            <td class="py-2.5 px-4 text-center"><button class="h-7 px-3 rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="selectConvenio('Sanitas EPS')">Seleccionar</button></td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="selectConvenio('Compensar')">
+            <td class="py-2.5 px-4 text-xs font-mono text-zinc-700">CON-005</td>
+            <td class="py-2.5 px-4 text-sm font-medium text-zinc-900">Compensar</td>
+            <td class="py-2.5 px-4 text-xs text-zinc-500">860.066.942-7</td>
+            <td class="py-2.5 px-4"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Activo</span></td>
+            <td class="py-2.5 px-4 text-center"><button class="h-7 px-3 rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="selectConvenio('Compensar')">Seleccionar</button></td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors cursor-pointer" onclick="selectConvenio('Particular')">
+            <td class="py-2.5 px-4 text-xs font-mono text-zinc-700">CON-099</td>
+            <td class="py-2.5 px-4 text-sm font-medium text-zinc-900">Particular</td>
+            <td class="py-2.5 px-4 text-xs text-zinc-500">N/A</td>
+            <td class="py-2.5 px-4"><span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Activo</span></td>
+            <td class="py-2.5 px-4 text-center"><button class="h-7 px-3 rounded-md border border-zinc-200 bg-white text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="selectConvenio('Particular')">Seleccionar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex items-center justify-end gap-2 border-t border-zinc-200 px-6 py-3 shrink-0">
+      <button onclick="closeConvenioModal()" class="h-9 rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CAMBIO CONVENIO ALERT DIALOG (G3) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="cambioConvenioModal" class="hidden">
+  <div class="fixed inset-0 bg-black/50 z-[60]" onclick="cancelCambioConvenio()"></div>
+  <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-xl z-[70] w-[420px] max-w-[90vw] p-6">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-amber-100">
+        <i data-lucide="alert-triangle" class="size-5 text-amber-600"></i>
+      </div>
+      <div>
+        <h3 class="text-base font-semibold text-zinc-900">Cambiar Convenio</h3>
+        <p class="text-sm text-zinc-500 mt-1">Al cambiar el convenio se pueden perder los servicios y productos ya agregados. ¿Desea continuar?</p>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-2 pt-2">
+      <button onclick="cancelCambioConvenio()" class="h-9 rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">Cancelar</button>
+      <button onclick="confirmCambioConvenio()" class="h-9 rounded-md bg-red-600 px-4 text-sm font-medium text-white hover:bg-red-700 transition">Cambiar Convenio</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  // ─── Sidebar helpers ───
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
+  }
+
+  function toggleGroup(id) {
+    document.getElementById(id).classList.toggle('open');
+    var chevron = document.getElementById(id + '-chevron');
+    if (chevron) chevron.classList.toggle('open');
+  }
+
+  function setFontSize(size) {
+    var btns = document.querySelectorAll('.sidebar-hide .flex.gap-1 button');
+    btns.forEach(function(b) {
+      b.className = 'flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition';
+    });
+    event.target.closest('button').className = 'flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition';
+    switch(size) {
+      case 'normal': document.querySelector('html').style.fontSize = '13px'; break;
+      case 'large': document.querySelector('html').style.fontSize = '16px'; break;
+      case 'xlarge': document.querySelector('html').style.fontSize = '18px'; break;
+    }
+  }
+
+  function toggleContrast() {
+    document.documentElement.classList.toggle('high-contrast');
+  }
+
+  // ─── Form helpers ───
+  function toggleSection(id, show) {
+    var el = document.getElementById(id);
+    if (show) { el.classList.add('visible'); } else { el.classList.remove('visible'); }
+  }
+
+  function toggleAtencion(type) {
+    var auth = document.getElementById('field-autorizacion');
+    var datosParticular = document.getElementById('datos-particular');
+    var recaudoContent = document.getElementById('recaudo-content');
+    var recaudoNA = document.getElementById('recaudo-na');
+    if (type === 'particular') {
+      auth.style.display = 'none';
+      if (datosParticular) datosParticular.classList.remove('hidden');
+      if (recaudoContent) recaudoContent.classList.add('hidden');
+      if (recaudoNA) recaudoNA.classList.remove('hidden');
+    } else {
+      auth.style.display = '';
+      if (datosParticular) datosParticular.classList.add('hidden');
+      if (recaudoContent) recaudoContent.classList.remove('hidden');
+      if (recaudoNA) recaudoNA.classList.add('hidden');
+    }
+  }
+
+  function openConvenioModal() {
+    document.getElementById('convenioModal').classList.remove('hidden');
+    lucide.createIcons();
+  }
+
+  function closeConvenioModal() {
+    document.getElementById('convenioModal').classList.add('hidden');
+  }
+
+  var pendingConvenio = null;
+  function selectConvenio(name) {
+    var input = document.getElementById('convenioInput');
+    var currentConvenio = input ? input.value : '';
+    if (currentConvenio && currentConvenio !== name) {
+      pendingConvenio = name;
+      document.getElementById('cambioConvenioModal').classList.remove('hidden');
+    } else {
+      if (input) input.value = name;
+      closeConvenioModal();
+    }
+  }
+  function confirmCambioConvenio() {
+    var input = document.getElementById('convenioInput');
+    if (input && pendingConvenio) input.value = pendingConvenio;
+    pendingConvenio = null;
+    document.getElementById('cambioConvenioModal').classList.add('hidden');
+    closeConvenioModal();
+  }
+  function cancelCambioConvenio() {
+    pendingConvenio = null;
+    document.getElementById('cambioConvenioModal').classList.add('hidden');
+  }
+
+  // ─── WIZARD LOGIC ───
+  var currentStep = 1;
+  var totalSteps = 9;
+  var stepNames = [
+    'Informacion del Evento',
+    'Datos del Paciente',
+    'Responsable del Paciente',
+    'Acompanante',
+    'Informacion de Facturacion',
+    'Servicios',
+    'Productos Disponibles',
+    'Servicios y Productos Agregados',
+    'Recaudo del Paciente'
+  ];
+  var stepIds = [
+    'sec-evento', 'sec-paciente', 'sec-responsable', 'sec-acompanante',
+    'sec-facturacion', 'sec-servicios', 'sec-productos', 'sec-items', 'sec-recaudo'
+  ];
+
+  function showStep(n) {
+    if (n < 1 || n > totalSteps) return;
+
+    // Hide all steps
+    document.querySelectorAll('.step-content').forEach(function(el) {
+      el.classList.add('hidden');
+    });
+
+    // Show target step
+    var target = document.querySelector('[data-step="' + n + '"]');
+    if (target) target.classList.remove('hidden');
+
+    currentStep = n;
+
+    // Update progress bar
+    var pct = Math.round((n / totalSteps) * 100);
+    document.getElementById('progress-text').textContent = 'Seccion ' + n + ' de ' + totalSteps + ' \u2014 ' + stepNames[n - 1];
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+
+    // Update sidebar active state
+    document.querySelectorAll('[data-target]').forEach(function(item, idx) {
+      if (idx === n - 1) {
+        item.className = 'flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-zinc-900 text-zinc-900 font-medium bg-zinc-50 transition';
+        var dot = item.querySelector('span:first-child');
+        if (dot) dot.className = 'flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-900 text-[10px] font-semibold text-zinc-900 bg-zinc-100';
+      } else {
+        item.className = 'flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition';
+        var dot = item.querySelector('span:first-child');
+        if (dot) dot.className = 'flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-200 text-[10px] font-semibold text-zinc-400 bg-white';
+      }
+    });
+
+    // Update stepper dots
+    document.querySelectorAll('.step-dot').forEach(function(dot, i) {
+      dot.className = 'step-dot size-2 rounded-full ' + (i < n ? 'bg-zinc-900' : 'bg-zinc-200');
+    });
+
+    // Show/hide navigation buttons
+    var btnPrev = document.getElementById('btn-prev');
+    var btnPrevPlaceholder = document.getElementById('btn-prev-placeholder');
+    var btnNext = document.getElementById('btn-next');
+    var btnConfirm = document.getElementById('btn-confirm');
+
+    if (n === 1) {
+      btnPrev.style.display = 'none';
+      btnPrevPlaceholder.style.display = 'block';
+    } else {
+      btnPrev.style.display = 'inline-flex';
+      btnPrevPlaceholder.style.display = 'none';
+    }
+
+    if (n === totalSteps) {
+      btnNext.style.display = 'none';
+      btnConfirm.classList.remove('hidden');
+      btnConfirm.style.display = 'inline-flex';
+    } else {
+      btnNext.style.display = 'inline-flex';
+      btnConfirm.classList.add('hidden');
+      btnConfirm.style.display = 'none';
+    }
+
+    // Scroll content area to top
+    var scrollArea = document.getElementById('form-content-scroll');
+    if (scrollArea) scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Re-render lucide icons for the newly visible step
+    lucide.createIcons();
+  }
+
+  function nextStep() {
+    if (currentStep < totalSteps) showStep(currentStep + 1);
+  }
+
+  function prevStep() {
+    if (currentStep > 1) showStep(currentStep - 1);
+  }
+
+  function scrollToSection(id) {
+    var stepMap = {};
+    stepIds.forEach(function(sid, i) { stepMap[sid] = i + 1; });
+    showStep(stepMap[id] || 1);
+  }
+
+  function confirmReception() {
+    // Navigation handled by the <a> href
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); nextStep(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevStep(); }
+  });
+
+  // Initialize on step 1
+  showStep(1);
+</script>
+</body>
+</html>

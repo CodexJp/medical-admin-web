@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Diagnosticos Enfermeria (Sub-tab)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-6">
+
+  <div class="flex items-center gap-2 rounded-md border border-zinc-200/60 bg-white px-4 py-3 mb-4">
+    <span class="bg-purple-100 text-purple-700 text-[11px] font-semibold px-2 py-0.5 rounded-full">Sub-tab condicional</span>
+    <span class="text-zinc-400 text-xs">Evento Actual &rsaquo; Diagnosticos Enfermeria &mdash; Solo si el formato tiene allowDiagnosticNursing</span>
+  </div>
+
+  <!-- State toggle for mockup -->
+  <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6">
+    <div class="flex gap-2 border-b border-zinc-200/60 mb-6">
+      <button class="state-tab px-4 py-2 text-xs font-medium text-blue-600 border-b-2 border-blue-600 bg-transparent cursor-pointer" onclick="showState('active')">Con diagnosticos NANDA</button>
+      <button class="state-tab px-4 py-2 text-xs font-medium text-zinc-400 border-b-2 border-transparent bg-transparent cursor-pointer" onclick="showState('disabled')">Formato sin capability</button>
+    </div>
+
+    <!-- Active state -->
+    <div id="state-active">
+      <h2 class="text-base font-bold text-zinc-900 mb-1">Diagnosticos de Enfermeria</h2>
+      <p class="text-zinc-400 text-xs mb-5">Diagnosticos NANDA con intervenciones NIC y resultados NOC</p>
+
+      <!-- Add Diagnosis Button -->
+      <button onclick="toggleWizard()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium bg-zinc-900 text-white border-none cursor-pointer hover:bg-zinc-800 mb-5">
+        <i data-lucide="plus" style="width:14px;height:14px"></i> Agregar diagnostico
+      </button>
+
+      <!-- ═══ NANDA Step-by-Step Wizard ═══ -->
+      <div id="nanda-wizard" class="hidden mb-6">
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-semibold text-zinc-900">Agregar Diagnostico Enfermeria</h3>
+              <p class="text-[11px] text-zinc-400">Seleccione grupo, categoria y diagnostico NANDA</p>
+            </div>
+            <button onclick="toggleWizard()" class="size-8 flex items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100"><i data-lucide="x" class="size-4"></i></button>
+          </div>
+          <div class="p-5">
+            <!-- Step 1: Grupo NANDA -->
+            <div class="mb-4">
+              <label class="text-xs font-medium text-zinc-700 mb-2 block">Paso 1: Grupo NANDA</label>
+              <div class="flex flex-wrap gap-2" id="nanda-groups">
+                <button onclick="selectGroup(this, 'seguridad')" class="nanda-group rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 transition cursor-pointer bg-transparent text-zinc-700">Seguridad/Proteccion</button>
+                <button onclick="selectGroup(this, 'actividad')" class="nanda-group rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 transition cursor-pointer bg-transparent text-zinc-700">Actividad/Reposo</button>
+                <button onclick="selectGroup(this, 'nutricion')" class="nanda-group rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 transition cursor-pointer bg-transparent text-zinc-700">Nutricion</button>
+                <button onclick="selectGroup(this, 'eliminacion')" class="nanda-group rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 transition cursor-pointer bg-transparent text-zinc-700">Eliminacion</button>
+                <button onclick="selectGroup(this, 'confort')" class="nanda-group rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 transition cursor-pointer bg-transparent text-zinc-700">Confort</button>
+                <button onclick="selectGroup(this, 'percepcion')" class="nanda-group rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 transition cursor-pointer bg-transparent text-zinc-700">Percepcion/Cognicion</button>
+                <button onclick="selectGroup(this, 'autopercepcion')" class="nanda-group rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 transition cursor-pointer bg-transparent text-zinc-700">Autopercepcion</button>
+              </div>
+            </div>
+
+            <!-- Step 2: Categoria (hidden until group selected) -->
+            <div id="nanda-step2" class="mb-4 hidden">
+              <label class="text-xs font-medium text-zinc-700 mb-2 block">Paso 2: Categoria</label>
+              <div class="flex flex-col gap-1" id="nanda-categories">
+                <button onclick="selectCategory(this, 'infeccion')" class="nanda-cat text-left px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 transition cursor-pointer bg-transparent border-none">Infeccion</button>
+                <button onclick="selectCategory(this, 'lesion')" class="nanda-cat text-left px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 transition cursor-pointer bg-transparent border-none">Lesion fisica</button>
+                <button onclick="selectCategory(this, 'violencia')" class="nanda-cat text-left px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 transition cursor-pointer bg-transparent border-none">Violencia</button>
+                <button onclick="selectCategory(this, 'termoreg')" class="nanda-cat text-left px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 transition cursor-pointer bg-transparent border-none">Termorregulacion</button>
+              </div>
+            </div>
+
+            <!-- Step 3: Diagnosticos (hidden until category selected) -->
+            <div id="nanda-step3" class="mb-4 hidden">
+              <label class="text-xs font-medium text-zinc-700 mb-2 block">Paso 3: Diagnostico</label>
+              <div class="flex flex-col gap-1.5" id="nanda-diagnostics">
+                <label class="flex items-center gap-2.5 px-3 py-2 rounded-md border border-zinc-200/60 cursor-pointer hover:bg-zinc-50 transition">
+                  <input type="checkbox" class="size-4 accent-zinc-900 rounded nanda-dx-check" value="00004">
+                  <span class="text-sm text-zinc-900">Riesgo de infeccion <span class="text-zinc-400 text-xs">(00004)</span></span>
+                </label>
+                <label class="flex items-center gap-2.5 px-3 py-2 rounded-md border border-zinc-200/60 cursor-pointer hover:bg-zinc-50 transition">
+                  <input type="checkbox" class="size-4 accent-zinc-900 rounded nanda-dx-check" value="00046">
+                  <span class="text-sm text-zinc-900">Deterioro integridad cutanea <span class="text-zinc-400 text-xs">(00046)</span></span>
+                </label>
+                <label class="flex items-center gap-2.5 px-3 py-2 rounded-md border border-zinc-200/60 cursor-pointer hover:bg-zinc-50 transition">
+                  <input type="checkbox" class="size-4 accent-zinc-900 rounded nanda-dx-check" value="00044">
+                  <span class="text-sm text-zinc-900">Deterioro integridad tisular <span class="text-zinc-400 text-xs">(00044)</span></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Add button -->
+            <div id="nanda-add-btn" class="hidden">
+              <button onclick="addSelectedDiagnoses()" class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 transition inline-flex items-center gap-1.5 border-none cursor-pointer">
+                <i data-lucide="plus" style="width:14px;height:14px"></i> Agregar seleccionados
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Active Diagnoses with NIC/NOC Tree ═══ -->
+      <div class="flex flex-col gap-4" id="nanda-active-list">
+
+        <!-- Diagnosis 1: Riesgo de infeccion -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+          <div class="px-5 py-3.5 flex items-center justify-between border-b border-zinc-100">
+            <div class="flex items-center gap-3">
+              <span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700">00004</span>
+              <span class="text-sm font-semibold text-zinc-900">Riesgo de infeccion</span>
+              <span class="inline-block text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-500">Seguridad/Proteccion</span>
+            </div>
+            <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-red-600 hover:bg-red-50 transition" title="Eliminar diagnostico">
+              <i data-lucide="trash-2" class="size-4"></i>
+            </button>
+          </div>
+          <div class="px-5 py-4">
+            <div class="flex gap-6">
+              <!-- NIC Interventions -->
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-blue-500"></div>
+                  <span class="text-xs font-semibold text-zinc-700 uppercase tracking-wide">Intervenciones NIC</span>
+                </div>
+                <div class="space-y-2 pl-3 border-l-2 border-blue-100">
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-blue-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-blue-700">6540</span>
+                      <span class="text-sm text-zinc-700">Control de infecciones</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-blue-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-blue-700">6550</span>
+                      <span class="text-sm text-zinc-700">Proteccion contra infecciones</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <button class="inline-flex items-center gap-1 text-xs text-blue-600 font-medium hover:text-blue-800 px-3 py-1.5 cursor-pointer bg-transparent border-none">
+                    <i data-lucide="plus" style="width:12px;height:12px"></i> Agregar intervencion
+                  </button>
+                </div>
+              </div>
+              <!-- NOC Results -->
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-emerald-500"></div>
+                  <span class="text-xs font-semibold text-zinc-700 uppercase tracking-wide">Resultados NOC</span>
+                </div>
+                <div class="space-y-2 pl-3 border-l-2 border-emerald-100">
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-emerald-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-emerald-700">1902</span>
+                      <span class="text-sm text-zinc-700">Control del riesgo</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-emerald-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-emerald-700">0702</span>
+                      <span class="text-sm text-zinc-700">Estado inmunologico</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <button class="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium hover:text-emerald-800 px-3 py-1.5 cursor-pointer bg-transparent border-none">
+                    <i data-lucide="plus" style="width:12px;height:12px"></i> Agregar resultado
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diagnosis 2: Deterioro integridad cutanea -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
+          <div class="px-5 py-3.5 flex items-center justify-between border-b border-zinc-100">
+            <div class="flex items-center gap-3">
+              <span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700">00046</span>
+              <span class="text-sm font-semibold text-zinc-900">Deterioro de la integridad cutanea</span>
+              <span class="inline-block text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-500">Seguridad/Proteccion</span>
+            </div>
+            <button class="size-8 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-red-600 hover:bg-red-50 transition" title="Eliminar diagnostico">
+              <i data-lucide="trash-2" class="size-4"></i>
+            </button>
+          </div>
+          <div class="px-5 py-4">
+            <div class="flex gap-6">
+              <!-- NIC Interventions -->
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-blue-500"></div>
+                  <span class="text-xs font-semibold text-zinc-700 uppercase tracking-wide">Intervenciones NIC</span>
+                </div>
+                <div class="space-y-2 pl-3 border-l-2 border-blue-100">
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-blue-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-blue-700">3660</span>
+                      <span class="text-sm text-zinc-700">Cuidados de las heridas</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-blue-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-blue-700">3590</span>
+                      <span class="text-sm text-zinc-700">Vigilancia de la piel</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <button class="inline-flex items-center gap-1 text-xs text-blue-600 font-medium hover:text-blue-800 px-3 py-1.5 cursor-pointer bg-transparent border-none">
+                    <i data-lucide="plus" style="width:12px;height:12px"></i> Agregar intervencion
+                  </button>
+                </div>
+              </div>
+              <!-- NOC Results -->
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-emerald-500"></div>
+                  <span class="text-xs font-semibold text-zinc-700 uppercase tracking-wide">Resultados NOC</span>
+                </div>
+                <div class="space-y-2 pl-3 border-l-2 border-emerald-100">
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-emerald-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-emerald-700">1101</span>
+                      <span class="text-sm text-zinc-700">Integridad tisular: piel y membranas mucosas</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2 rounded-md bg-emerald-50/50">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-emerald-700">1102</span>
+                      <span class="text-sm text-zinc-700">Curacion de la herida por primera intencion</span>
+                    </div>
+                    <button class="size-6 inline-flex items-center justify-center rounded text-zinc-400 hover:text-red-500 transition"><i data-lucide="x" class="size-3"></i></button>
+                  </div>
+                  <button class="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium hover:text-emerald-800 px-3 py-1.5 cursor-pointer bg-transparent border-none">
+                    <i data-lucide="plus" style="width:12px;height:12px"></i> Agregar resultado
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Disabled state (format doesn't support nursing diagnostics) -->
+    <div id="state-disabled" style="display:none">
+      <div class="flex flex-col items-center justify-center py-12 px-6 text-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400">
+          <i data-lucide="info" style="width:24px;height:24px"></i>
+        </div>
+        <h3 class="text-sm font-semibold text-zinc-900">Este formato no incluye diagnosticos de enfermeria</h3>
+        <p class="text-zinc-400 text-xs max-w-[360px]">La capability de diagnosticos NANDA no esta habilitada para el formato seleccionado. Contacte al administrador si necesita esta funcionalidad.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function showState(state) {
+      document.querySelectorAll('.state-tab').forEach(t => {
+        t.classList.remove('text-blue-600', 'border-blue-600');
+        t.classList.add('text-zinc-400', 'border-transparent');
+      });
+      event.target.classList.remove('text-zinc-400', 'border-transparent');
+      event.target.classList.add('text-blue-600', 'border-blue-600');
+      document.getElementById('state-active').style.display = state === 'active' ? 'block' : 'none';
+      document.getElementById('state-disabled').style.display = state === 'disabled' ? 'block' : 'none';
+    }
+
+    // ── NANDA Wizard ──
+    function toggleWizard() {
+      const w = document.getElementById('nanda-wizard');
+      w.classList.toggle('hidden');
+      if (!w.classList.contains('hidden')) {
+        resetWizard();
+        lucide.createIcons();
+      }
+    }
+
+    function resetWizard() {
+      document.querySelectorAll('.nanda-group').forEach(b => {
+        b.classList.remove('bg-zinc-900', 'text-white', 'border-zinc-900');
+        b.classList.add('border-zinc-200', 'text-zinc-700');
+      });
+      document.getElementById('nanda-step2').classList.add('hidden');
+      document.getElementById('nanda-step3').classList.add('hidden');
+      document.getElementById('nanda-add-btn').classList.add('hidden');
+      document.querySelectorAll('.nanda-dx-check').forEach(c => c.checked = false);
+    }
+
+    function selectGroup(el, group) {
+      document.querySelectorAll('.nanda-group').forEach(b => {
+        b.classList.remove('bg-zinc-900', 'text-white', 'border-zinc-900');
+        b.classList.add('border-zinc-200', 'text-zinc-700');
+      });
+      el.classList.remove('border-zinc-200', 'text-zinc-700');
+      el.classList.add('bg-zinc-900', 'text-white', 'border-zinc-900');
+      document.getElementById('nanda-step2').classList.remove('hidden');
+      document.getElementById('nanda-step3').classList.add('hidden');
+      document.getElementById('nanda-add-btn').classList.add('hidden');
+      document.querySelectorAll('.nanda-cat').forEach(c => {
+        c.classList.remove('bg-zinc-100', 'font-medium', 'text-zinc-900');
+      });
+    }
+
+    function selectCategory(el, cat) {
+      document.querySelectorAll('.nanda-cat').forEach(c => {
+        c.classList.remove('bg-zinc-100', 'font-medium', 'text-zinc-900');
+      });
+      el.classList.add('bg-zinc-100', 'font-medium', 'text-zinc-900');
+      document.getElementById('nanda-step3').classList.remove('hidden');
+      document.getElementById('nanda-add-btn').classList.remove('hidden');
+      document.querySelectorAll('.nanda-dx-check').forEach(c => c.checked = false);
+    }
+
+    function addSelectedDiagnoses() {
+      toggleWizard();
+      // In a real app this would add to the list dynamically
+    }
+  </script>
+</body>
+</html>

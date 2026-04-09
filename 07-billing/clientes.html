@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — R19 Clientes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Only custom CSS for sidebar collapse behavior — everything else is Tailwind */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    /* Scrollbar */
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SIDEBAR -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+
+      <!-- Sidebar Header -->
+      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
+            <i data-lucide="heart-pulse" class="size-4 text-white"></i>
+          </div>
+          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+        </a>
+        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
+          <i data-lucide="panel-left-close" class="size-4"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+
+        <!-- Dashboard -->
+        <div class="mb-1">
+          <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
+            <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Dashboard</span>
+          </a>
+        </div>
+
+        <!-- CONSULTA EXTERNA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
+          <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
+          <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-agenda">
+          <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
+          <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Recepcion de Paciente</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-config">
+          <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
+          <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
+          <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
+        </div>
+
+        <!-- HISTORIA CLINICA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
+          <i data-lucide="file-heart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
+          <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-hc">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
+          <a href="../04-clinical/attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-config">
+          <a href="../04-clinical/format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
+          <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
+          <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
+          <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
+          <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
+          <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
+        </div>
+
+        <!-- FACTURACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
+          <i data-lucide="receipt" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron open sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items open pl-5" id="pos-exec">
+          <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
+          <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
+          <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
+          <a href="../07-billing/clientes.html" class="flex items-center rounded-md bg-zinc-900/10 px-2 py-1.5 text-sm font-medium text-zinc-900">Clientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Lista de Pacientes</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-config">
+          <a href="../07-billing/medios-pago.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Medios de Pago</a>
+          <a href="../07-billing/rangos-facturacion.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Rangos de Facturacion</a>
+          <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
+          <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
+          <a href="../07-billing/tarifas-medicamentos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Tarifas de Medicamentos</a>
+          <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
+        </div>
+
+        <!-- FARMACIA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
+          <i data-lucide="pill" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-exec">
+          <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
+          <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
+        </div>
+
+        <!-- COMUNICACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
+        </div>
+        <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
+          <i data-lucide="message-circle" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">WhatsApp</span>
+        </a>
+
+        <!-- OTROS MODULOS -->
+        <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
+        </div>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
+
+        <!-- PREFERENCIAS -->
+        <div class="mt-4 mb-1">
+          <a href="../09-settings/settings.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Preferencias">
+            <i data-lucide="sliders-horizontal" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Preferencias</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="border-t border-zinc-200 p-3 shrink-0">
+        <div class="sidebar-hide mb-2">
+          <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
+          <div class="flex gap-1">
+            <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
+            <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
+            <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+          <div class="sidebar-hide overflow-hidden">
+            <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
+            <p class="text-xs text-zinc-400">Medicina General</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- MAIN AREA -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+
+      <!-- Header -->
+      <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+        <div class="flex items-center justify-between gap-6 px-6 py-2">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-3.5 text-zinc-500"></i></div>
+              <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+            </div>
+            <div class="h-4 w-px bg-zinc-200"></div>
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+              <input type="text" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly class="h-9 w-80 rounded-md border border-zinc-200 bg-zinc-50 pl-9 pr-12 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2"><kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-white px-1 text-[10px] font-medium text-zinc-400">&#8984;K</kbd></span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="relative flex size-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition">
+              <i data-lucide="bell" class="size-[18px]"></i>
+              <span class="absolute top-1 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-semibold text-white ring-2 ring-white">5</span>
+            </button>
+            <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-[11px] font-semibold text-white">JP</div>
+              <span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto bg-zinc-50 px-6 py-6">
+        <div class="max-w-7xl mx-auto">
+
+          <!-- Breadcrumb -->
+          <div class="flex items-center gap-1.5 text-sm text-zinc-500 mb-4">
+            <a href="../00-shell/dashboard-medico.html" class="hover:text-zinc-900 transition">Inicio</a>
+            <i data-lucide="chevron-right" class="size-3.5"></i>
+            <span class="text-zinc-400">Facturacion</span>
+            <i data-lucide="chevron-right" class="size-3.5"></i>
+            <span class="text-zinc-900 font-medium">Clientes</span>
+          </div>
+
+          <!-- Page Header -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h1 class="text-xl font-semibold text-zinc-900">Clientes</h1>
+              <p class="text-sm text-zinc-500 mt-0.5">Registro y administracion de clientes y pagadores</p>
+            </div>
+            <button onclick="openModal()" class="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition">
+              <i data-lucide="plus" class="size-4"></i>
+              Nuevo Cliente
+            </button>
+          </div>
+
+          <!-- ═══════════════════════════════════════════════════════ -->
+          <!-- TABLE CARD -->
+          <!-- ═══════════════════════════════════════════════════════ -->
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+
+            <!-- ── FILTER SECTION ── -->
+            <div class="p-6 border-b border-zinc-100">
+              <div class="flex items-end gap-4">
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo Documento</label>
+                  <div class="relative">
+                    <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                      <option>Todos</option>
+                      <option>NIT</option>
+                      <option>CC</option>
+                      <option>CE</option>
+                      <option>Pasaporte</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-zinc-700 mb-1.5">Numero Documento</label>
+                  <input type="text" placeholder="Buscar por documento..." class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                </div>
+                <div class="flex-1">
+                  <label class="block text-sm font-medium text-zinc-700 mb-1.5">Razon Social / Nombre</label>
+                  <input type="text" placeholder="Buscar por nombre..." class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                </div>
+                <button class="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 h-9 text-sm font-medium text-white hover:bg-zinc-800 transition shrink-0">
+                  <i data-lucide="search" class="size-3.5"></i>
+                  Buscar
+                </button>
+              </div>
+            </div>
+
+            <!-- ── TABLE ── -->
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-zinc-200">
+                  <th class="h-12 w-12 pl-6 pr-1">
+                    <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
+                  </th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo Doc</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Documento</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Razon Social</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Direccion</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Ciudad</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Telefono</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Email</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Estado</th>
+                  <th class="h-12 px-4 pr-6 text-left text-sm font-medium text-zinc-500">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100">
+
+                <!-- Row 1 -->
+                <tr class="hover:bg-zinc-50 transition-colors">
+                  <td class="py-3.5 pl-6 pr-1">
+                    <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
+                  </td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">NIT</td>
+                  <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">800.123.456-7</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">AXA Colpatria Seguros S.A.</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Cra 7 #27-18 Piso 12</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Bogota</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">(601) 423-5600</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">facturacion@axacolpatria.co</td>
+                  <td class="py-3.5 px-4">
+                    <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Activo</span>
+                  </td>
+                  <td class="py-3.5 px-4 pr-6">
+                    <div class="flex items-center gap-1">
+                      <div class="group relative inline-flex">
+                  <button onclick="openModal()" class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="hover:bg-zinc-50 transition-colors">
+                  <td class="py-3.5 pl-6 pr-1">
+                    <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
+                  </td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">NIT</td>
+                  <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">800.456.789-1</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Coomeva EPS S.A.</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Calle 13 #57-50</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Cali</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">(602) 880-0000</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">salud@coomeva.com.co</td>
+                  <td class="py-3.5 px-4">
+                    <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Activo</span>
+                  </td>
+                  <td class="py-3.5 px-4 pr-6">
+                    <div class="flex items-center gap-1">
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr class="hover:bg-zinc-50 transition-colors">
+                  <td class="py-3.5 pl-6 pr-1">
+                    <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
+                  </td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">NIT</td>
+                  <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">900.156.264-2</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Nueva EPS S.A.</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Calle 72 #10-07 Piso 8</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Bogota</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">(601) 307-0000</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">facturacion@nuevaeps.com.co</td>
+                  <td class="py-3.5 px-4">
+                    <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Activo</span>
+                  </td>
+                  <td class="py-3.5 px-4 pr-6">
+                    <div class="flex items-center gap-1">
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr class="hover:bg-zinc-50 transition-colors">
+                  <td class="py-3.5 pl-6 pr-1">
+                    <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
+                  </td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">NIT</td>
+                  <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">800.088.702-2</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Suramericana S.A. (Sura)</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Cra 43A #1-50</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Medellin</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">(604) 444-8888</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">eps@sura.com.co</td>
+                  <td class="py-3.5 px-4">
+                    <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Activo</span>
+                  </td>
+                  <td class="py-3.5 px-4 pr-6">
+                    <div class="flex items-center gap-1">
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 5 -->
+                <tr class="hover:bg-zinc-50 transition-colors">
+                  <td class="py-3.5 pl-6 pr-1">
+                    <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
+                  </td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">CC</td>
+                  <td class="py-3.5 px-4 text-sm font-medium text-zinc-900">1.020.456.789</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Juan Carlos Perez Lopez</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Cra 15 #80-25 Apto 301</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">Bogota</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">310-456-7890</td>
+                  <td class="py-3.5 px-4 text-sm text-zinc-700">jcperez@gmail.com</td>
+                  <td class="py-3.5 px-4">
+                    <span class="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">Activo</span>
+                  </td>
+                  <td class="py-3.5 px-4 pr-6">
+                    <div class="flex items-center gap-1">
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="pencil" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
+                </div>
+                      <div class="group relative inline-flex">
+                  <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition"><i data-lucide="more-vertical" class="size-4"></i></button>
+                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Más opciones</div>
+                </div>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+            <!-- ── PAGINATION ── -->
+            <div class="flex items-center justify-between px-6 py-4 border-t border-zinc-100">
+              <p class="text-sm text-zinc-500">Mostrando 1-50 de 342 clientes</p>
+              <div class="flex items-center gap-1.5">
+                <button class="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm text-zinc-400 cursor-default">
+                  <i data-lucide="chevron-left" class="size-4"></i>
+                  <span>Anterior</span>
+                </button>
+                <button class="flex size-8 items-center justify-center rounded-md bg-zinc-900 text-sm font-medium text-white">1</button>
+                <button class="flex size-8 items-center justify-center rounded-md text-sm text-zinc-700 hover:bg-zinc-100 transition">2</button>
+                <span class="flex size-8 items-center justify-center text-sm text-zinc-400">...</span>
+                <button class="flex size-8 items-center justify-center rounded-md text-sm text-zinc-700 hover:bg-zinc-100 transition">7</button>
+                <button class="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100 transition">
+                  <span>Siguiente</span>
+                  <i data-lucide="chevron-right" class="size-4"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- MODAL: Crear/Editar Cliente (CountryAwareFields 18 campos) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div id="createModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+    <div class="w-full max-w-2xl rounded-xl border border-zinc-200/60 bg-white shadow-lg">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+        <h2 class="text-base font-semibold text-zinc-900">Nuevo Cliente</h2>
+        <button onclick="closeModal()" class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition">
+          <i data-lucide="x" class="size-4"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="max-h-[70vh] overflow-y-auto px-6 py-5">
+
+        <!-- Seccion: Identificacion -->
+        <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Identificacion</p>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo Documento<span class="text-red-500 ml-0.5">*</span></label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option value="">Seleccionar...</option>
+                <option>NIT</option>
+                <option>Cedula de Ciudadania</option>
+                <option>Cedula Extranjeria</option>
+                <option>Pasaporte</option>
+                <option>RUT</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Numero Documento<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="text" placeholder="800.123.456-7" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+            <p class="text-xs text-zinc-400 mt-1">Ingrese el numero sin puntos ni guion. DV se calcula automaticamente.</p>
+          </div>
+          <div class="col-span-2">
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Razon Social / Nombre<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="text" placeholder="AXA Colpatria Seguros S.A." class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Contacto</label>
+            <input type="text" placeholder="Nombre del contacto principal" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">NIT / DV</label>
+            <div class="flex gap-2">
+              <input type="text" placeholder="NIT" class="flex-1 h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <input type="text" placeholder="DV" disabled class="w-14 h-9 rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-400 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Seccion: Ubicacion -->
+        <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Ubicacion</p>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="col-span-2">
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Direccion<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="text" placeholder="Cra 7 #27-18 Piso 12" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Pais</label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option>Colombia</option>
+                <option>Chile</option>
+                <option>Brasil</option>
+                <option>Mexico</option>
+                <option>Singapur</option>
+                <option>Sudafrica</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Departamento<span class="text-red-500 ml-0.5">*</span> <span class="text-[10px] font-medium text-zinc-400 bg-zinc-100 rounded px-1 py-0.5">COL</span></label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option value="">Seleccionar...</option>
+                <option>Cundinamarca</option>
+                <option>Antioquia</option>
+                <option>Valle del Cauca</option>
+                <option>Atlantico</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Ciudad<span class="text-red-500 ml-0.5">*</span></label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option value="">Seleccionar...</option>
+                <option>Bogota D.C.</option>
+                <option>Medellin</option>
+                <option>Cali</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Codigo Postal</label>
+            <input type="text" placeholder="110111" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+        </div>
+
+        <!-- Seccion: Contacto -->
+        <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Contacto</p>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Telefono<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="tel" placeholder="(601) 423-5600" maxlength="14" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Email<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="email" placeholder="facturacion@empresa.co" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+        </div>
+
+        <!-- Seccion: Tributaria -->
+        <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Informacion Tributaria</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Regimen<span class="text-red-500 ml-0.5">*</span> <span class="text-[10px] font-medium text-zinc-400 bg-zinc-100 rounded px-1 py-0.5">COL</span></label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option>Regimen Ordinario</option>
+                <option>Regimen Simple</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Actividad Economica</label>
+            <div class="flex gap-2">
+              <input type="text" placeholder="Seleccionar actividad..." readonly class="flex-1 h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none cursor-pointer">
+              <button class="inline-flex items-center rounded-md border border-zinc-200 bg-white px-3 h-9 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">Seleccionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end gap-3 border-t border-zinc-100 px-6 py-4">
+        <button onclick="closeModal()" class="inline-flex items-center rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">Cancelar</button>
+        <button class="inline-flex items-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition">Guardar Cliente</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-collapsed'); }
+
+    function toggleGroup(id) {
+      document.getElementById(id).classList.toggle('open');
+      document.getElementById(id + '-chevron').classList.toggle('open');
+    }
+
+    function setFontSize(s) { /* placeholder */ }
+
+    function openModal() {
+      var m = document.getElementById('createModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeModal() {
+      var m = document.getElementById('createModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    // Auto-expand Facturacion > Ejecucion de Procesos for this page
+    (function() {
+      var g = document.getElementById('pos-exec');
+      var c = document.getElementById('pos-exec-chevron');
+      if (g) g.classList.add('open');
+      if (c) c.classList.add('open');
+    })();
+  </script>
+</body>
+</html>

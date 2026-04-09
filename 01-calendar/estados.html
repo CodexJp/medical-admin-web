@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estados del Calendario — MedicalAdmin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .skeleton { background: linear-gradient(90deg, #f4f4f5 25%, #e4e4e7 50%, #f4f4f5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased p-8">
+  <a href="index.html" class="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 transition mb-6">
+    <i data-lucide="arrow-left" class="size-4"></i> Volver al Calendario
+  </a>
+  <h1 class="text-xl font-semibold text-zinc-900 mb-1">Estados del Calendario</h1>
+  <p class="text-sm text-zinc-500 mb-8">Visualizacion de los tres estados posibles de la grilla semanal.</p>
+
+  <div class="grid gap-8 lg:grid-cols-3">
+
+    <!-- LOADING STATE -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600">Loading</span>
+        <span class="text-sm text-zinc-500">Cargando agenda...</span>
+      </div>
+      <div class="space-y-3">
+        <!-- Skeleton header -->
+        <div class="grid grid-cols-8 gap-1">
+          <div class="h-4"></div>
+          <div class="skeleton h-8 w-full"></div>
+          <div class="skeleton h-8 w-full"></div>
+          <div class="skeleton h-8 w-full"></div>
+          <div class="skeleton h-8 w-full"></div>
+          <div class="skeleton h-8 w-full"></div>
+          <div class="skeleton h-8 w-full"></div>
+          <div class="skeleton h-8 w-full"></div>
+        </div>
+        <!-- Skeleton rows -->
+        <div class="grid grid-cols-8 gap-1">
+          <div class="skeleton h-4 w-8"></div>
+          <div class="skeleton h-12"></div>
+          <div class="h-12"></div>
+          <div class="skeleton h-8" style="animation-delay:0.3s"></div>
+          <div class="h-12"></div>
+          <div class="skeleton h-12" style="animation-delay:0.2s"></div>
+          <div class="h-12"></div>
+          <div class="h-12"></div>
+        </div>
+        <div class="grid grid-cols-8 gap-1">
+          <div class="skeleton h-4 w-8"></div>
+          <div class="h-12"></div>
+          <div class="skeleton h-12" style="animation-delay:0.15s"></div>
+          <div class="h-12"></div>
+          <div class="skeleton h-8" style="animation-delay:0.25s"></div>
+          <div class="h-12"></div>
+          <div class="skeleton h-12" style="animation-delay:0.35s"></div>
+          <div class="h-12"></div>
+        </div>
+        <div class="grid grid-cols-8 gap-1">
+          <div class="skeleton h-4 w-8"></div>
+          <div class="skeleton h-8" style="animation-delay:0.2s"></div>
+          <div class="h-12"></div>
+          <div class="h-12"></div>
+          <div class="skeleton h-12" style="animation-delay:0.1s"></div>
+          <div class="skeleton h-8" style="animation-delay:0.3s"></div>
+          <div class="h-12"></div>
+          <div class="h-12"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="inline-flex items-center rounded-md bg-zinc-500/10 px-2 py-0.5 text-xs font-medium text-zinc-600">Empty</span>
+        <span class="text-sm text-zinc-500">Sin citas esta semana</span>
+      </div>
+      <div class="flex flex-col items-center justify-center py-8 text-center">
+        <div class="flex size-14 items-center justify-center rounded-xl bg-zinc-100 mb-4">
+          <i data-lucide="calendar-x-2" class="size-7 text-zinc-400"></i>
+        </div>
+        <p class="text-sm font-semibold text-zinc-900 mb-1">No hay citas esta semana</p>
+        <p class="text-xs text-zinc-500 mb-5 max-w-xs">No se encontraron citas programadas para la semana del 31 Mar — 06 Abr. Puedes crear una nueva cita o cambiar los filtros.</p>
+        <div class="flex gap-2">
+          <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-50 transition">
+            <i data-lucide="filter" class="size-3.5"></i> Cambiar filtros
+          </button>
+          <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-800 transition" onclick="window.location.href='../02-appointments/wizard-cita.html'">
+            <i data-lucide="plus" class="size-3.5"></i> Nueva Cita
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="inline-flex items-center rounded-md bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-600">Error</span>
+        <span class="text-sm text-zinc-500">Error cargando agenda</span>
+      </div>
+      <div class="flex flex-col items-center justify-center py-8 text-center">
+        <div class="flex size-14 items-center justify-center rounded-xl bg-red-50 mb-4">
+          <i data-lucide="alert-triangle" class="size-7 text-red-400"></i>
+        </div>
+        <p class="text-sm font-semibold text-zinc-900 mb-1">Error cargando la agenda</p>
+        <p class="text-xs text-zinc-500 mb-5 max-w-xs">No pudimos cargar las citas del calendario. Esto puede deberse a un problema de conexion. Por favor, intenta de nuevo.</p>
+        <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-zinc-700 text-sm font-medium inline-flex items-center gap-2 hover:bg-zinc-50 transition">
+          <i data-lucide="refresh-cw" class="size-3.5"></i> Reintentar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

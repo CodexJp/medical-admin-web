@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — R18 RIPS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script><script>tailwindcss.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script><script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Sidebar collapse */
+    .sidebar-collapsed { width: 64px !important; }
+    .sidebar-collapsed .sidebar-hide { display: none !important; }
+    .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
+    .sidebar-collapsed .sidebar-nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute; left: calc(100% + 8px); top: 50%;
+      transform: translateY(-50%); background: #18181B; color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 150ms; z-index: 99;
+    }
+    .sidebar-collapsed .sidebar-nav-item:hover::after { opacity: 1; }
+    .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .nav-group-items.open { max-height: 800px; }
+    .sidebar-collapsed .nav-group-items { display: none; }
+    .nav-group-chevron { transition: transform 200ms; }
+    .nav-group-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .nav-group-chevron { display: none; }
+    .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+  </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SIDEBAR -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
+
+      <!-- Sidebar Header -->
+      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
+        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
+            <i data-lucide="heart-pulse" class="size-4 text-white"></i>
+          </div>
+          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+        </a>
+        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
+          <i data-lucide="panel-left-close" class="size-4"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
+
+        <!-- Dashboard -->
+        <div class="mb-1">
+          <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
+            <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+            <span class="sidebar-hide">Dashboard</span>
+          </a>
+        </div>
+
+        <!-- CONSULTA EXTERNA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
+          <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
+          <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-agenda">
+          <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
+          <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Recepcion de Paciente</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="cit-config">
+          <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
+          <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
+          <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
+        </div>
+
+        <!-- HISTORIA CLINICA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
+          <i data-lucide="file-heart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
+          <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-hc">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
+          <a href="../04-clinical/attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Evaluacion Enfermeria</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="his-config">
+          <a href="../04-clinical/format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
+          <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
+          <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
+          <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
+          <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
+          <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
+        </div>
+
+        <!-- FACTURACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
+          <i data-lucide="receipt" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron open sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items open pl-5" id="pos-exec">
+          <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
+          <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
+          <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-zinc-900 bg-zinc-900/10">RIPS</a>
+          <a href="../07-billing/clientes.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Clientes</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Lista de Pacientes</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
+          <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="pos-config">
+          <a href="../07-billing/medios-pago.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Medios de Pago</a>
+          <a href="../07-billing/rangos-facturacion.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Rangos de Facturacion</a>
+          <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Proximamente">Tarifas de Facturacion</span>
+          <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
+          <a href="../07-billing/tarifas-medicamentos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Tarifas de Medicamentos</a>
+          <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Sedes</span>
+        </div>
+
+        <!-- FARMACIA -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
+          <i data-lucide="pill" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
+          <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-exec">
+          <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
+          <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Articulos</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('far-config')">
+          <i data-lucide="settings" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
+          <i data-lucide="chevron-right" id="far-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-config">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Bodegas</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Tipo Articulos</span>
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Tipo Movimientos</span>
+        </div>
+        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Reporte" onclick="toggleGroup('far-report')">
+          <i data-lucide="file-bar-chart" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide flex-1 text-left">Reporte</span>
+          <i data-lucide="chevron-right" id="far-report-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
+        </button>
+        <div class="nav-group-items pl-5" id="far-report">
+          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Kardex</span>
+        </div>
+
+        <!-- COMUNICACION -->
+        <div class="mt-4 mb-1">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
+        </div>
+        <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
+          <i data-lucide="message-circle" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">WhatsApp</span>
+        </a>
+
+        <!-- OTROS MODULOS -->
+        <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
+        </div>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Banco Sangre"><i data-lucide="droplets" class="size-4 shrink-0"></i><span class="sidebar-hide">Banco Sangre</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="CRM"><i data-lucide="folder" class="size-4 shrink-0"></i><span class="sidebar-hide">CRM</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Integracion"><i data-lucide="puzzle" class="size-4 shrink-0"></i><span class="sidebar-hide">Integracion</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Control de Accesos"><i data-lucide="key-round" class="size-4 shrink-0"></i><span class="sidebar-hide">Control de Accesos</span></span>
+        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Tablero / Estadisticas"><i data-lucide="bar-chart-3" class="size-4 shrink-0"></i><span class="sidebar-hide">Tablero / Estadisticas</span></span>
+
+        <!-- PREFERENCIAS -->
+        <div class="mt-4 mb-1 border-t border-zinc-100 pt-4">
+          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Preferencias</p>
+        </div>
+        <a href="../09-settings/settings.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Preferencias">
+          <i data-lucide="sliders-horizontal" class="size-4 shrink-0"></i>
+          <span class="sidebar-hide">Preferencias</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="border-t border-zinc-200 p-3 shrink-0">
+        <div class="sidebar-hide mb-2">
+          <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
+          <div class="flex gap-1">
+            <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
+            <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
+            <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
+          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+          <div class="sidebar-hide overflow-hidden">
+            <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
+            <p class="text-xs text-zinc-400">Medicina General</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- MAIN AREA -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+
+      <!-- Header -->
+      <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+        <div class="flex items-center justify-between gap-6 px-6 py-2">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100 text-zinc-500">
+                <i data-lucide="building-2" class="size-3.5"></i>
+              </div>
+              <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+            </div>
+            <div class="h-5 w-px bg-zinc-200"></div>
+            <div class="relative flex-1 max-w-md">
+              <i data-lucide="search" class="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-zinc-400"></i>
+              <input type="text" class="h-8 w-full rounded-md border border-zinc-200 bg-zinc-50 pl-8 pr-16 text-sm text-zinc-600 placeholder-zinc-400 outline-none focus:border-zinc-300 focus:bg-white" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly>
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-zinc-200 bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-400">&#8984;K</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button class="relative flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition" title="Notificaciones">
+              <i data-lucide="bell" class="size-4"></i>
+              <span class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">5</span>
+            </button>
+            <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition" title="Ayuda">
+              <i data-lucide="circle-help" class="size-4"></i>
+            </button>
+            <div class="ml-2 h-5 w-px bg-zinc-200"></div>
+            <button class="ml-2 flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
+              <span class="text-sm font-medium text-zinc-700">Dr. Rodriguez</span>
+              <i data-lucide="chevron-down" class="size-3.5 text-zinc-400"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Header -->
+      <div class="border-b border-zinc-200 bg-white px-6 py-4">
+        <div class="flex items-center gap-1.5 text-xs text-zinc-400 mb-2">
+          <a href="../00-shell/dashboard-medico.html" class="hover:text-zinc-600 transition">Inicio</a>
+          <i data-lucide="chevron-right" class="size-3"></i>
+          <a href="#" class="hover:text-zinc-600 transition">Facturacion</a>
+          <i data-lucide="chevron-right" class="size-3"></i>
+          <span class="text-zinc-600">RIPS</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-lg font-semibold text-zinc-900">RIPS</h1>
+            <p class="text-sm text-zinc-500">Registro Individual de Prestacion de Servicios de Salud</p>
+          </div>
+          <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 transition flex items-center gap-2" onclick="openDownloadModal()">
+            <i data-lucide="download" class="size-3.5"></i> Descarga Masiva
+          </button>
+        </div>
+      </div>
+
+      <!-- Page Body -->
+      <div class="flex-1 overflow-y-auto p-6">
+
+        <!-- Colombia-only banner -->
+        <div class="flex items-start gap-3 p-3.5 rounded-xl border border-blue-200 bg-blue-50 mb-5">
+          <i data-lucide="info" class="size-[18px] text-blue-700 mt-0.5 shrink-0"></i>
+          <div>
+            <div class="font-semibold text-[13px] text-zinc-900 mb-0.5">RIPS — Solo Colombia</div>
+            <div class="text-xs text-zinc-600 leading-[17px]">El Registro Individual de Prestacion de Servicios de Salud es obligatorio para todas las IPS en Colombia, conforme a la Resolucion 3374 de 2000. Los archivos generados deben cumplir con el formato definido por el Ministerio de Salud y Proteccion Social.</div>
+          </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3 mb-5">
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-3.5">
+            <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">Factura</div>
+            <div class="text-[15px] font-bold text-zinc-900">FACT-2027-001234</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">Coomeva EPS — 15/01/2027</div>
+          </div>
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-3.5">
+            <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">Total Registros</div>
+            <div class="text-xl font-bold text-zinc-900">47</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">6 archivos RIPS</div>
+          </div>
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-3.5">
+            <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">Validacion</div>
+            <div class="text-xl font-bold text-green-700">39 OK</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">5 advertencias, 3 errores</div>
+          </div>
+          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-3.5">
+            <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-1">Periodo</div>
+            <div class="text-[15px] font-bold text-zinc-900">Ene 2027</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">01/01/2027 — 31/01/2027</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mb-4">
+          <div class="p-3 flex items-end gap-3 flex-wrap">
+            <div class="min-w-[200px]">
+              <label class="block text-xs font-medium text-zinc-500 mb-1">Factura</label>
+              <div class="flex items-center gap-1.5 h-8 px-2.5 border border-zinc-200 rounded-md bg-white">
+                <i data-lucide="search" class="size-3.5 text-zinc-400 shrink-0"></i>
+                <input type="text" class="flex-1 text-sm border-none outline-none bg-transparent text-zinc-600 placeholder-zinc-400" placeholder="Buscar factura..." value="FACT-2027-001234">
+              </div>
+            </div>
+            <div class="min-w-[160px]">
+              <label class="block text-xs font-medium text-zinc-500 mb-1">Convenio</label>
+              <select class="h-8 w-full px-2.5 border border-zinc-200 rounded-md text-sm text-zinc-600 bg-white outline-none focus:border-zinc-300">
+                <option>Coomeva EPS</option><option>AXA Colpatria</option><option>Nueva EPS</option><option>Sura EPS</option><option>Sanitas EPS</option>
+              </select>
+            </div>
+            <div class="min-w-[140px]">
+              <label class="block text-xs font-medium text-zinc-500 mb-1">Periodo</label>
+              <select class="h-8 w-full px-2.5 border border-zinc-200 rounded-md text-sm text-zinc-600 bg-white outline-none focus:border-zinc-300">
+                <option>Enero 2027</option><option>Diciembre 2026</option><option>Noviembre 2026</option>
+              </select>
+            </div>
+            <div class="min-w-[140px]">
+              <label class="block text-xs font-medium text-zinc-500 mb-1">Estado Validacion</label>
+              <select class="h-8 w-full px-2.5 border border-zinc-200 rounded-md text-sm text-zinc-600 bg-white outline-none focus:border-zinc-300">
+                <option value="">Todos</option><option>Valido</option><option>Con Advertencias</option><option>Con Errores</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIPS Tabs Card -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
+          <!-- Tabs -->
+          <div class="flex border-b border-zinc-200 overflow-x-auto" id="ripsTabs">
+            <button class="px-4 h-9 text-sm font-medium text-zinc-500 hover:text-zinc-900 whitespace-nowrap flex items-center gap-2 transition" onclick="switchTab('af')">
+              AF — Factura <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700">1</span>
+            </button>
+            <button class="px-4 h-9 text-sm font-medium text-zinc-900 border-b-2 border-zinc-900 whitespace-nowrap flex items-center gap-2" onclick="switchTab('ap')">
+              AP — Procedimientos <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-semibold bg-green-50 text-green-700">12</span>
+            </button>
+            <button class="px-4 h-9 text-sm font-medium text-zinc-500 hover:text-zinc-900 whitespace-nowrap flex items-center gap-2 transition" onclick="switchTab('ac')">
+              AC — Consultas <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-semibold bg-green-50 text-green-700">8</span>
+            </button>
+            <button class="px-4 h-9 text-sm font-medium text-zinc-500 hover:text-zinc-900 whitespace-nowrap flex items-center gap-2 transition" onclick="switchTab('am')">
+              AM — Medicamentos <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700">15</span>
+            </button>
+            <button class="px-4 h-9 text-sm font-medium text-zinc-500 hover:text-zinc-900 whitespace-nowrap flex items-center gap-2 transition" onclick="switchTab('us')">
+              US — Usuarios <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-semibold bg-green-50 text-green-700">4</span>
+            </button>
+            <button class="px-4 h-9 text-sm font-medium text-zinc-500 hover:text-zinc-900 whitespace-nowrap flex items-center gap-2 transition" onclick="switchTab('at')">
+              AT — Hospitalizacion <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-semibold bg-red-50 text-red-700">5</span>
+            </button>
+            <button class="px-4 h-9 text-sm font-medium text-zinc-500 hover:text-zinc-900 whitespace-nowrap flex items-center gap-2 transition" onclick="switchTab('ad')">
+              AD — Ajuste <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-semibold bg-green-50 text-green-700">3</span>
+            </button>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200 bg-zinc-50/60">
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5 h-8 px-2.5 border border-zinc-200 rounded-md bg-white w-[200px]">
+                <i data-lucide="search" class="size-3.5 text-zinc-400 shrink-0"></i>
+                <input type="text" class="flex-1 text-sm border-none outline-none bg-transparent text-zinc-600 placeholder-zinc-400" placeholder="Buscar en tab...">
+              </div>
+              <span class="text-xs text-zinc-400" id="tabRecordCount">12 registros</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="h-7 px-3 rounded-md text-xs font-medium border border-zinc-200 text-zinc-700 hover:bg-zinc-100 flex items-center gap-1 transition" onclick="alert('Agregar registro a esta pestana')">
+                <i data-lucide="plus" class="size-[13px]"></i> Agregar
+              </button>
+              <button class="h-7 px-3 rounded-md text-xs font-medium border border-green-200 text-green-700 bg-green-50 hover:bg-green-100 flex items-center gap-1 transition" onclick="alert('Validar solo esta pestana')">
+                <i data-lucide="check-circle" class="size-[13px]"></i> Validar Tab
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab: AF — Archivo de Factura (Res. 3374) -->
+          <div class="tab-panel" id="panel-af">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-zinc-200 bg-zinc-50/60">
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Cod. Prestador</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Nombre Prestador</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Tipo ID</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Numero ID</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Num. Factura</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Fecha Expedicion</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Fecha Inicio</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Fecha Final</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Num. Contrato</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Plan Beneficios</th>
+                    <th class="py-2.5 px-4 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Num. Poliza</th>
+                    <th class="py-2.5 px-4 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Copago</th>
+                    <th class="py-2.5 px-4 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Comision</th>
+                    <th class="py-2.5 px-4 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Descuento</th>
+                    <th class="py-2.5 px-4 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Valor Neto</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                  <tr class="hover:bg-zinc-50 transition-colors">
+                    <td class="py-3.5 px-4"><input type="text" value="760001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="IPS MedicalAdmin S.A.S" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="NI" class="w-16 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="900123456" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="04/04/2026" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="01/04/2026" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="30/04/2026" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="CTR-2026-001" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="PBS" class="w-16 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="POL-00123" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$12,500" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$0" class="w-16 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$0" class="w-16 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$177,500" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none font-medium"></td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50 transition-colors">
+                    <td class="py-3.5 px-4"><input type="text" value="760001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="IPS MedicalAdmin S.A.S" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="NI" class="w-16 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="900123456" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001235" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="05/04/2026" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="01/04/2026" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="30/04/2026" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="CTR-2026-002" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="PBS" class="w-16 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="POL-00124" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$8,300" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$0" class="w-16 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$5,000" class="w-16 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 text-right"><input type="text" value="$120,500" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none font-medium"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-5 py-3 border-t border-zinc-200">
+              <span class="text-xs text-zinc-400">1-2 de 1 registros AF</span>
+            </div>
+          </div>
+
+          <!-- Tab: AP — Procedimientos -->
+          <div class="tab-panel active" id="panel-ap">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-zinc-200">
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left" style="width:36px"></th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">No. Factura</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod Prestador</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Tipo ID</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">No. ID</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Fecha Consulta</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">No. Autorizacion</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod Consulta</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Finalidad</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Causa Externa</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod DX Ppal</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod DX Rel 1</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Tipo DX Ppal</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Valor Consulta</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Valor Cuota</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Valor Neto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-zinc-100 hover:bg-zinc-50">
+                    <td class="py-3.5 px-4"><span class="inline-flex items-center justify-center size-5 rounded-full bg-green-50 text-green-700 text-[11px] font-bold" title="Valido">&#10003;</span></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="760010012" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option selected>CC</option><option>TI</option><option>CE</option><option>PA</option><option>RC</option><option>MS</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="1061234567" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="date" value="2027-01-15" class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="AUTH-00456" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="890201" class="w-20 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Diagnostica</option><option value="02">02 — Terapeutica</option><option value="03">03 — Seguimiento</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Enf General</option><option value="02">02 — Acc Transito</option><option value="03">03 — Acc Trabajo</option><option value="13">13 — Enf Profesional</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="J069" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none" placeholder="—"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="1" selected>1 — Impresion</option><option value="2">2 — Confirmado Nuevo</option><option value="3">3 — Confirmado Repetido</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="45,000" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="6,700" class="w-[70px] px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 font-medium text-zinc-900 text-right">$38,300</td>
+                  </tr>
+                  <tr class="border-b border-zinc-100 hover:bg-zinc-50">
+                    <td class="py-3.5 px-4"><span class="inline-flex items-center justify-center size-5 rounded-full bg-green-50 text-green-700 text-[11px] font-bold" title="Valido">&#10003;</span></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="760010012" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option selected>CC</option><option>TI</option><option>CE</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="3198765432" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="date" value="2027-01-15" class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="AUTH-00457" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="890301" class="w-20 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01">01 — Diagnostica</option><option value="02" selected>02 — Terapeutica</option><option value="03">03 — Seguimiento</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Enf General</option><option value="02">02 — Acc Transito</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="K291" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="K210" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="1">1 — Impresion</option><option value="2" selected>2 — Confirmado Nuevo</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="52,000" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="8,400" class="w-[70px] px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 font-medium text-zinc-900 text-right">$43,600</td>
+                  </tr>
+                  <tr class="border-b border-zinc-100 hover:bg-zinc-50">
+                    <td class="py-3.5 px-4"><span class="inline-flex items-center justify-center size-5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold" title="Advertencia: Cod DX no coincide con finalidad">&#9888;</span></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="760010012" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option>CC</option><option selected>TI</option><option>CE</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="1007654321" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="date" value="2027-01-16" class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="AUTH-00458" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="890101" class="w-20 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Diagnostica</option><option value="02">02 — Terapeutica</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Enf General</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="M545" class="w-[70px] px-2 py-1 text-xs border border-amber-400 rounded-md bg-transparent hover:border-amber-500 focus:border-amber-500 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none" placeholder="—"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="1" selected>1 — Impresion</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="38,000" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="5,100" class="w-[70px] px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 font-medium text-zinc-900 text-right">$32,900</td>
+                  </tr>
+                  <tr class="border-b border-zinc-100 hover:bg-zinc-50">
+                    <td class="py-3.5 px-4"><span class="inline-flex items-center justify-center size-5 rounded-full bg-red-50 text-red-700 text-[11px] font-bold" title="Error: No. Autorizacion requerido para este convenio">&#10007;</span></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="760010012" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option selected>CC</option><option>TI</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="8012345678" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="date" value="2027-01-17" class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="" class="w-full px-2 py-1 text-xs border border-red-400 rounded-md bg-transparent hover:border-red-500 focus:border-red-500 focus:bg-white outline-none" placeholder="Requerido"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="890401" class="w-20 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="03" selected>03 — Seguimiento</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Enf General</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="I10X" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none" placeholder="—"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="3" selected>3 — Confirmado Repetido</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="35,000" class="w-20 px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="4,200" class="w-[70px] px-2 py-1 text-xs text-right border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4 font-medium text-zinc-900 text-right">$30,800</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-5 py-3 border-t border-zinc-100">
+              <span class="text-xs text-zinc-400">1-4 de 12 registros AP</span>
+              <div class="flex gap-1">
+                <button class="size-7 rounded text-xs font-medium bg-zinc-900 text-white">1</button>
+                <button class="size-7 rounded text-xs font-medium text-zinc-500 hover:bg-zinc-100">2</button>
+                <button class="size-7 rounded text-xs font-medium text-zinc-500 hover:bg-zinc-100">3</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: AC — Consultas (simplified, same pattern) -->
+          <div class="tab-panel" id="panel-ac">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-zinc-200">
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left" style="width:36px"></th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">No. Factura</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod Prestador</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Tipo ID</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">No. ID</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Fecha Procedimiento</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">No. Autorizacion</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod Procedimiento</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Ambito</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Finalidad</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Personal Atiende</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod DX Ppal</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Cod DX Relacionado</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Complicacion</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Forma Acto Qx</th>
+                    <th class="h-12 px-4 text-sm font-medium text-zinc-500 text-left">Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-zinc-100 hover:bg-zinc-50">
+                    <td class="py-3.5 px-4"><span class="inline-flex items-center justify-center size-5 rounded-full bg-green-50 text-green-700 text-[11px] font-bold">&#10003;</span></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="760010012" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option selected>CC</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="1061234567" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="date" value="2027-01-15" class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="AUTH-00456" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="881211" class="w-20 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="1" selected>1 — Ambulatorio</option><option value="2">2 — Hospitalario</option><option value="3">3 — Urgencias</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Diagnostico</option><option value="02">02 — Terapeutico</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Medico Especialista</option><option value="02">02 — Medico General</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="J069" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none" placeholder="—"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="1" selected>1 — Sin complicacion</option><option value="2">2 — Con complicacion</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="">N/A</option><option value="1">1 — Unico</option><option value="2">2 — Multiple</option></select></td>
+                    <td class="py-3.5 px-4 font-medium text-zinc-900 text-right">$125,000</td>
+                  </tr>
+                  <tr class="border-b border-zinc-100 hover:bg-zinc-50">
+                    <td class="py-3.5 px-4"><span class="inline-flex items-center justify-center size-5 rounded-full bg-green-50 text-green-700 text-[11px] font-bold">&#10003;</span></td>
+                    <td class="py-3.5 px-4"><input type="text" value="FACT-001234" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="760010012" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option selected>CC</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="3198765432" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="date" value="2027-01-15" class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="AUTH-00457" class="w-full px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="907101" class="w-20 px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="1" selected>1 — Ambulatorio</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="02" selected>02 — Terapeutico</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="01" selected>01 — Medico Especialista</option></select></td>
+                    <td class="py-3.5 px-4"><input type="text" value="K291" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><input type="text" value="K210" class="w-[70px] px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="1" selected>1 — Sin complicacion</option></select></td>
+                    <td class="py-3.5 px-4"><select class="px-2 py-1 text-xs border border-transparent rounded-md bg-transparent hover:border-zinc-200 focus:border-zinc-300 focus:bg-white outline-none"><option value="">N/A</option></select></td>
+                    <td class="py-3.5 px-4 font-medium text-zinc-900 text-right">$89,000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-5 py-3 border-t border-zinc-100">
+              <span class="text-xs text-zinc-400">1-2 de 8 registros AC</span>
+              <div class="flex gap-1">
+                <button class="size-7 rounded text-xs font-medium bg-zinc-900 text-white">1</button>
+                <button class="size-7 rounded text-xs font-medium text-zinc-500 hover:bg-zinc-100">2</button>
+                <button class="size-7 rounded text-xs font-medium text-zinc-500 hover:bg-zinc-100">3</button>
+                <button class="size-7 rounded text-xs font-medium text-zinc-500 hover:bg-zinc-100">4</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: AM, US, AT, AD — Placeholder panels -->
+          <div class="tab-panel" id="panel-am"><div class="p-8 text-center text-sm text-zinc-400">AM — Medicamentos: 15 registros (3 mostrados en AP tab como referencia)</div></div>
+          <div class="tab-panel" id="panel-us"><div class="p-8 text-center text-sm text-zinc-400">US — Usuarios: 4 registros</div></div>
+          <div class="tab-panel" id="panel-at"><div class="p-8 text-center text-sm text-zinc-400">AT — Hospitalizacion: 5 registros</div></div>
+          <div class="tab-panel" id="panel-ad"><div class="p-8 text-center text-sm text-zinc-400">AD — Ajuste: 3 registros</div></div>
+        </div>
+
+        <!-- Validation summary -->
+        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mt-4">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-200">
+            <span class="text-sm font-semibold text-zinc-900">Resumen de Validacion</span>
+            <button class="h-7 px-3 rounded-md text-xs font-medium border border-green-200 text-green-700 bg-green-50 hover:bg-green-100 flex items-center gap-1 transition" onclick="alert('Re-ejecutar validacion completa')">
+              <i data-lucide="refresh-cw" class="size-[13px]"></i> Re-validar
+            </button>
+          </div>
+          <div class="p-5">
+            <div class="grid grid-cols-3 gap-4">
+              <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center size-7 rounded-full bg-green-50 text-green-700 text-sm font-bold">&#10003;</span>
+                <div>
+                  <div class="font-semibold text-zinc-900">39 Registros Validos</div>
+                  <div class="text-xs text-zinc-400">83% del total — listos para exportar</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center size-7 rounded-full bg-amber-50 text-amber-700 text-sm font-bold">&#9888;</span>
+                <div>
+                  <div class="font-semibold text-zinc-900">5 Advertencias</div>
+                  <div class="text-xs text-zinc-400">AM(2), AP(1), AC(2) — revisar antes de enviar</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center size-7 rounded-full bg-red-50 text-red-700 text-sm font-bold">&#10007;</span>
+                <div>
+                  <div class="font-semibold text-zinc-900">3 Errores</div>
+                  <div class="text-xs text-zinc-400">AP(1), AT(2) — corregir antes de exportar</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- Modal Descarga RIPS -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div id="downloadRipsModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50" style="display:none;" onclick="if(event.target===this)closeDownloadModal()">
+    <div class="w-full max-w-lg rounded-xl border border-zinc-200 bg-white shadow-xl">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-100">
+        <h3 class="text-base font-semibold text-zinc-900">Descarga Masiva RIPS</h3>
+        <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" onclick="closeDownloadModal()">
+          <i data-lucide="x" class="size-4"></i>
+        </button>
+      </div>
+      <div class="px-6 py-5 space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Fecha Inicio</label>
+            <input type="date" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-700 mb-1.5">Fecha Fin</label>
+            <input type="date" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-1.5">Convenio</label>
+          <div class="relative">
+            <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <option>Todos</option><option>Coomeva EPS</option><option>AXA Colpatria</option><option>Nueva EPS</option><option>Sura EPS</option>
+            </select>
+            <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo de Archivo</label>
+          <div class="flex gap-3">
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="radio" name="fileType" value="txt" checked class="accent-zinc-900"> TXT</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="radio" name="fileType" value="xml" class="accent-zinc-900"> XML</label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-zinc-700 mb-2">Archivos a Incluir</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AF</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AC</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AP</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AU</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> US</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AT</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AN</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AD</label>
+            <label class="flex items-center gap-2 text-sm text-zinc-700 cursor-pointer"><input type="checkbox" checked class="size-4 rounded border-zinc-300 accent-zinc-900"> AM</label>
+          </div>
+        </div>
+        <!-- Progress bar -->
+        <div id="ripsProgress" class="hidden">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs font-medium text-zinc-700">Generando archivos...</span>
+            <span class="text-xs text-zinc-500" id="ripsProgressPct">0%</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-zinc-100 overflow-hidden">
+            <div class="h-full rounded-full bg-zinc-900 transition-all duration-500" id="ripsProgressBar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-zinc-100">
+        <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeDownloadModal()">Cancelar</button>
+        <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 transition flex items-center gap-2" onclick="generateRips()">
+          <i data-lucide="file-archive" class="size-3.5"></i> Generar
+        </button>
+        <button class="h-9 px-4 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition flex items-center gap-2 hidden" id="btnDownloadZip" onclick="alert('Descargando ZIP...')">
+          <i data-lucide="download" class="size-3.5"></i> Descargar ZIP
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-collapsed'); }
+    function toggleGroup(id) {
+      document.getElementById(id).classList.toggle('open');
+      document.getElementById(id + '-chevron').classList.toggle('open');
+    }
+    function setFontSize(size) {
+      var root = document.documentElement;
+      switch(size) {
+        case 'normal': root.style.fontSize = '13px'; break;
+        case 'large': root.style.fontSize = '16px'; break;
+        case 'xlarge': root.style.fontSize = '18px'; break;
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      const panel = document.getElementById('panel-' + tabId);
+      if (panel) panel.classList.add('active');
+
+      // Update tab button styles
+      const buttons = document.querySelectorAll('#ripsTabs button');
+      buttons.forEach(b => {
+        b.className = b.className.replace('text-zinc-900 border-b-2 border-zinc-900', 'text-zinc-500 hover:text-zinc-900');
+      });
+      event.target.closest('button').className = event.target.closest('button').className.replace('text-zinc-500 hover:text-zinc-900', 'text-zinc-900 border-b-2 border-zinc-900');
+
+      const counts = { af: '1 registro', ap: '12 registros', ac: '8 registros', am: '15 registros', us: '4 registros', at: '5 registros', ad: '3 registros' };
+      document.getElementById('tabRecordCount').textContent = counts[tabId] || '';
+    }
+
+    function openDownloadModal() {
+      document.getElementById('downloadRipsModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    }
+    function closeDownloadModal() {
+      document.getElementById('downloadRipsModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function generateRips() {
+      var progress = document.getElementById('ripsProgress');
+      var bar = document.getElementById('ripsProgressBar');
+      var pct = document.getElementById('ripsProgressPct');
+      progress.classList.remove('hidden');
+      var w = 0;
+      var interval = setInterval(function() {
+        w += 10;
+        bar.style.width = w + '%';
+        pct.textContent = w + '%';
+        if (w >= 100) {
+          clearInterval(interval);
+          document.getElementById('btnDownloadZip').classList.remove('hidden');
+          pct.textContent = 'Completado';
+          lucide.createIcons();
+        }
+      }, 300);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin — Command Palette</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-zinc-900/60 font-sans text-zinc-600 antialiased">
+  <!-- Overlay -->
+  <div class="fixed inset-0 flex items-start justify-center pt-[15vh] px-4" id="overlay" onclick="closePalette(event)">
+    <div class="w-full max-w-2xl rounded-xl border border-zinc-200/60 bg-white shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
+
+      <!-- Search Input -->
+      <div class="flex items-center gap-3 border-b border-zinc-100 px-4 py-3">
+        <i data-lucide="search" class="size-4 text-zinc-400 shrink-0"></i>
+        <input class="flex-1 text-sm text-zinc-900 placeholder:text-zinc-400 bg-transparent border-none outline-none" type="text" id="searchInput" placeholder="Buscar pacientes, CIE-10, CUPS, medicamentos..." autofocus oninput="filterResults(this.value)">
+        <button class="inline-flex h-6 items-center rounded border border-zinc-200 bg-zinc-50 px-1.5 text-[10px] font-medium text-zinc-400 hover:bg-zinc-100 transition" onclick="closePalette()">Esc</button>
+      </div>
+
+      <!-- Recientes (P3) -->
+      <div class="border-b border-zinc-100 px-3 py-2" id="recientes">
+        <p class="px-2 pb-1 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Recientes</p>
+        <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="maria fernanda gomez lopez">
+          <div class="flex size-7 items-center justify-center rounded-md bg-violet-500/10"><i data-lucide="clock" class="size-3.5 text-violet-500"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-zinc-900 truncate">Maria Fernanda Gomez Lopez</p>
+            <p class="text-xs text-zinc-400">CC 1.098.765.432 — Visto hace 5 min</p>
+          </div>
+        </div>
+        <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="agenda calendario">
+          <div class="flex size-7 items-center justify-center rounded-md bg-blue-500/10"><i data-lucide="clock" class="size-3.5 text-blue-500"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-zinc-900 truncate">Agenda</p>
+            <p class="text-xs text-zinc-400">Calendario de citas — Visto hace 12 min</p>
+          </div>
+        </div>
+        <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="e11 diabetes">
+          <div class="flex size-7 items-center justify-center rounded-md bg-emerald-500/10"><i data-lucide="clock" class="size-3.5 text-emerald-500"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-zinc-900 truncate">E11 — Diabetes mellitus tipo 2</p>
+            <p class="text-xs text-zinc-400">CIE-10 — Visto hace 1 hora</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="max-h-[50vh] overflow-y-auto" id="results">
+
+        <!-- Pacientes -->
+        <div class="command-group px-3 py-2" data-category="patients">
+          <p class="px-2 pb-1 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Pacientes</p>
+          <div class="command-item selected flex items-center gap-3 rounded-md px-2 py-2 bg-zinc-50 cursor-pointer transition" data-search="maria fernanda gomez lopez 1098765432">
+            <div class="flex size-7 items-center justify-center rounded-md bg-violet-500/10"><i data-lucide="user" class="size-3.5 text-violet-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900 truncate">Maria Fernanda Gomez Lopez</p>
+              <p class="text-xs text-zinc-400">CC 1.098.765.432 — AXA Colpatria</p>
+            </div>
+            <span class="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600">10:30 hoy</span>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="carlos alberto melo jimenez 80234567">
+            <div class="flex size-7 items-center justify-center rounded-md bg-blue-500/10"><i data-lucide="user" class="size-3.5 text-blue-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900 truncate">Carlos Alberto Melo Jimenez</p>
+              <p class="text-xs text-zinc-400">CC 80.234.567 — Sura EPS</p>
+            </div>
+            <span class="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600">11:00 hoy</span>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="laura patricia suarez diaz 52789012">
+            <div class="flex size-7 items-center justify-center rounded-md bg-amber-500/10"><i data-lucide="user" class="size-3.5 text-amber-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900 truncate">Laura Patricia Suarez Diaz</p>
+              <p class="text-xs text-zinc-400">CC 52.789.012 — Particular</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CIE-10 -->
+        <div class="command-group px-3 py-2" data-category="cie10">
+          <p class="px-2 pb-1 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">CIE-10</p>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="e11 diabetes mellitus tipo 2">
+            <div class="flex size-7 items-center justify-center rounded-md bg-emerald-500/10"><i data-lucide="stethoscope" class="size-3.5 text-emerald-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">E11 — Diabetes mellitus tipo 2</p>
+              <p class="text-xs text-zinc-400">Endocrinologia</p>
+            </div>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="i10 hipertension esencial primaria">
+            <div class="flex size-7 items-center justify-center rounded-md bg-emerald-500/10"><i data-lucide="stethoscope" class="size-3.5 text-emerald-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">I10 — Hipertension esencial (primaria)</p>
+              <p class="text-xs text-zinc-400">Cardiologia</p>
+            </div>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="j06 infeccion aguda vias respiratorias superiores">
+            <div class="flex size-7 items-center justify-center rounded-md bg-emerald-500/10"><i data-lucide="stethoscope" class="size-3.5 text-emerald-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">J06 — Infeccion aguda vias resp. superiores</p>
+              <p class="text-xs text-zinc-400">Neumologia</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CUPS -->
+        <div class="command-group px-3 py-2" data-category="cups">
+          <p class="px-2 pb-1 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">CUPS (Procedimientos)</p>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="890201 consulta general primera vez">
+            <div class="flex size-7 items-center justify-center rounded-md bg-blue-500/10"><i data-lucide="clipboard-list" class="size-3.5 text-blue-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">890201 — Consulta medicina general primera vez</p>
+            </div>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="890301 consulta especialista primera vez">
+            <div class="flex size-7 items-center justify-center rounded-md bg-blue-500/10"><i data-lucide="clipboard-list" class="size-3.5 text-blue-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">890301 — Consulta especialista primera vez</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medicamentos -->
+        <div class="command-group px-3 py-2" data-category="meds">
+          <p class="px-2 pb-1 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Medicamentos</p>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="acetaminofen 500mg tableta analgesico">
+            <div class="flex size-7 items-center justify-center rounded-md bg-amber-500/10"><i data-lucide="pill" class="size-3.5 text-amber-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">Acetaminofen 500mg Tableta</p>
+              <p class="text-xs text-zinc-400">Analgesico — 2.450 unidades en stock</p>
+            </div>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="losartan 50mg tableta antihipertensivo">
+            <div class="flex size-7 items-center justify-center rounded-md bg-amber-500/10"><i data-lucide="pill" class="size-3.5 text-amber-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">Losartan 50mg Tableta</p>
+              <p class="text-xs text-zinc-400">Antihipertensivo — 890 unidades en stock</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu -->
+        <div class="command-group px-3 py-2" data-category="menu">
+          <p class="px-2 pb-1 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Menu</p>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="agenda calendario citas">
+            <div class="flex size-7 items-center justify-center rounded-md bg-zinc-500/10"><i data-lucide="calendar-days" class="size-3.5 text-zinc-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">Agenda</p>
+              <p class="text-xs text-zinc-400">Calendario de citas</p>
+            </div>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="historia clinica atencion paciente">
+            <div class="flex size-7 items-center justify-center rounded-md bg-zinc-500/10"><i data-lucide="file-heart" class="size-3.5 text-zinc-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">Historia Clinica</p>
+              <p class="text-xs text-zinc-400">Atencion de pacientes</p>
+            </div>
+          </div>
+          <div class="command-item flex items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-50 cursor-pointer transition" data-search="configuracion preferencias settings">
+            <div class="flex size-7 items-center justify-center rounded-md bg-zinc-500/10"><i data-lucide="sliders-horizontal" class="size-3.5 text-zinc-500"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-zinc-900">Configuracion</p>
+              <p class="text-xs text-zinc-400">Preferencias del sistema</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="hidden flex-col items-center justify-center py-12 px-4" id="emptyState">
+        <i data-lucide="search-x" class="size-8 text-zinc-300 mb-3"></i>
+        <p class="text-sm font-medium text-zinc-900">Sin resultados</p>
+        <p class="text-xs text-zinc-400 mt-1">No se encontraron coincidencias. Intenta con otro termino.</p>
+      </div>
+
+      <!-- Footer hints -->
+      <div class="flex items-center gap-4 border-t border-zinc-100 px-4 py-2.5">
+        <div class="flex items-center gap-1.5 text-xs text-zinc-400">
+          <kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-zinc-50 px-1 text-[10px] font-medium text-zinc-400">&uarr;</kbd>
+          <kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-zinc-50 px-1 text-[10px] font-medium text-zinc-400">&darr;</kbd>
+          Navegar
+        </div>
+        <div class="flex items-center gap-1.5 text-xs text-zinc-400">
+          <kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-zinc-50 px-1 text-[10px] font-medium text-zinc-400">Enter</kbd>
+          Seleccionar
+        </div>
+        <div class="flex items-center gap-1.5 text-xs text-zinc-400">
+          <kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-zinc-50 px-1 text-[10px] font-medium text-zinc-400">Esc</kbd>
+          Cerrar
+        </div>
+        <div class="flex items-center gap-1.5 text-xs text-zinc-400 ml-auto">
+          <kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-zinc-50 px-1 text-[10px] font-medium text-zinc-400">Tab</kbd>
+          Cambiar categoria
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function closePalette(e) {
+      if (e && e.target !== document.getElementById('overlay')) return;
+      window.history.back();
+    }
+
+    function filterResults(query) {
+      const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const items = document.querySelectorAll('.command-item');
+      const groups = document.querySelectorAll('.command-group');
+      let totalVisible = 0;
+
+      // Hide recientes when searching
+      document.getElementById('recientes').style.display = q ? 'none' : 'block';
+
+      items.forEach(item => {
+        const search = item.dataset.search || '';
+        const match = q === '' || search.includes(q);
+        item.style.display = match ? 'flex' : 'none';
+        if (match) totalVisible++;
+      });
+
+      groups.forEach(group => {
+        const hasVisible = Array.from(group.querySelectorAll('.command-item')).some(i => i.style.display !== 'none');
+        group.style.display = hasVisible ? 'block' : 'none';
+      });
+
+      document.getElementById('results').style.display = totalVisible > 0 ? 'block' : 'none';
+      document.getElementById('emptyState').style.display = totalVisible > 0 ? 'none' : 'flex';
+    }
+
+    let selectedIndex = 0;
+    function updateSelection() {
+      const items = Array.from(document.querySelectorAll('.command-item')).filter(i => i.style.display !== 'none');
+      items.forEach((item, i) => {
+        item.classList.toggle('selected', i === selectedIndex);
+        item.classList.toggle('bg-zinc-50', i === selectedIndex);
+      });
+      if (items[selectedIndex]) items[selectedIndex].scrollIntoView({ block: 'nearest' });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const items = Array.from(document.querySelectorAll('.command-item')).filter(i => i.style.display !== 'none');
+      if (e.key === 'ArrowDown') { e.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, items.length - 1); updateSelection(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, 0); updateSelection(); }
+      else if (e.key === 'Enter' && items[selectedIndex]) { alert('Seleccionado: ' + items[selectedIndex].querySelector('.text-zinc-900').textContent); }
+      else if (e.key === 'Escape') { window.history.back(); }
+    });
+  </script>
+</body>
+</html>
