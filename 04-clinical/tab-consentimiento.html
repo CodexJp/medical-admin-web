@@ -43,7 +43,7 @@
       <div class="flex flex-col gap-2">
         <div class="flex items-center justify-between px-4 py-3 border border-zinc-200/60 rounded-md transition-all hover:border-zinc-300 hover:bg-zinc-50">
           <div>
-            <span class="font-medium text-zinc-900">Consentimiento General de Atencion Medica</span>
+            <span class="font-medium text-zinc-900">Consentimiento General de Atención Médica</span>
             <span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 ml-2">Firmado</span>
           </div>
           <div class="flex gap-2">
@@ -57,7 +57,7 @@
         </div>
         <div class="flex items-center justify-between px-4 py-3 border border-zinc-200/60 rounded-md transition-all hover:border-zinc-300 hover:bg-zinc-50">
           <div>
-            <span class="font-medium text-zinc-900">Consentimiento para Procedimientos Diagnosticos</span>
+            <span class="font-medium text-zinc-900">Consentimiento para Procedimientos Diagnósticos</span>
             <span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 ml-2">Pendiente</span>
           </div>
           <div class="flex gap-2">
@@ -103,14 +103,14 @@
     <!-- State: Digital signature -->
     <div id="state-sign" style="display:none">
       <h2 class="text-base font-bold text-zinc-900 mb-1">Firma Digital</h2>
-      <p class="text-zinc-400 text-xs mb-5">Consentimiento para Procedimientos Diagnosticos</p>
+      <p class="text-zinc-400 text-xs mb-5">Consentimiento para Procedimientos Diagnósticos</p>
 
       <!-- Consent text preview -->
       <div class="bg-zinc-50 border border-zinc-200/60 rounded-xl p-4 mb-5 max-h-[200px] overflow-y-auto text-xs leading-5">
         <p class="mb-2"><strong>CONSENTIMIENTO INFORMADO PARA PROCEDIMIENTOS DIAGNOSTICOS</strong></p>
-        <p class="mb-2">Yo, <strong>Maria Alejandra Rodriguez Gomez</strong>, identificada con <strong>CC 1.023.456.789</strong>, en pleno uso de mis facultades mentales y de mis derechos en salud, manifiesto que he sido informada de manera clara y comprensible sobre los procedimientos diagnosticos que se me realizaran.</p>
+        <p class="mb-2">Yo, <strong>Maria Alejandra Rodriguez Gomez</strong>, identificada con <strong>CC 1.023.456.789</strong>, en pleno uso de mis facultades mentales y de mis derechos en salud, manifiesto que he sido informada de manera clara y comprensible sobre los procedimientos diagnósticos que se me realizaran.</p>
         <p class="mb-2">He comprendido la naturaleza de los procedimientos, los beneficios esperados, los riesgos potenciales y las alternativas disponibles. Todas mis preguntas han sido respondidas satisfactoriamente.</p>
-        <p>Por lo tanto, autorizo al equipo medico de la institucion a realizar los procedimientos diagnosticos indicados en la orden medica correspondiente.</p>
+        <p>Por lo tanto, autorizo al equipo médico de la institucion a realizar los procedimientos diagnósticos indicados en la orden médica correspondiente.</p>
       </div>
 
       <!-- Who signs -->
@@ -137,7 +137,7 @@
           <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 cursor-pointer" onclick="clearCanvas()">
             <i data-lucide="eraser" class="w-3.5 h-3.5"></i> Limpiar
           </button>
-          <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 border-none cursor-pointer">
+          <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-blue-500 text-white hover:bg-blue-600 border-none cursor-pointer">
             <i data-lucide="save" class="w-3.5 h-3.5"></i> Guardar firma
           </button>
           <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 cursor-pointer" onclick="showState('list')">
@@ -165,7 +165,7 @@
         <div class="mb-3">
           <label class="text-xs font-medium text-zinc-700 mb-1.5 block">Quien firma?</label>
           <div class="flex gap-2">
-            <button class="firma-who h-8 px-3 rounded-md bg-zinc-900 text-white text-xs font-medium border-none cursor-pointer" onclick="selectFirmaWho(this)">Paciente</button>
+            <button class="firma-who h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium border-none cursor-pointer" onclick="selectFirmaWho(this)">Paciente</button>
             <button class="firma-who h-8 px-3 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 cursor-pointer bg-white" onclick="selectFirmaWho(this)">Responsable</button>
             <button class="firma-who h-8 px-3 rounded-md border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 cursor-pointer bg-white" onclick="selectFirmaWho(this)">Acompanante</button>
           </div>
@@ -182,7 +182,7 @@
           <button onclick="limpiarFirma()" class="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-1 bg-transparent border-none cursor-pointer"><i data-lucide="eraser" class="size-3.5"></i> Limpiar</button>
           <div class="flex gap-2">
             <button onclick="closeFirmaModal()" class="h-9 px-4 rounded-md border border-zinc-200 text-sm font-medium text-zinc-700 hover:bg-zinc-50 cursor-pointer bg-white">Cancelar</button>
-            <button onclick="guardarFirma()" class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 border-none cursor-pointer">Guardar Firma</button>
+            <button onclick="guardarFirma()" class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 border-none cursor-pointer">Guardar Firma</button>
           </div>
         </div>
       </div>

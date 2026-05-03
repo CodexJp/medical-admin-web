@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario de Recepcion — MedicalAdmin</title>
+  <title>Formulario de Recepción — MedicalAdmin</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -50,7 +50,17 @@
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
+  
+    /* === Sidebar v4 - acordeon === */
+    aside#sidebar .nav-submenu { max-height: 0; overflow: hidden; transition: max-height 250ms ease-in-out; }
+    aside#sidebar .nav-submenu.open { max-height: 1500px; }
+    aside#sidebar .nav-chevron { transition: transform 200ms; }
+    aside#sidebar .nav-chevron.open { transform: rotate(90deg); }
+    aside#sidebar .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    aside#sidebar .sidebar-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
   </style>
+  <script src="../_shared/i18n.js" defer></script>
 </head>
 <body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
 <div class="flex h-screen overflow-hidden">
@@ -58,169 +68,146 @@
   <!-- ═══════════════════════════════════════════════════════ -->
   <!-- SIDEBAR -->
   <!-- ═══════════════════════════════════════════════════════ -->
-  <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
-
-    <!-- Sidebar Header -->
-    <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
-      <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
-        <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
-          <i data-lucide="heart-pulse" class="size-4 text-white"></i>
-        </div>
-        <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
+  <aside id="sidebar" class="flex h-screen w-72 flex-col bg-white border-r border-slate-200 transition-all duration-300 shrink-0 z-30">
+    <div class="h-16 px-5 flex items-center gap-2.5 border-b border-slate-100 shrink-0">
+      <div class="size-9 rounded-lg bg-blue-500 grid place-items-center shrink-0"><i data-lucide="plus" class="size-5 text-white"></i></div>
+      <div class="sidebar-hide flex flex-col leading-tight overflow-hidden">
+        <span class="text-[15px] font-semibold text-zinc-900 whitespace-nowrap">Medical<span class="text-blue-600">Admin</span></span>
+        <span class="text-[11px] text-zinc-500 truncate">HYPERSOFT IPS</span>
+      </div>
+      <button onclick="toggleSidebar()" class="ml-auto flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-slate-100 hover:text-zinc-900 transition shrink-0"><i data-lucide="panel-left-close" class="size-4"></i></button>
+    </div>
+    <nav class="sidebar-scroll flex-1 overflow-y-auto p-3 space-y-0.5">
+      <a href="../00-shell/dashboard-medico.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium text-zinc-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+        <i data-lucide="home" class="size-[18px]"></i><span data-i18n="menu.home" class="sidebar-hide">Inicio</span>
       </a>
-      <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
-        <i data-lucide="panel-left-close" class="size-4"></i>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-blue-700 bg-blue-50 transition-colors"><i data-lucide="calendar-search" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.consulta_externa" class="sidebar-hide flex-1 text-left">Consulta Externa</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 open"></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide open">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Agendamiento</div>
+          <a href="../01-calendar/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.creacion_citas_medicas">Creación de Citas Médicas</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Creación de Otros Eventos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a href="../03-reception/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] bg-blue-50 text-blue-700 font-semibold"><span class="size-1 rounded-full bg-blue-500"></span><span data-i18n="app.recepcion_paciente">Recepción de Paciente</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración Motivos de Cancelación de Cita</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="clipboard-list" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.historia_clinica" class="sidebar-hide flex-1 text-left">Historia Clínica</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración General</div>
+          <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.config_servicio">Configuración de Servicio</span></a>
+          <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.otros_procedimientos">Configuración de Otros Procedimientos</span></a>
+          <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.lista_chequeo">Administración de lista de chequeo</span></a>
+          <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.ocupaciones">Administración de Ocupaciones</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Profesionales</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Especialidades</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Historia Clínica</div>
+          <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
+          <a href="../04-clinical/format-builder.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Constructor de Formatos</span></a>
+          <a href="../04-clinical/finalizar-atencion.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Finalización de Atención</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="dollar-sign" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.facturacion" class="sidebar-hide flex-1 text-left">Facturación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
+          <a href="../07-billing/crear-orden.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.crear_orden">Administración de Ordenes de Facturación</span></a>
+          <a href="../07-billing/admin-facturas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.admin_facturas">Administración de Facturas</span></a>
+          <a href="../07-billing/rips.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Rips</span></a>
+          <a href="../07-billing/clientes.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Lista de Pacientes</span></a>
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración General</div>
+          <a href="../07-billing/medios-pago.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Medios de Pago</span></a>
+          <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Rangos de Facturación</span></a>
+          <a href="../07-billing/tarifas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.tarifas">Administración Manuales Tarifarios</span></a>
+          <a href="../07-billing/plm.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Lista de Precios de Medicamentos e Insumos</span></a>
+          <a href="../07-billing/tarifas-medicamentos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Tarifas de Medicamentos</span></a>
+          <a href="../07-billing/convenios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.convenios">Administración de Convenio</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Sedes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="pill" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.farmacia" class="sidebar-hide flex-1 text-left">Farmacia</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
+          <a href="../06-pharmacy/inventario.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.admin_articulos">Administración de Artículos</span></a>
+          <a href="../06-pharmacy/despacho.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.entrega_articulos">Entrega de Artículos</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="bed" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Hospitalización</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Admisiones</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Admisión de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Atención de Pacientes Hospitalizados</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="file-text" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Reportes</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">General</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Consulta Externa</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Historia Clínica</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Facturación</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Farmacia</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="heart-pulse" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">PyP</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Administración</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Programas</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="flask-conical" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Laboratorio</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Recepción de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Toma de Muestra</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="scan" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Radiología</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="plug" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Integración</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Diccionario de Datos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="message-circle" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Comunicación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">WhatsApp</div>
+          <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Dashboard WhatsApp</span></a>
+          <a href="../08-whatsapp/whatsapp-templates.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Plantillas</span></a>
+          <a href="../08-whatsapp/whatsapp-log.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Log de mensajes</span></a>
+          <a href="../08-whatsapp/whatsapp-config.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Configuración</span></a>
+        </div>
+      </div>
+      <div class="pt-3 pb-1 px-3 sidebar-hide"><span class="text-[10px] uppercase tracking-[0.08em] font-semibold text-zinc-400">Sistema</span></div>
+      <a href="../_shared/coming-soon.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="shield-check" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide">Control de Accesos</span></a>
+      <a href="../_shared/coming-soon.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="layout-dashboard" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide">Tablero</span></a>
+    </nav>
+        <div class="border-t border-slate-100 px-3 py-3 shrink-0 sidebar-hide">
+      <div class="text-[10px] uppercase tracking-[0.08em] font-semibold text-zinc-400 pb-2">Accesibilidad</div>
+      <div class="flex items-center gap-1">
+        <button class="flex-1 h-8 rounded-md bg-blue-500 text-white text-xs font-medium" onclick="document.documentElement.style.fontSize='14px'">A</button>
+        <button class="flex-1 h-8 rounded-md border border-zinc-200 bg-white text-zinc-700 text-xs font-medium hover:bg-zinc-50" onclick="document.documentElement.style.fontSize='16px'">A+</button>
+        <button class="flex-1 h-8 rounded-md border border-zinc-200 bg-white text-zinc-700 text-xs font-medium hover:bg-zinc-50" onclick="document.documentElement.style.fontSize='18px'">A++</button>
+      </div>
+      <button class="mt-2 w-full h-8 rounded-md border border-zinc-200 bg-white text-zinc-700 text-xs font-medium hover:bg-zinc-50 inline-flex items-center justify-center gap-1.5" onclick="document.body.classList.toggle('high-contrast')">
+        <i data-lucide="contrast" class="size-3.5"></i>Contraste
       </button>
     </div>
-
-    <!-- Sidebar Nav -->
-    <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
-
-      <!-- Dashboard -->
-      <div class="mb-1">
-        <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
-          <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide">Dashboard</span>
-        </a>
-      </div>
-
-      <!-- CONSULTA EXTERNA -->
-      <div class="mt-4 mb-1">
-        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
-      </div>
-      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
-        <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
-        <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron open sidebar-hide size-3.5 text-zinc-400"></i>
+    <div class="border-t border-slate-100 p-3 shrink-0">
+      <button class="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-slate-50 transition-colors text-left">
+        <div class="size-9 rounded-full bg-blue-500 grid place-items-center text-white text-[13px] font-semibold shrink-0">JP</div>
+        <div class="sidebar-hide flex-1 min-w-0"><div class="text-[13px] font-semibold text-zinc-800 truncate">Dr. Juan P. Rodriguez</div><div class="text-[11px] text-zinc-500 truncate">Medicina General</div></div>
       </button>
-      <div class="nav-group-items open pl-5" id="cit-agenda">
-        <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
-        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
-        <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-zinc-900 bg-zinc-900/10 transition">Recepcion de Paciente</a>
-        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
-      </div>
-      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
-        <i data-lucide="settings" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide flex-1 text-left">Configuracion</span>
-        <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-      </button>
-      <div class="nav-group-items pl-5" id="cit-config">
-        <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
-        <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
-        <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
-      </div>
-
-      <!-- HISTORIA CLINICA -->
-      <div class="mt-4 mb-1">
-        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
-      </div>
-      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
-        <i data-lucide="file-heart" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
-        <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-      </button>
-      <div class="nav-group-items pl-5" id="his-hc">
-        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
-        <a href="../04-clinical/attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
-        <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
-      </div>
-      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
-        <i data-lucide="settings" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
-        <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-      </button>
-      <div class="nav-group-items pl-5" id="his-config">
-        <a href="../04-clinical/format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
-        <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
-        <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
-        <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
-        <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
-        <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
-      </div>
-
-      <!-- FACTURACION -->
-      <div class="mt-4 mb-1">
-        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
-      </div>
-      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
-        <i data-lucide="receipt" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
-        <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-      </button>
-      <div class="nav-group-items pl-5" id="pos-exec">
-        <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
-        <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
-        <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
-      </div>
-      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
-        <i data-lucide="settings" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
-        <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-      </button>
-      <div class="nav-group-items pl-5" id="pos-config">
-        <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
-        <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
-        <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
-      </div>
-
-      <!-- FARMACIA -->
-      <div class="mt-4 mb-1">
-        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
-      </div>
-      <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
-        <i data-lucide="pill" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
-        <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-      </button>
-      <div class="nav-group-items pl-5" id="far-exec">
-        <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Entrega de Articulos</a>
-        <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
-      </div>
-
-      <!-- COMUNICACION -->
-      <div class="mt-4 mb-1">
-        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
-      </div>
-      <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
-        <i data-lucide="message-circle" class="size-4 shrink-0"></i>
-        <span class="sidebar-hide">WhatsApp</span>
-      </a>
-
-      <!-- OTROS MODULOS -->
-      <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
-        <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
-      </div>
-      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
-      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
-      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
-      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
-      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
-      <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
-    </nav>
-
-    <!-- Sidebar Footer -->
-    <div class="border-t border-zinc-200 p-3 shrink-0">
-      <div class="sidebar-hide mb-2">
-        <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
-        <div class="flex gap-1">
-          <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
-          <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
-          <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
-        </div>
-        <div class="flex gap-1 mt-1">
-          <button onclick="toggleContrast()" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition flex items-center justify-center gap-1">
-            <i data-lucide="contrast" class="size-3"></i>
-            <span>Contraste</span>
-          </button>
-        </div>
-      </div>
-      <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
-        <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
-        <div class="sidebar-hide overflow-hidden">
-          <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
-          <p class="text-xs text-zinc-400">Medicina General</p>
-        </div>
-      </div>
     </div>
   </aside>
 
@@ -249,8 +236,20 @@
             <i data-lucide="bell" class="size-[18px]"></i>
             <span class="absolute top-1 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-semibold text-white ring-2 ring-white">5</span>
           </button>
-          <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
-            <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-[11px] font-semibold text-white">JP</div>
+          <div class="relative" id="langSwitcher">
+              <button type="button" onclick="event.stopPropagation();document.getElementById('langMenu').classList.toggle('hidden')" class="flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+                <span class="text-base leading-none" id="langFlag">🇪🇸</span>
+                <span class="text-sm font-medium text-zinc-700" id="langCode">ES</span>
+                <i data-lucide="chevron-down" class="size-3 text-zinc-400"></i>
+              </button>
+              <div id="langMenu" class="hidden absolute right-0 top-full mt-1 w-36 rounded-md border border-zinc-200 bg-white shadow-lg py-1 z-50">
+                <button onclick="MA_i18n.setLang('es');document.getElementById('langFlag').textContent='🇪🇸';document.getElementById('langCode').textContent='ES';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇪🇸</span><span>Español</span></button>
+                <button onclick="MA_i18n.setLang('en');document.getElementById('langFlag').textContent='🇺🇸';document.getElementById('langCode').textContent='EN';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇺🇸</span><span>English</span></button>
+                <button onclick="MA_i18n.setLang('fr');document.getElementById('langFlag').textContent='🇫🇷';document.getElementById('langCode').textContent='FR';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇫🇷</span><span>Français</span></button>
+              </div>
+            </div>
+            <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+            <div class="flex size-7 items-center justify-center rounded-md bg-blue-500 text-[11px] font-semibold text-white">JP</div>
             <span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span>
           </button>
         </div>
@@ -270,10 +269,10 @@
               <i data-lucide="chevron-right" class="size-3.5"></i>
               <a href="index.html" class="text-zinc-400 hover:text-zinc-900 no-underline">Recepcion</a>
               <i data-lucide="chevron-right" class="size-3.5"></i>
-              <span class="text-zinc-900">Formulario de Recepcion</span>
+              <span class="text-zinc-900">Formulario de Recepción</span>
             </div>
             <h1 class="text-2xl font-bold text-zinc-900 tracking-tight leading-8">Recepcion de Paciente</h1>
-            <p class="text-sm text-zinc-500 mt-0.5">Complete la informacion requerida para recepcionar al paciente</p>
+            <p class="text-sm text-zinc-500 mt-0.5">Complete la información requerida para recepcionar al paciente</p>
           </div>
           <a href="index.html" class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition inline-flex items-center gap-2">
             <i data-lucide="x" class="size-4"></i> Cancelar
@@ -287,19 +286,19 @@
             <div class="text-base font-semibold text-zinc-900 leading-snug">Luis Fernando Castillo Rios</div>
             <div class="flex gap-4 mt-0.5">
               <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="id-card" class="size-3.5"></i> <strong class="font-medium text-zinc-600">CC 1032456789</strong></span>
-              <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="calendar" class="size-3.5"></i> 35 anos</span>
+              <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="calendar" class="size-3.5"></i> 35 años</span>
               <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="user" class="size-3.5"></i> Masculino</span>
               <span class="text-xs text-zinc-500 flex items-center gap-1"><i data-lucide="building" class="size-3.5"></i> Nueva EPS</span>
             </div>
           </div>
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600"><i data-lucide="clipboard-list" class="size-3.5"></i> En Recepcion</span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-600"><i data-lucide="clipboard-list" class="size-3.5"></i> En Recepción</span>
         </div>
 
         <!-- Progress bar -->
         <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm px-4 py-3 mb-4 flex items-center gap-4">
-          <span class="text-xs font-medium text-zinc-900 whitespace-nowrap" id="progress-text">Seccion 1 de 9 — Informacion del Evento</span>
+          <span class="text-xs font-medium text-zinc-900 whitespace-nowrap" id="progress-text">Seccion 1 de 9 — Información del Evento</span>
           <div class="flex-1 h-1.5 bg-zinc-100 rounded-full overflow-hidden">
-            <div class="h-full bg-zinc-900 rounded-full transition-all duration-400" id="progress-fill" style="width: 11%"></div>
+            <div class="h-full bg-blue-500 rounded-full transition-all duration-400" id="progress-fill" style="width: 11%"></div>
           </div>
           <span class="text-xs font-semibold text-zinc-900 whitespace-nowrap" id="progress-pct">11%</span>
         </div>
@@ -311,8 +310,8 @@
           <nav class="form-nav-aside w-[200px] shrink-0 sticky top-20" aria-label="Secciones del formulario">
             <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm py-4">
               <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 px-4 pb-3">Secciones</div>
-              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-zinc-900 text-zinc-900 font-medium bg-zinc-50 transition" data-target="sec-evento" onclick="scrollToSection('sec-evento')">
-                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-900 text-[10px] font-semibold text-zinc-900 bg-zinc-100">1</span>
+              <a class="flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-blue-500 text-blue-700 font-medium bg-blue-50 transition" data-target="sec-evento" onclick="scrollToSection('sec-evento')">
+                <span class="flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-blue-500 text-[10px] font-semibold text-blue-700 bg-blue-50">1</span>
                 <span class="flex-1 leading-tight">Evento</span>
                 <span class="text-[10px] text-zinc-400">8/8</span>
               </a>
@@ -369,7 +368,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">1</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">1</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Informacion del Evento</h3>
                       <p class="text-xs text-zinc-500">8 campos completados de 8</p>
@@ -415,7 +414,7 @@
                       </select>
                     </div>
                     <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-zinc-900">Origen de la Atencion<span class="text-red-600 ml-0.5">*</span></label>
+                      <label class="text-xs font-medium text-zinc-900">Origen de la Atención<span class="text-red-600 ml-0.5">*</span></label>
                       <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
                         <option>Remitido</option>
                         <option>Demanda Espontanea</option>
@@ -436,8 +435,8 @@
                       <span class="text-[11px] text-zinc-400 flex items-center gap-1"><i data-lucide="info" class="size-3 inline"></i> Colombia - Res. 2275</span>
                     </div>
                     <div class="flex flex-col gap-1 col-span-2">
-                      <label class="text-xs font-medium text-zinc-900">Motivo / Observacion de Atencion</label>
-                      <textarea class="h-16 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-vertical focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="Escriba el motivo de la atencion medica...">Control de rutina mensual</textarea>
+                      <label class="text-xs font-medium text-zinc-900">Motivo / Observacion de Atención</label>
+                      <textarea class="h-16 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-vertical focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="Escriba el motivo de la atención medica...">Control de rutina mensual</textarea>
                     </div>
                   </div>
                 </div>
@@ -451,7 +450,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">2</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">2</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Datos del Paciente</h3>
                       <p class="text-xs text-zinc-500">28 campos completados de 32</p>
@@ -460,7 +459,7 @@
                 </div>
                 <div class="border-t border-zinc-100 px-4 pb-4">
                   <!-- Identification -->
-                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-4 pb-1"><i data-lucide="id-card" class="size-3.5"></i> Identificacion</div>
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-4 pb-1"><i data-lucide="id-card" class="size-3.5"></i> Identificación</div>
                   <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Tipo de Documento<span class="text-red-600 ml-0.5">*</span></label>
@@ -499,7 +498,7 @@
                     </div>
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Edad</label>
-                      <div class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 rounded-md text-xs font-medium text-blue-700"><i data-lucide="calculator" class="size-3.5"></i> 35 anos (calculada automaticamente)</div>
+                      <div class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 rounded-md text-xs font-medium text-blue-700"><i data-lucide="calculator" class="size-3.5"></i> 35 años (calculada automaticamente)</div>
                     </div>
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Genero<span class="text-red-600 ml-0.5">*</span></label>
@@ -572,14 +571,14 @@
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Nivel / Prevision / CEP</label>
                       <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
-                        <option>-- Adaptable por pais --</option><option selected>Nivel 1 - FONASA A (CHL)</option><option>Nivel 2 - FONASA B (CHL)</option><option>Nivel 1 (COL)</option><option>Nivel 2 (COL)</option><option>Nivel 3 (COL)</option>
+                        <option>-- Adaptable por país --</option><option selected>Nivel 1 - FONASA A (CHL)</option><option>Nivel 2 - FONASA B (CHL)</option><option>Nivel 1 (COL)</option><option>Nivel 2 (COL)</option><option>Nivel 3 (COL)</option>
                       </select>
                       <span class="text-[11px] text-zinc-400">Colombia: Nivel | Chile: Prevision | Brasil: CEP</span>
                     </div>
                   </div>
 
                   <!-- Location -->
-                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="map-pin" class="size-3.5"></i> Ubicacion</div>
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="map-pin" class="size-3.5"></i> Ubicación</div>
                   <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Pais<span class="text-red-600 ml-0.5">*</span></label>
@@ -704,7 +703,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">3</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">3</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Responsable del Paciente</h3>
                       <p class="text-xs text-zinc-500">0 campos completados de 11 — Opcional</p>
@@ -791,7 +790,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">4</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">4</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Acompanante</h3>
                       <p class="text-xs text-zinc-500">0 campos completados de 11 — Opcional</p>
@@ -872,23 +871,23 @@
             </div>
 
             <!-- ═══════════════════════════════════════════════ -->
-            <!-- STEP 5: Facturacion -->
+            <!-- STEP 5: Facturación -->
             <!-- ═══════════════════════════════════════════════ -->
             <div class="step-content hidden" data-step="5" id="sec-facturacion">
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">5</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">5</div>
                     <div>
-                      <h3 class="text-sm font-semibold text-zinc-900">Informacion de Facturacion</h3>
+                      <h3 class="text-sm font-semibold text-zinc-900">Informacion de Facturación</h3>
                       <p class="text-xs text-zinc-500">5 campos completados de 19</p>
                     </div>
                   </div>
                 </div>
                 <div class="border-t border-zinc-100 px-4 pb-4">
-                  <!-- Tipo atencion -->
+                  <!-- Tipo atención -->
                   <div class="pt-4">
-                    <label class="text-xs font-medium text-zinc-900 block mb-2">Tipo de Atencion<span class="text-red-600 ml-0.5">*</span></label>
+                    <label class="text-xs font-medium text-zinc-900 block mb-2">Tipo de Atención<span class="text-red-600 ml-0.5">*</span></label>
                     <div class="flex gap-4 items-center h-9">
                       <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="atencion" checked onchange="toggleAtencion('eps')" class="size-4 accent-zinc-900"> EPS / Empresa</label>
                       <label class="flex items-center gap-1.5 cursor-pointer text-sm text-zinc-600"><input type="radio" name="atencion" onchange="toggleAtencion('particular')" class="size-4 accent-zinc-900"> Particular</label>
@@ -897,7 +896,7 @@
 
                   <!-- Seccion Particular (G2) — visible cuando tipo = Particular -->
                   <div id="datos-particular" class="hidden mt-4 pt-4 border-t border-zinc-200">
-                    <h4 class="text-sm font-semibold text-zinc-900 mb-3">Datos de Facturacion — Particular</h4>
+                    <h4 class="text-sm font-semibold text-zinc-900 mb-3">Datos de Facturación — Particular</h4>
                     <label class="flex items-center gap-2 mb-3 text-sm">
                       <input type="checkbox" class="size-4 accent-zinc-900"> Facturar a nombre del paciente
                     </label>
@@ -933,8 +932,8 @@
                       <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Plan Basico</option><option>Plan Complementario</option></select>
                     </div>
                     <div class="flex flex-col gap-1" id="field-autorizacion">
-                      <label class="text-xs font-medium text-zinc-900">Numero de Autorizacion<span class="text-red-600 ml-0.5">*</span></label>
-                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de autorizacion EPS">
+                      <label class="text-xs font-medium text-zinc-900">Numero de Autorización<span class="text-red-600 ml-0.5">*</span></label>
+                      <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de autorización EPS">
                     </div>
                   </div>
 
@@ -977,7 +976,7 @@
                   </div>
 
                   <!-- Billing extras -->
-                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="credit-card" class="size-3.5"></i> Datos de Facturacion Complementarios</div>
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="credit-card" class="size-3.5"></i> Datos de Facturación Complementarios</div>
                   <div class="grid grid-cols-3 gap-x-4 gap-y-3 pt-2">
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Tipo Afiliado<span class="text-red-600 ml-0.5">*</span></label>
@@ -1027,14 +1026,14 @@
                   </div>
 
                   <!-- Authorization details -->
-                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="file-check" class="size-3.5"></i> Autorizacion</div>
+                  <div class="flex items-center gap-1.5 text-xs text-zinc-400 pt-5 pb-1"><i data-lucide="file-check" class="size-3.5"></i> Autorización</div>
                   <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Numero de Poliza</label>
                       <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de poliza (si aplica)">
                     </div>
                     <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-zinc-900">Tipo de Atencion</label>
+                      <label class="text-xs font-medium text-zinc-900">Tipo de Atención</label>
                       <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"><option selected>Primera vez</option><option>Control</option><option>Urgencia</option></select>
                     </div>
                     <div class="flex flex-col gap-1">
@@ -1042,11 +1041,11 @@
                       <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" placeholder="Numero de orden medica">
                     </div>
                     <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-zinc-900">Fecha de Autorizacion</label>
+                      <label class="text-xs font-medium text-zinc-900">Fecha de Autorización</label>
                       <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="2026-04-04">
                     </div>
                     <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-zinc-900">Fecha Vencimiento Autorizacion</label>
+                      <label class="text-xs font-medium text-zinc-900">Fecha Vencimiento Autorización</label>
                       <input type="date" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm" value="2026-05-04">
                     </div>
                     <div class="flex flex-col gap-1">
@@ -1147,7 +1146,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">6</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">6</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Servicios</h3>
                       <p class="text-xs text-zinc-500">1 servicio agregado</p>
@@ -1160,10 +1159,10 @@
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Buscar Servicio (CUPS)<span class="text-red-600 ml-0.5">*</span></label>
                       <div class="flex gap-2">
-                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" placeholder="Escriba codigo CUPS o nombre del servicio..." id="service-search">
+                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" placeholder="Escriba código CUPS o nombre del servicio..." id="service-search">
                         <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition" title="Buscar servicio"><i data-lucide="search" class="size-4"></i></button>
                       </div>
-                      <span class="text-[11px] text-zinc-400">Minimo 3 caracteres. Busca por codigo CUPS o descripcion del servicio.</span>
+                      <span class="text-[11px] text-zinc-400">Minimo 3 caracteres. Busca por código CUPS o descripcion del servicio.</span>
                     </div>
                   </div>
 
@@ -1226,7 +1225,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">7</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">7</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Productos Disponibles</h3>
                       <p class="text-xs text-zinc-500">2 productos disponibles para agregar</p>
@@ -1238,13 +1237,13 @@
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Area Funcional</label>
                       <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
-                        <option value="">Todas las areas</option><option>Farmacia General</option><option>Farmacia Especializada</option><option>Insumos Medicos</option>
+                        <option value="">Todas las areas</option><option>Farmacia General</option><option>Farmacia Especializada</option><option>Insumos Médicos</option>
                       </select>
                     </div>
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-zinc-900">Buscar Producto</label>
                       <div class="flex gap-2">
-                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" placeholder="Nombre generico, comercial o codigo ATC..." id="product-search">
+                        <input type="text" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm flex-1" placeholder="Nombre generico, comercial o código ATC..." id="product-search">
                         <button class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition" title="Buscar producto"><i data-lucide="search" class="size-4"></i></button>
                       </div>
                     </div>
@@ -1276,7 +1275,7 @@
                         <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
                         <td class="py-2.5 px-3 text-right text-sm">$150</td>
                         <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="10" min="1"></td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
                       </tr>
                       <tr class="hover:bg-zinc-50 transition-colors">
                         <td class="py-2.5 px-3"><span class="font-mono text-xs">C09CA01</span></td>
@@ -1288,7 +1287,7 @@
                         <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
                         <td class="py-2.5 px-3 text-right text-sm">$280</td>
                         <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="10" min="1"></td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
                       </tr>
                       <tr class="hover:bg-zinc-50 transition-colors">
                         <td class="py-2.5 px-3"><span class="font-mono text-xs">A10BA02</span></td>
@@ -1300,7 +1299,7 @@
                         <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
                         <td class="py-2.5 px-3 text-right text-sm">$190</td>
                         <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="1" min="1"></td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
                       </tr>
                       <tr class="hover:bg-zinc-50 transition-colors">
                         <td class="py-2.5 px-3"><span class="font-mono text-xs">A02BC01</span></td>
@@ -1312,7 +1311,7 @@
                         <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600">Si</span></td>
                         <td class="py-2.5 px-3 text-right text-sm">$320</td>
                         <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="1" min="1"></td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
                       </tr>
                       <tr class="hover:bg-zinc-50 transition-colors">
                         <td class="py-2.5 px-3"><span class="font-mono text-xs">J01CA04</span></td>
@@ -1324,7 +1323,7 @@
                         <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-600">No</span></td>
                         <td class="py-2.5 px-3 text-right text-sm">$450</td>
                         <td class="py-2.5 px-3 text-center"><input type="number" class="h-[30px] w-[55px] rounded-md border border-zinc-200 bg-white px-1 text-sm text-center" value="1" min="1"></td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="h-7 px-2 rounded-md border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 transition text-[11px]" title="Agregar producto"><i data-lucide="plus" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Agregar</div></div></td>
                       </tr>
                     </tbody>
                   </table>
@@ -1339,7 +1338,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">8</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">8</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Servicios y Productos Agregados</h3>
                       <p class="text-xs text-zinc-500">3 items en total</p>
@@ -1377,7 +1376,7 @@
                         <td class="py-2.5 px-3 text-center text-sm">0%</td>
                         <td class="py-2.5 px-3 text-right text-sm">$0</td>
                         <td class="py-2.5 px-3 text-right text-sm font-medium">$45,000</td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
                       </tr>
                       <tr class="hover:bg-zinc-50 transition-colors">
                         <td class="py-2.5 px-3"><span class="font-mono text-xs">N02BE01</span></td>
@@ -1391,7 +1390,7 @@
                         <td class="py-2.5 px-3 text-center text-sm">0%</td>
                         <td class="py-2.5 px-3 text-right text-sm">$0</td>
                         <td class="py-2.5 px-3 text-right text-sm font-medium">$1,500</td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
                       </tr>
                       <tr class="hover:bg-zinc-50 transition-colors">
                         <td class="py-2.5 px-3"><span class="font-mono text-xs">C09CA01</span></td>
@@ -1405,7 +1404,7 @@
                         <td class="py-2.5 px-3 text-center text-sm">0%</td>
                         <td class="py-2.5 px-3 text-right text-sm">$0</td>
                         <td class="py-2.5 px-3 text-right text-sm font-medium">$2,800</td>
-                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
+                        <td class="py-2.5 px-3 text-center"><div class="group relative inline-flex"><button class="flex size-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-400 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition" title="Eliminar"><i data-lucide="x" class="size-3.5"></i></button><div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-blue-500 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Cancelar</div></div></td>
                       </tr>
                     </tbody>
                   </table>
@@ -1435,7 +1434,7 @@
               <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden">
                 <div class="px-4 pt-4 pb-2">
                   <div class="flex items-center gap-2.5 mb-4">
-                    <div class="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">9</div>
+                    <div class="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">9</div>
                     <div>
                       <h3 class="text-sm font-semibold text-zinc-900">Recaudo del Paciente</h3>
                       <p class="text-xs text-zinc-500">Total a recaudar: $12,500</p>
@@ -1550,7 +1549,7 @@
 
           <!-- Step indicator dots -->
           <div class="flex items-center gap-1.5">
-            <span class="step-dot size-2 rounded-full bg-zinc-900"></span>
+            <span class="step-dot size-2 rounded-full bg-blue-500"></span>
             <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
             <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
             <span class="step-dot size-2 rounded-full bg-zinc-200"></span>
@@ -1563,13 +1562,13 @@
 
           <!-- Siguiente / Confirmar -->
           <div class="flex items-center gap-2">
-            <button onclick="nextStep()" id="btn-next" class="inline-flex h-9 items-center gap-2 rounded-md bg-zinc-900 px-4 text-sm font-medium text-white hover:bg-zinc-800 transition">
+            <button onclick="nextStep()" id="btn-next" class="inline-flex h-9 items-center gap-2 rounded-md bg-blue-500 px-4 text-sm font-medium text-white hover:bg-blue-600 transition">
               Siguiente
               <i data-lucide="arrow-right" class="size-4"></i>
             </button>
             <a href="post-confirmacion.html" onclick="confirmReception()" id="btn-confirm" class="hidden inline-flex h-9 items-center gap-2 rounded-md bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700 transition no-underline">
               <i data-lucide="check" class="size-4"></i>
-              Confirmar Recepcion
+              Confirmar Recepción
             </a>
           </div>
         </div>
@@ -1699,7 +1698,7 @@
     btns.forEach(function(b) {
       b.className = 'flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition';
     });
-    event.target.closest('button').className = 'flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition';
+    event.target.closest('button').className = 'flex-1 h-7 rounded text-xs font-medium bg-blue-500 text-white border border-blue-500 transition';
     switch(size) {
       case 'normal': document.querySelector('html').style.fontSize = '13px'; break;
       case 'large': document.querySelector('html').style.fontSize = '16px'; break;
@@ -1810,9 +1809,9 @@
     // Update sidebar active state
     document.querySelectorAll('[data-target]').forEach(function(item, idx) {
       if (idx === n - 1) {
-        item.className = 'flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-zinc-900 text-zinc-900 font-medium bg-zinc-50 transition';
+        item.className = 'flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-blue-500 text-blue-700 font-medium bg-blue-50 transition';
         var dot = item.querySelector('span:first-child');
-        if (dot) dot.className = 'flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-zinc-900 text-[10px] font-semibold text-zinc-900 bg-zinc-100';
+        if (dot) dot.className = 'flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-blue-500 text-[10px] font-semibold text-blue-700 bg-blue-50';
       } else {
         item.className = 'flex items-center gap-2 px-4 py-2 text-sm cursor-pointer border-l-2 border-transparent text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition';
         var dot = item.querySelector('span:first-child');
@@ -1822,7 +1821,7 @@
 
     // Update stepper dots
     document.querySelectorAll('.step-dot').forEach(function(dot, i) {
-      dot.className = 'step-dot size-2 rounded-full ' + (i < n ? 'bg-zinc-900' : 'bg-zinc-200');
+      dot.className = 'step-dot size-2 rounded-full ' + (i < n ? 'bg-blue-500' : 'bg-zinc-200');
     });
 
     // Show/hide navigation buttons
@@ -1885,5 +1884,50 @@
   // Initialize on step 1
   showStep(1);
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+    document.querySelectorAll('.nav-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const submenu = btn.parentElement.querySelector('.nav-submenu');
+        const chevron = btn.querySelector('.nav-chevron');
+        if (submenu) submenu.classList.toggle('open');
+        if (chevron) chevron.classList.toggle('open');
+      });
+    });
+    const observer = new MutationObserver(()=>{});
+    document.querySelectorAll('.nav-chevron').forEach(c => observer.observe(c, { attributes: true }));
+  });
+  if (typeof toggleSidebar !== 'function') {
+    function toggleSidebar() {
+      const s = document.getElementById('sidebar');
+      if (!s) return;
+      s.classList.toggle('w-72'); s.classList.toggle('w-16');
+      document.querySelectorAll('.sidebar-hide').forEach(el => el.classList.toggle('hidden'));
+    }
+  }
+</script>
+
+
+<script>
+  // Sync lang button with current lang on load
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.MA_i18n) return;
+    var lang = window.MA_i18n.getLang();
+    var flags = { es: '🇪🇸', en: '🇺🇸', fr: '🇫🇷' };
+    var f = document.getElementById('langFlag');
+    var c = document.getElementById('langCode');
+    if (f) f.textContent = flags[lang] || '🇪🇸';
+    if (c) c.textContent = lang.toUpperCase();
+  });
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var menu = document.getElementById('langMenu');
+    var sw = document.getElementById('langSwitcher');
+    if (menu && sw && !sw.contains(e.target)) menu.classList.add('hidden');
+  });
+</script>
+
 </body>
 </html>

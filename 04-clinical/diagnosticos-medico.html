@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedicalAdmin — Diagnosticos Medico (Sub-tab)</title>
+  <title>MedicalAdmin — Diagnósticos Médico (Sub-tab)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,20 +31,20 @@
   <!-- Context banner -->
   <div class="flex items-center gap-2 rounded-lg border border-zinc-200/60 bg-white px-4 py-3 mb-4">
     <span class="inline-block rounded-full bg-blue-100 text-blue-700 text-[11px] font-semibold px-2 py-0.5">Sub-tab</span>
-    <span class="text-zinc-400 text-xs">Evento Actual &rsaquo; Diagnosticos Medico &mdash; CIE-10, causa externa, finalidad consulta</span>
+    <span class="text-zinc-400 text-xs">Evento Actual &rsaquo; Diagnósticos Médico &mdash; CIE-10, causa externa, finalidad consulta</span>
   </div>
 
-  <!-- Diagnostico de Consulta -->
+  <!-- Diagnóstico de Consulta -->
   <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6">
-    <h2 class="text-base font-bold text-zinc-900 mb-1">Diagnosticos Medico</h2>
-    <p class="text-zinc-400 text-xs mb-5">Diagnostico de consulta &mdash; Clasifique la atencion con codigos CIE-10</p>
+    <h2 class="text-base font-bold text-zinc-900 mb-1">Diagnosticos Médico</h2>
+    <p class="text-zinc-400 text-xs mb-5">Diagnostico de consulta &mdash; Clasifique la atención con códigos CIE-10</p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Diagnostico principal -->
+      <!-- Diagnóstico principal -->
       <div class="md:col-span-2">
         <label class="block text-xs font-medium text-zinc-900 mb-1">Diagnostico principal <span class="text-red-500">*</span></label>
         <div class="autocomplete-wrapper open relative">
-          <input type="text" placeholder="Buscar diagnostico CIE-10..." value="E11 Diabetes" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
+          <input type="text" placeholder="Buscar diagnóstico CIE-10..." value="E11 Diabetes" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-9 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
           <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"><i data-lucide="search" style="width:14px;height:14px"></i></span>
           <div class="autocomplete-dropdown hidden absolute top-full left-0 right-0 z-50 bg-white border border-zinc-200 rounded-md shadow-lg mt-1 max-h-[220px] overflow-y-auto">
             <div class="autocomplete-item flex items-center gap-2 px-3 py-2 cursor-pointer bg-blue-50">
@@ -71,12 +71,12 @@
         </div>
       </div>
 
-      <!-- Tipo diagnostico -->
+      <!-- Tipo diagnóstico -->
       <div>
-        <label class="block text-xs font-medium text-zinc-900 mb-1">Tipo de diagnostico</label>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Tipo de diagnóstico</label>
         <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
           <option value="" disabled>Seleccione...</option>
-          <option value="1" selected>Impresion diagnostica</option>
+          <option value="1" selected>Impresión diagnóstica</option>
           <option value="2">Confirmado</option>
           <option value="3">Recurrente</option>
         </select>
@@ -111,9 +111,9 @@
         </select>
       </div>
 
-      <!-- Impresion diagnostica -->
+      <!-- Impresión diagnóstica -->
       <div>
-        <label class="block text-xs font-medium text-zinc-900 mb-1">Impresion diagnostica</label>
+        <label class="block text-xs font-medium text-zinc-900 mb-1">Impresión diagnóstica</label>
         <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-colors">
           <option value="" disabled>Seleccione...</option>
           <option value="1" selected>Nuevo</option>
@@ -122,7 +122,7 @@
       </div>
     </div>
 
-    <!-- Diagnosticos relacionados -->
+    <!-- Diagnósticos relacionados -->
     <div class="h-px bg-zinc-200 my-6"></div>
     <h3 class="text-sm font-semibold text-zinc-900 mb-3">Diagnosticos relacionados</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -150,13 +150,13 @@
     </div>
   </div>
 
-  <!-- Tabla diagnosticos agregados -->
+  <!-- Tabla diagnósticos agregados -->
   <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6 mt-4">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-sm font-semibold text-zinc-900">Diagnosticos agregados</h3>
       <button class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-zinc-200 bg-white text-sm text-zinc-700 hover:bg-zinc-50 transition-colors">
         <i data-lucide="plus" style="width:14px;height:14px"></i>
-        Agregar diagnostico secundario
+        Agregar diagnóstico secundario
       </button>
     </div>
 
@@ -177,7 +177,7 @@
             <td class="py-3.5 px-4 text-sm text-zinc-700">1</td>
             <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="font-semibold text-blue-600">E11.9</span></td>
             <td class="py-3.5 px-4 text-sm text-zinc-700">Diabetes mellitus tipo 2, sin complicaciones</td>
-            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 text-xs font-medium px-2 py-0.5">Impresion Dx</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 text-xs font-medium px-2 py-0.5">Impresión Dx</span></td>
             <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600"><i data-lucide="star" style="width:12px;height:12px"></i> Principal</span></td>
             <td class="py-3.5 px-4 text-sm text-zinc-700">
               <div class="flex items-center gap-0.5">
@@ -215,7 +215,7 @@
             <td class="py-3.5 px-4 text-sm text-zinc-700">3</td>
             <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="font-semibold text-blue-600">J06.9</span></td>
             <td class="py-3.5 px-4 text-sm text-zinc-700">Infeccion aguda de las vias respiratorias superiores, no especificada</td>
-            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 text-xs font-medium px-2 py-0.5">Impresion Dx</span></td>
+            <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-amber-50 text-amber-700 text-xs font-medium px-2 py-0.5">Impresión Dx</span></td>
             <td class="py-3.5 px-4 text-sm text-zinc-700"><span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5">Relacionado</span></td>
             <td class="py-3.5 px-4 text-sm text-zinc-700">
               <div class="flex items-center gap-0.5">
@@ -254,10 +254,10 @@
     </div>
   </div>
 
-  <!-- Diagnostico de Procedimiento (condicional) -->
+  <!-- Diagnóstico de Procedimiento (condicional) -->
   <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6 mt-4 border-l-[3px] border-l-blue-600">
     <h3 class="text-sm font-semibold text-zinc-900 mb-1">Diagnostico de procedimiento</h3>
-    <p class="text-zinc-400 text-xs mb-5">Solo visible cuando el formato tiene habilitado el diagnostico de procedimiento</p>
+    <p class="text-zinc-400 text-xs mb-5">Solo visible cuando el formato tiene habilitado el diagnóstico de procedimiento</p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-zinc-900 mb-1">Ambito</label>

@@ -1,0 +1,130 @@
+/* ============================================================
+   MedicalAdmin — Design Tokens v4
+   Paleta: white + blue-600 + zinc/slate (estilo SaaS moderno tipo Cal.com)
+   Auditado: 89 tokens unicos usados en /mockups/html/**
+   ============================================================ */
+
+:root {
+  /* === Colores primarios (blue-600 accent v4) === */
+  --primary: #2563eb;
+  --primary-fg: #ffffff;
+  --primary-hover: #1d4ed8;
+  --primary-light: #dbeafe;
+  --primary-bg: #eff6ff;
+  --primary-text: #1d4ed8;
+
+  /* === Acentos === */
+  --accent: #2563eb;
+  --accent-light: #dbeafe;
+  --purple: #7c3aed;
+  --purple-light: #ede9fe;
+
+  /* === Semánticos === */
+  --success: #16a34a;
+  --success-light: #dcfce7;
+  --warning: #d97706;
+  --warning-light: #fef3c7;
+  --danger: #dc2626;
+  --danger-light: #fee2e2;
+  --ring: rgba(37, 99, 235, 0.2);
+
+  /* === Backgrounds === */
+  --bg-surface: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-muted: #f8fafc;
+
+  /* === Borders === */
+  --border: #e4e4e7;
+  --border-default: #e4e4e7;
+  --border-hover: #d4d4d8;
+  --border-focus: #2563eb;
+
+  /* === Border-radius === */
+  --radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+
+  /* === Tipografia === */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  --letter-spacing-base: -0.011em;
+  --line-height-base: 1.5;
+
+  /* === Tamaños texto === */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+
+  /* === Texto (colores) === */
+  --text-heading: #18181b;
+  --text-body: #3f3f46;
+  --text-muted: #71717a;
+  --text-disabled: #a1a1aa;
+
+  /* === Aliases legacy color-* === */
+  --color-heading: #18181b;
+  --color-body: #3f3f46;
+  --color-muted: #71717a;
+  --color-disabled: #a1a1aa;
+  --color-placeholder: #a1a1aa;
+
+  /* === Sombras === */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+
+  /* === Layout === */
+  --header-height: 64px;
+  --sidebar-width: 256px;
+
+  /* === Status badges/chips === */
+  --status-confirmed-bg: #dcfce7;
+  --status-confirmed-text: #15803d;
+  --status-success-bg: #dcfce7;
+  --status-success-text: #15803d;
+  --status-success-border: #86efac;
+  --status-warning-bg: #fef3c7;
+  --status-warning-text: #92400e;
+  --status-warning-border: #fcd34d;
+  --status-error-bg: #fee2e2;
+  --status-error-text: #991b1b;
+  --status-error-border: #fca5a5;
+  --status-info-bg: #dbeafe;
+  --status-info-text: #1d4ed8;
+  --status-info-border: #93c5fd;
+  --status-neutral-bg: #f4f4f5;
+  --status-neutral-text: #52525b;
+  --status-neutral-border: #d4d4d8;
+
+  /* === Eventos calendario (citas) === */
+  --event-appointment: #dbeafe;
+  --event-appointment-border: #2563eb;
+  --event-appointment-text: #1d4ed8;
+  --event-conflict: #fee2e2;
+  --event-conflict-border: #dc2626;
+  --event-conflict-text: #991b1b;
+  --event-other: #f3e8ff;
+  --event-other-border: #7c3aed;
+  --event-other-text: #6d28d9;
+
+  /* === Range picker (date-range) === */
+  --range-bg: #dbeafe;
+  --range-border: #2563eb;
+  --range-hover: #bfdbfe;
+  --no-range-bg: #f4f4f5;
+}
+
+/* === Layout helpers (Gen-1 compatibility) === */
+.app-layout { display: flex; min-height: 100vh; }
+.main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedicalAdmin — Ordenes Medicas (Sub-tab)</title>
+  <title>MedicalAdmin — Ordenes Médicas (Sub-tab)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -37,22 +37,22 @@
     <!-- Page context badge -->
     <div class="flex items-center gap-2 rounded-lg border border-zinc-200/60 bg-white px-4 py-3 mb-4">
       <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700">Sub-tab</span>
-      <span class="text-xs text-zinc-500">Evento Actual &rsaquo; Ordenes Medicas &mdash; 7 tipos de ordenes clinicas</span>
+      <span class="text-xs text-zinc-500">Evento Actual &rsaquo; Ordenes Médicas &mdash; 7 tipos de ordenes clínicas</span>
     </div>
 
     <!-- Main panel -->
     <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm p-6">
 
       <!-- Title -->
-      <h2 class="text-base font-semibold text-zinc-900">Ordenes Medicas</h2>
+      <h2 class="text-base font-semibold text-zinc-900">Ordenes Médicas</h2>
       <p class="text-xs text-zinc-500 mb-5">Buscar y agregar servicios, medicamentos, procedimientos e interconsultas</p>
 
       <!-- Order type toggle: Externa / Interna -->
       <div class="inline-flex rounded-md border border-zinc-200 overflow-hidden mb-4">
-        <label class="px-4 py-1.5 text-xs font-medium cursor-pointer border-r border-zinc-200 text-white bg-blue-600 has-[input:checked]:bg-blue-600 has-[input:checked]:text-white text-zinc-500 bg-white">
+        <label class="px-4 py-1.5 text-xs font-medium cursor-pointer border-r border-zinc-200 text-white bg-blue-500 has-[input:checked]:bg-blue-500 has-[input:checked]:text-white text-zinc-500 bg-white">
           <input type="radio" name="orderType" checked class="hidden"> Externa
         </label>
-        <label class="px-4 py-1.5 text-xs font-medium cursor-pointer text-zinc-500 bg-white has-[input:checked]:bg-blue-600 has-[input:checked]:text-white">
+        <label class="px-4 py-1.5 text-xs font-medium cursor-pointer text-zinc-500 bg-white has-[input:checked]:bg-blue-500 has-[input:checked]:text-white">
           <input type="radio" name="orderType" class="hidden"> Interna
         </label>
       </div>
@@ -78,13 +78,13 @@
       <!-- Order type tabs -->
       <div class="flex gap-0 border-b border-zinc-200 mb-5 overflow-x-auto">
         <button class="order-tab active flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-blue-600 text-blue-600 bg-transparent cursor-pointer" onclick="showOrder('formulacion')">
-          <span class="size-2 rounded-full bg-green-700 shrink-0"></span> Formulacion <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600">3</span>
+          <span class="size-2 rounded-full bg-green-700 shrink-0"></span> Formulación <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600">3</span>
         </button>
         <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('laboratorio')">
-          <span class="size-2 rounded-full bg-blue-700 shrink-0"></span> Laboratorio <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">2</span>
+          <span class="size-2 rounded-full bg-blue-500 shrink-0"></span> Laboratorio <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">2</span>
         </button>
         <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('radiologia')">
-          <span class="size-2 rounded-full bg-violet-600 shrink-0"></span> Radiologia <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">1</span>
+          <span class="size-2 rounded-full bg-violet-600 shrink-0"></span> Radiología <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">1</span>
         </button>
         <button class="order-tab flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent text-zinc-500 hover:text-zinc-900 bg-transparent cursor-pointer" onclick="showOrder('procedimientos')">
           <span class="size-2 rounded-full bg-sky-700 shrink-0"></span> Procedimientos <span class="inline-flex items-center justify-center size-[18px] rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-500">1</span>
@@ -118,7 +118,7 @@
               <input type="number" value="30" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
             </div>
             <div>
-              <label class="block text-xs font-medium text-zinc-700 mb-1">Unidad formulacion</label>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Unidad formulación</label>
               <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
                 <option>Tableta</option><option>Capsula</option><option>Ampolla</option><option>Frasco</option>
               </select>
@@ -128,7 +128,7 @@
               <input type="number" value="1" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
             </div>
             <div>
-              <label class="block text-xs font-medium text-zinc-700 mb-1">Via de administracion</label>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Via de administración</label>
               <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm appearance-none cursor-pointer">
                 <option>Oral</option><option>Intravenosa</option><option>Intramuscular</option><option>Topica</option><option>Subcutanea</option>
               </select>
@@ -140,17 +140,17 @@
               </select>
             </div>
             <div>
-              <label class="block text-xs font-medium text-zinc-700 mb-1">Duracion tratamiento</label>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Duración tratamiento</label>
               <textarea rows="1" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">30 dias</textarea>
             </div>
             <div class="col-span-2">
               <label class="block text-xs font-medium text-zinc-700 mb-1">Indicaciones</label>
-              <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Tomar con las comidas. No suspender sin indicacion medica.</textarea>
+              <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Tomar con las comidas. No suspender sin indicacion médica.</textarea>
             </div>
           </div>
           <div class="flex gap-2 mt-3 justify-end">
             <button class="h-8 rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition">Limpiar</button>
-            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+            <button class="h-8 rounded-md bg-blue-500 px-3 text-xs font-medium text-white hover:bg-blue-600 transition inline-flex items-center gap-1.5">
               <i data-lucide="plus" class="size-3.5"></i> Agregar
             </button>
           </div>
@@ -251,7 +251,7 @@
           </div>
           <div class="flex gap-2 mt-3 justify-end">
             <button class="h-8 rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition">Limpiar</button>
-            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+            <button class="h-8 rounded-md bg-blue-500 px-3 text-xs font-medium text-white hover:bg-blue-600 transition inline-flex items-center gap-1.5">
               <i data-lucide="plus" class="size-3.5"></i> Agregar
             </button>
           </div>
@@ -307,7 +307,7 @@
       <div class="order-content" id="order-radiologia">
 
         <div class="rounded-xl border border-blue-200 bg-blue-50/60 p-5 mb-5">
-          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Imagen / Radiologia</h3>
+          <h3 class="text-sm font-semibold text-blue-900 mb-3">Agregar Imagen / Radiología</h3>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-medium text-zinc-700 mb-1">Examen <span class="text-red-500">*</span></label>
@@ -325,7 +325,7 @@
             </div>
           </div>
           <div class="flex gap-2 mt-3 justify-end">
-            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+            <button class="h-8 rounded-md bg-blue-500 px-3 text-xs font-medium text-white hover:bg-blue-600 transition inline-flex items-center gap-1.5">
               <i data-lucide="plus" class="size-3.5"></i> Agregar
             </button>
           </div>
@@ -386,7 +386,7 @@
             </div>
           </div>
           <div class="flex gap-2 mt-3 justify-end">
-            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+            <button class="h-8 rounded-md bg-blue-500 px-3 text-xs font-medium text-white hover:bg-blue-600 transition inline-flex items-center gap-1.5">
               <i data-lucide="plus" class="size-3.5"></i> Agregar
             </button>
           </div>
@@ -438,7 +438,7 @@
               <input type="text" placeholder="Buscar procedimiento CUPS..." class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
             </div>
             <div>
-              <label class="block text-xs font-medium text-zinc-700 mb-1">Duracion (minutos)</label>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Duración (minutos)</label>
               <input type="text" placeholder="Ej: 120" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm">
             </div>
             <div>
@@ -471,7 +471,7 @@
             </div>
           </div>
           <div class="flex gap-2 mt-3 justify-end">
-            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+            <button class="h-8 rounded-md bg-blue-500 px-3 text-xs font-medium text-white hover:bg-blue-600 transition inline-flex items-center gap-1.5">
               <i data-lucide="plus" class="size-3.5"></i> Agregar
             </button>
           </div>
@@ -508,7 +508,7 @@
             </div>
           </div>
           <div class="flex gap-2 mt-3 justify-end">
-            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+            <button class="h-8 rounded-md bg-blue-500 px-3 text-xs font-medium text-white hover:bg-blue-600 transition inline-flex items-center gap-1.5">
               <i data-lucide="plus" class="size-3.5"></i> Agregar
             </button>
           </div>
@@ -576,12 +576,12 @@
               </select>
             </div>
             <div class="col-span-3">
-              <label class="block text-xs font-medium text-zinc-700 mb-1">Descripcion</label>
-              <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Reposo medico por cuadro respiratorio agudo</textarea>
+              <label class="block text-xs font-medium text-zinc-700 mb-1">Descripción</label>
+              <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm resize-y">Reposo médico por cuadro respiratorio agudo</textarea>
             </div>
           </div>
           <div class="flex gap-2 mt-3 justify-end">
-            <button class="h-8 rounded-md bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 transition inline-flex items-center gap-1.5">
+            <button class="h-8 rounded-md bg-blue-500 px-3 text-xs font-medium text-white hover:bg-blue-600 transition inline-flex items-center gap-1.5">
               <i data-lucide="plus" class="size-3.5"></i> Agregar
             </button>
           </div>

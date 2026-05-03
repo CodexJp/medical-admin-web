@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedicalAdmin — Despacho Farmacia (R07)</title>
+  <title>MedicalAdmin — Entrega de Artículos (R07)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -41,7 +41,17 @@
     .wizard-panel.active { display: block; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+  
+    /* === Sidebar v4 - acordeon === */
+    aside#sidebar .nav-submenu { max-height: 0; overflow: hidden; transition: max-height 250ms ease-in-out; }
+    aside#sidebar .nav-submenu.open { max-height: 1500px; }
+    aside#sidebar .nav-chevron { transition: transform 200ms; }
+    aside#sidebar .nav-chevron.open { transform: rotate(90deg); }
+    aside#sidebar .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+    aside#sidebar .sidebar-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
   </style>
+  <script src="../_shared/i18n.js" defer></script>
 </head>
 <body class="bg-zinc-50 font-sans text-zinc-600 antialiased">
   <div class="flex h-screen overflow-hidden">
@@ -49,211 +59,148 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- SIDEBAR -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <aside id="sidebar" class="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-all duration-300 shrink-0 z-30">
-
-      <!-- Sidebar Header -->
-      <div class="flex h-12 items-center justify-between px-4 border-b border-zinc-200 shrink-0">
-        <a href="../00-shell/shell.html" class="flex items-center gap-2.5 overflow-hidden">
-          <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-900">
-            <i data-lucide="heart-pulse" class="size-4 text-white"></i>
-          </div>
-          <span class="sidebar-hide text-sm font-semibold text-zinc-900 whitespace-nowrap">MedicalAdmin</span>
-        </a>
-        <button onclick="toggleSidebar()" class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition">
-          <i data-lucide="panel-left-close" class="size-4"></i>
-        </button>
+    <aside id="sidebar" class="flex h-screen w-72 flex-col bg-white border-r border-slate-200 transition-all duration-300 shrink-0 z-30">
+    <div class="h-16 px-5 flex items-center gap-2.5 border-b border-slate-100 shrink-0">
+      <div class="size-9 rounded-lg bg-blue-500 grid place-items-center shrink-0"><i data-lucide="plus" class="size-5 text-white"></i></div>
+      <div class="sidebar-hide flex flex-col leading-tight overflow-hidden">
+        <span class="text-[15px] font-semibold text-zinc-900 whitespace-nowrap">Medical<span class="text-blue-600">Admin</span></span>
+        <span class="text-[11px] text-zinc-500 truncate">HYPERSOFT IPS</span>
       </div>
-
-      <!-- Sidebar Nav -->
-      <nav class="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
-
-        <!-- Dashboard -->
-        <div class="mb-1">
-          <a href="../00-shell/dashboard-medico.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Dashboard">
-            <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
-            <span class="sidebar-hide">Dashboard</span>
-          </a>
-        </div>
-
-        <!-- CONSULTA EXTERNA -->
-        <div class="mt-4 mb-1">
-          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Consulta Externa</p>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Agendamiento" onclick="toggleGroup('cit-agenda')">
-          <i data-lucide="calendar-days" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Agendamiento</span>
-          <i data-lucide="chevron-right" id="cit-agenda-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="cit-agenda">
-          <a href="../01-calendar/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Agenda</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" title="Disponible en version anterior">Creacion de Citas</span>
-          <a href="../03-reception/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Recepcion de Paciente</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Motivos de Cancelacion</span>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('cit-config')">
-          <i data-lucide="settings" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
-          <i data-lucide="chevron-right" id="cit-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="cit-config">
-          <a href="../02-appointments/admin-horarios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Horarios</a>
-          <a href="../02-appointments/admin-consultorios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Consultorios</a>
-          <a href="../02-appointments/admin-duraciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Duracion de Citas</a>
-        </div>
-
-        <!-- HISTORIA CLINICA -->
-        <div class="mt-4 mb-1">
-          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Historia Clinica</p>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc')">
-          <i data-lucide="file-heart" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Historia Clinica</span>
-          <i data-lucide="chevron-right" id="his-hc-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="his-hc">
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Adm. Pacientes</span>
-          <a href="../04-clinical/attention-queue.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Atencion de Pacientes</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">HC Externa</span>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Evaluacion Enfermeria</span>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('his-config')">
-          <i data-lucide="settings" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
-          <i data-lucide="chevron-right" id="his-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="his-config">
-          <a href="../04-clinical/format-list.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Formatos HC</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Profesionales de la Salud</span>
-          <a href="../05-medical-config/index.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Areas Funcionales</a>
-          <a href="../05-medical-config/servicios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Servicios</a>
-          <a href="../05-medical-config/procedimientos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Otros Procedimientos</a>
-          <a href="../05-medical-config/checklist.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista de Chequeo</a>
-          <a href="../05-medical-config/ocupaciones.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ocupaciones</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Especialidades</span>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tipo de Cita</span>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Formulas Consultorios</span>
-        </div>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Config. Hospitalizacion"><i data-lucide="bed" class="size-4 shrink-0"></i><span class="sidebar-hide">Config. Hospitalizacion</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
-
-        <!-- FACTURACION -->
-        <div class="mt-4 mb-1">
-          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Facturacion</p>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec')">
-          <i data-lucide="receipt" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
-          <i data-lucide="chevron-right" id="pos-exec-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="pos-exec">
-          <a href="../07-billing/crear-orden.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Ordenes de Facturacion</a>
-          <a href="../07-billing/admin-facturas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Facturas</a>
-          <a href="../07-billing/rips.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">RIPS</a>
-          <a href="../07-billing/clientes.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Clientes</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Lista de Pacientes</span>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config')">
-          <i data-lucide="settings" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Configuracion General</span>
-          <i data-lucide="chevron-right" id="pos-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="pos-config">
-          <a href="../07-billing/medios-pago.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Medios de Pago</a>
-          <a href="../07-billing/rangos-facturacion.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Rangos de Facturacion</a>
-          <a href="../07-billing/tarifas.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Manuales Tarifarios</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tarifas de Facturacion</span>
-          <a href="../07-billing/plm.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Lista Precios Medicamentos</a>
-          <a href="../07-billing/tarifas-medicamentos.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Tarifas de Medicamentos</a>
-          <a href="../07-billing/convenios.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Convenios</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Sedes</span>
-        </div>
-
-        <!-- FARMACIA -->
-        <div class="mt-4 mb-1">
-          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Farmacia</p>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec')">
-          <i data-lucide="pill" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Ejecucion de Procesos</span>
-          <i data-lucide="chevron-right" id="far-exec-chevron" class="nav-group-chevron open sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items open pl-5" id="far-exec">
-          <a href="../06-pharmacy/despacho.html" class="flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-zinc-900 bg-zinc-900/10">Entrega de Articulos</a>
-          <a href="../06-pharmacy/inventario.html" class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition">Movimientos Inventario</a>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Articulos</span>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Configuracion" onclick="toggleGroup('far-config')">
-          <i data-lucide="settings" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Configuracion</span>
-          <i data-lucide="chevron-right" id="far-config-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="far-config">
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Bodegas</span>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tipo Articulos</span>
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Tipo Movimientos</span>
-        </div>
-        <button class="sidebar-nav-item relative flex w-full items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Reporte" onclick="toggleGroup('far-report')">
-          <i data-lucide="file-bar-chart" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide flex-1 text-left">Reporte</span>
-          <i data-lucide="chevron-right" id="far-report-chevron" class="nav-group-chevron sidebar-hide size-3.5 text-zinc-400"></i>
-        </button>
-        <div class="nav-group-items pl-5" id="far-report">
-          <span class="flex items-center rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default">Kardex</span>
-        </div>
-
-        <!-- COMUNICACION -->
-        <div class="mt-4 mb-1">
-          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Comunicacion</p>
-        </div>
-        <a href="../08-whatsapp/whatsapp-dashboard.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="WhatsApp">
-          <i data-lucide="message-circle" class="size-4 shrink-0"></i>
-          <span class="sidebar-hide">WhatsApp</span>
-        </a>
-
-        <!-- OTROS MODULOS -->
-        <div class="mt-6 mb-1 border-t border-zinc-100 pt-4">
-          <p class="sidebar-hide px-2 pb-1 text-xs font-medium text-zinc-400">Otros Modulos</p>
-        </div>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Hospitalizacion"><i data-lucide="building-2" class="size-4 shrink-0"></i><span class="sidebar-hide">Hospitalizacion</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Reportes"><i data-lucide="file-text" class="size-4 shrink-0"></i><span class="sidebar-hide">Reportes</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="PyP"><i data-lucide="heart" class="size-4 shrink-0"></i><span class="sidebar-hide">PyP</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Laboratorio"><i data-lucide="flask-conical" class="size-4 shrink-0"></i><span class="sidebar-hide">Laboratorio</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Radiologia"><i data-lucide="scan" class="size-4 shrink-0"></i><span class="sidebar-hide">Radiologia</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Quirurgicos"><i data-lucide="scissors" class="size-4 shrink-0"></i><span class="sidebar-hide">Quirurgicos</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Banco Sangre"><i data-lucide="droplets" class="size-4 shrink-0"></i><span class="sidebar-hide">Banco Sangre</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="CRM"><i data-lucide="folder" class="size-4 shrink-0"></i><span class="sidebar-hide">CRM</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Integracion"><i data-lucide="puzzle" class="size-4 shrink-0"></i><span class="sidebar-hide">Integracion</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Control de Accesos"><i data-lucide="key-round" class="size-4 shrink-0"></i><span class="sidebar-hide">Control de Accesos</span></span>
-        <span class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-1.5 text-sm text-zinc-300 cursor-default" data-tooltip="Tablero / Estadisticas"><i data-lucide="bar-chart-3" class="size-4 shrink-0"></i><span class="sidebar-hide">Tablero / Estadisticas</span></span>
-
-        <!-- PREFERENCIAS -->
-        <div class="mt-4 mb-1 border-t border-zinc-100 pt-4">
-          <a href="../09-settings/settings.html" class="sidebar-nav-item relative flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition" data-tooltip="Preferencias">
-            <i data-lucide="sliders-horizontal" class="size-4 shrink-0"></i>
-            <span class="sidebar-hide">Preferencias</span>
-          </a>
-        </div>
-      </nav>
-
-      <!-- Sidebar Footer -->
-      <div class="border-t border-zinc-200 p-3 shrink-0">
-        <div class="sidebar-hide mb-2">
-          <p class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">Accesibilidad</p>
-          <div class="flex gap-1">
-            <button onclick="setFontSize('normal')" class="flex-1 h-7 rounded text-xs font-medium bg-zinc-900 text-white border border-zinc-900 transition">A</button>
-            <button onclick="setFontSize('large')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A+</button>
-            <button onclick="setFontSize('xlarge')" class="flex-1 h-7 rounded text-xs font-medium text-zinc-500 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition">A++</button>
-          </div>
-        </div>
-        <div class="flex items-center gap-2.5 rounded-md p-2 hover:bg-zinc-100 cursor-pointer transition">
-          <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-white text-xs font-semibold">JP</div>
-          <div class="sidebar-hide overflow-hidden">
-            <p class="text-sm font-medium text-zinc-900 truncate">Dr. Juan P. Rodriguez</p>
-            <p class="text-xs text-zinc-400">Medicina General</p>
-          </div>
+      <button onclick="toggleSidebar()" class="ml-auto flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-slate-100 hover:text-zinc-900 transition shrink-0"><i data-lucide="panel-left-close" class="size-4"></i></button>
+    </div>
+    <nav class="sidebar-scroll flex-1 overflow-y-auto p-3 space-y-0.5">
+      <a href="../00-shell/dashboard-medico.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium text-zinc-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+        <i data-lucide="home" class="size-[18px]"></i><span data-i18n="menu.home" class="sidebar-hide">Inicio</span>
+      </a>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="calendar-search" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.consulta_externa" class="sidebar-hide flex-1 text-left">Consulta Externa</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Agendamiento</div>
+          <a href="../01-calendar/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.creacion_citas_medicas">Creación de Citas Médicas</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Creación de Otros Eventos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a href="../03-reception/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.recepcion_paciente">Recepción de Paciente</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración Motivos de Cancelación de Cita</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
         </div>
       </div>
-    </aside>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="clipboard-list" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.historia_clinica" class="sidebar-hide flex-1 text-left">Historia Clínica</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración General</div>
+          <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.config_servicio">Configuración de Servicio</span></a>
+          <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.otros_procedimientos">Configuración de Otros Procedimientos</span></a>
+          <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.lista_chequeo">Administración de lista de chequeo</span></a>
+          <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.ocupaciones">Administración de Ocupaciones</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Profesionales</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Especialidades</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Historia Clínica</div>
+          <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
+          <a href="../04-clinical/format-builder.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Constructor de Formatos</span></a>
+          <a href="../04-clinical/finalizar-atencion.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Finalización de Atención</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="dollar-sign" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.facturacion" class="sidebar-hide flex-1 text-left">Facturación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
+          <a href="../07-billing/crear-orden.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.crear_orden">Administración de Ordenes de Facturación</span></a>
+          <a href="../07-billing/admin-facturas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.admin_facturas">Administración de Facturas</span></a>
+          <a href="../07-billing/rips.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Rips</span></a>
+          <a href="../07-billing/clientes.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Lista de Pacientes</span></a>
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración General</div>
+          <a href="../07-billing/medios-pago.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Medios de Pago</span></a>
+          <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Rangos de Facturación</span></a>
+          <a href="../07-billing/tarifas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.tarifas">Administración Manuales Tarifarios</span></a>
+          <a href="../07-billing/plm.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Lista de Precios de Medicamentos e Insumos</span></a>
+          <a href="../07-billing/tarifas-medicamentos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Tarifas de Medicamentos</span></a>
+          <a href="../07-billing/convenios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.convenios">Administración de Convenio</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Sedes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-blue-700 bg-blue-50 transition-colors"><i data-lucide="pill" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.farmacia" class="sidebar-hide flex-1 text-left">Farmacia</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 open"></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide open">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
+          <a href="../06-pharmacy/inventario.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.admin_articulos">Administración de Artículos</span></a>
+          <a href="../06-pharmacy/despacho.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] bg-blue-50 text-blue-700 font-semibold"><span class="size-1 rounded-full bg-blue-500"></span><span data-i18n="app.entrega_articulos">Entrega de Artículos</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="bed" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Hospitalización</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Admisiones</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Admisión de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Atención de Pacientes Hospitalizados</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="file-text" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Reportes</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">General</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Consulta Externa</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Historia Clínica</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Facturación</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Farmacia</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="heart-pulse" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">PyP</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Administración</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Programas</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="flask-conical" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Laboratorio</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Recepción de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Toma de Muestra</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="scan" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Radiología</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="plug" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Integración</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración</div>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Diccionario de Datos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="message-circle" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Comunicación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
+          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">WhatsApp</div>
+          <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Dashboard WhatsApp</span></a>
+          <a href="../08-whatsapp/whatsapp-templates.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Plantillas</span></a>
+          <a href="../08-whatsapp/whatsapp-log.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Log de mensajes</span></a>
+          <a href="../08-whatsapp/whatsapp-config.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Configuración</span></a>
+        </div>
+      </div>
+      <div class="pt-3 pb-1 px-3 sidebar-hide"><span class="text-[10px] uppercase tracking-[0.08em] font-semibold text-zinc-400">Sistema</span></div>
+      <a href="../_shared/coming-soon.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="shield-check" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide">Control de Accesos</span></a>
+      <a href="../_shared/coming-soon.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="layout-dashboard" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide">Tablero</span></a>
+    </nav>
+        <div class="border-t border-slate-100 px-3 py-3 shrink-0 sidebar-hide">
+      <div class="text-[10px] uppercase tracking-[0.08em] font-semibold text-zinc-400 pb-2">Accesibilidad</div>
+      <div class="flex items-center gap-1">
+        <button class="flex-1 h-8 rounded-md bg-blue-500 text-white text-xs font-medium" onclick="document.documentElement.style.fontSize='14px'">A</button>
+        <button class="flex-1 h-8 rounded-md border border-zinc-200 bg-white text-zinc-700 text-xs font-medium hover:bg-zinc-50" onclick="document.documentElement.style.fontSize='16px'">A+</button>
+        <button class="flex-1 h-8 rounded-md border border-zinc-200 bg-white text-zinc-700 text-xs font-medium hover:bg-zinc-50" onclick="document.documentElement.style.fontSize='18px'">A++</button>
+      </div>
+      <button class="mt-2 w-full h-8 rounded-md border border-zinc-200 bg-white text-zinc-700 text-xs font-medium hover:bg-zinc-50 inline-flex items-center justify-center gap-1.5" onclick="document.body.classList.toggle('high-contrast')">
+        <i data-lucide="contrast" class="size-3.5"></i>Contraste
+      </button>
+    </div>
+    <div class="border-t border-slate-100 p-3 shrink-0">
+      <button class="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-slate-50 transition-colors text-left">
+        <div class="size-9 rounded-full bg-blue-500 grid place-items-center text-white text-[13px] font-semibold shrink-0">JP</div>
+        <div class="sidebar-hide flex-1 min-w-0"><div class="text-[13px] font-semibold text-zinc-800 truncate">Dr. Juan P. Rodriguez</div><div class="text-[11px] text-zinc-500 truncate">Medicina General</div></div>
+      </button>
+    </div>
+  </aside>
 
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- MAIN AREA -->
@@ -283,8 +230,20 @@
             <button class="relative flex size-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition">
               <i data-lucide="circle-help" class="size-[18px]"></i>
             </button>
+            <div class="relative" id="langSwitcher">
+              <button type="button" onclick="event.stopPropagation();document.getElementById('langMenu').classList.toggle('hidden')" class="flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+                <span class="text-base leading-none" id="langFlag">🇪🇸</span>
+                <span class="text-sm font-medium text-zinc-700" id="langCode">ES</span>
+                <i data-lucide="chevron-down" class="size-3 text-zinc-400"></i>
+              </button>
+              <div id="langMenu" class="hidden absolute right-0 top-full mt-1 w-36 rounded-md border border-zinc-200 bg-white shadow-lg py-1 z-50">
+                <button onclick="MA_i18n.setLang('es');document.getElementById('langFlag').textContent='🇪🇸';document.getElementById('langCode').textContent='ES';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇪🇸</span><span>Español</span></button>
+                <button onclick="MA_i18n.setLang('en');document.getElementById('langFlag').textContent='🇺🇸';document.getElementById('langCode').textContent='EN';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇺🇸</span><span>English</span></button>
+                <button onclick="MA_i18n.setLang('fr');document.getElementById('langFlag').textContent='🇫🇷';document.getElementById('langCode').textContent='FR';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇫🇷</span><span>Français</span></button>
+              </div>
+            </div>
             <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
-              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-[11px] font-semibold text-white">JP</div>
+              <div class="flex size-7 items-center justify-center rounded-md bg-blue-500 text-[11px] font-semibold text-white">JP</div>
               <span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span>
             </button>
           </div>
@@ -299,18 +258,18 @@
           <div class="flex items-center gap-1.5 text-sm text-zinc-500 mb-2">
             <a href="#" class="hover:text-zinc-900 transition">Farmacia</a>
             <i data-lucide="chevron-right" class="size-3.5"></i>
-            <span class="text-zinc-900 font-medium">Despacho</span>
+            <span data-i18n="app.entrega_articulos" class="text-zinc-900 font-medium">Entrega de Artículos</span>
           </div>
 
           <!-- Page Title -->
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h1 class="text-xl font-semibold text-zinc-900">Despacho de Farmacia</h1>
-              <p class="text-sm text-zinc-500 mt-0.5">Buscar formulacion, verificar stock y despachar medicamentos</p>
+              <h1 class="text-xl font-semibold text-zinc-900">Entrega de Artículos</h1>
+              <p class="text-sm text-zinc-500 mt-0.5">Buscar formulación, verificar stock y despachar medicamentos</p>
             </div>
-            <button class="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition" onclick="openNuevaFormulacion()">
+            <button class="inline-flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition" onclick="openNuevaFormulacion()">
               <i data-lucide="plus" class="size-4"></i>
-              Nueva Formulacion
+              Nueva Formulación
             </button>
           </div>
 
@@ -339,13 +298,13 @@
           <!-- ═══════════════════════════════════════════════════════ -->
           <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mb-6">
             <div class="p-6 border-b border-zinc-100">
-              <h3 class="text-base font-semibold text-zinc-900 mb-4">Buscar formulacion</h3>
+              <h3 class="text-base font-semibold text-zinc-900 mb-4">Buscar formulación</h3>
               <div class="grid grid-cols-4 gap-4">
                 <div class="col-span-2">
-                  <label class="block text-sm font-medium text-zinc-700 mb-1.5">Paciente o formulacion</label>
+                  <label class="block text-sm font-medium text-zinc-700 mb-1.5">Paciente o formulación</label>
                   <div class="relative">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
-                    <input type="text" placeholder="Buscar por nombre de paciente o numero de formulacion..." class="w-full h-9 rounded-md border border-zinc-200 bg-white pl-10 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                    <input type="text" placeholder="Buscar por nombre de paciente o número de formulacion..." class="w-full h-9 rounded-md border border-zinc-200 bg-white pl-10 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
                   </div>
                 </div>
                 <div>
@@ -427,7 +386,7 @@
                   <th class="h-12 w-12 pl-6 pr-1">
                     <input type="checkbox" class="size-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
                   </th>
-                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500"># Formulacion</th>
+                  <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500"># Formulación</th>
                   <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Paciente</th>
                   <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Convenio</th>
                   <th class="h-12 px-4 text-left text-sm font-medium text-zinc-500">Tipo</th>
@@ -457,7 +416,7 @@
                   </td>
                   <td class="py-3.5 px-4 pr-6">
                     <div class="flex items-center gap-1">
-                      <button class="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 transition" onclick="showDispatch()"><i data-lucide="package" class="size-3.5"></i> Despachar</button>
+                      <button class="inline-flex items-center gap-1.5 rounded-md bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600 transition" onclick="showDispatch()"><i data-lucide="package" class="size-3.5"></i> Despachar</button>
                     </div>
                   </td>
                 </tr>
@@ -604,10 +563,10 @@
                   <i data-lucide="chevron-left" class="size-4"></i>
                   <span>Anterior</span>
                 </button>
-                <button class="flex size-8 items-center justify-center rounded-md bg-zinc-900 text-sm font-medium text-white">1</button>
-                <button class="flex size-8 items-center justify-center rounded-md text-sm text-zinc-700 hover:bg-zinc-100 transition">2</button>
+                <button class="size-9 inline-flex items-center justify-center rounded-md border border-blue-500 bg-blue-500 text-sm font-medium text-white" aria-current="page">1</button>
+                <button class="size-9 inline-flex items-center justify-center rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">2</button>
                 <span class="flex size-8 items-center justify-center text-sm text-zinc-400">...</span>
-                <button class="flex size-8 items-center justify-center rounded-md text-sm text-zinc-700 hover:bg-zinc-100 transition">32</button>
+                <button class="size-9 inline-flex items-center justify-center rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">32</button>
                 <button class="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100 transition">
                   <span>Siguiente</span>
                   <i data-lucide="chevron-right" class="size-4"></i>
@@ -736,7 +695,7 @@
                     <i data-lucide="info" class="size-3.5"></i>
                     Modifique las cantidades a despachar segun disponibilidad. Items sin stock se marcan automaticamente.
                   </p>
-                  <button class="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition" onclick="switchTab(1)">
+                  <button class="inline-flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition" onclick="switchTab(1)">
                     Continuar al Despacho <i data-lucide="arrow-right" class="size-4"></i>
                   </button>
                 </div>
@@ -754,14 +713,14 @@
                       <div class="flex justify-between text-sm"><span class="text-zinc-500">Tipo documento</span><span class="text-zinc-900">CC</span></div>
                       <div class="flex justify-between text-sm"><span class="text-zinc-500">Identificacion</span><span class="text-zinc-900">52.456.789</span></div>
                       <div class="flex justify-between text-sm"><span class="text-zinc-500">Nombre</span><span class="text-zinc-900">Maria Fernanda Rodriguez Perez</span></div>
-                      <div class="flex justify-between text-sm"><span class="text-zinc-500">Area</span><span class="text-zinc-900">Consulta Externa</span></div>
+                      <div class="flex justify-between text-sm"><span class="text-zinc-500">Area</span><span data-i18n="menu.consulta_externa" class="text-zinc-900">Consulta Externa</span></div>
                       <div class="flex justify-between text-sm"><span class="text-zinc-500">Tipo usuario</span><span class="text-zinc-900">Cotizante</span></div>
                       <div class="flex justify-between text-sm"><span class="text-zinc-500">Nivel</span><span class="text-zinc-900">1</span></div>
                     </div>
                   </div>
                   <!-- Billing Info -->
                   <div>
-                    <p class="text-sm font-semibold text-zinc-900 mb-3">Informacion de Facturacion</p>
+                    <p class="text-sm font-semibold text-zinc-900 mb-3">Informacion de Facturación</p>
                     <div class="space-y-3">
                       <div>
                         <label class="block text-xs font-medium text-zinc-700 mb-1">Convenio</label>
@@ -829,7 +788,7 @@
                   <button class="inline-flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="switchTab(0)">
                     <i data-lucide="arrow-left" class="size-4"></i> Volver a Medicamentos
                   </button>
-                  <button class="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition" onclick="switchTab(2)">
+                  <button class="inline-flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition" onclick="switchTab(2)">
                     Ver Resumen <i data-lucide="arrow-right" class="size-4"></i>
                   </button>
                 </div>
@@ -912,7 +871,7 @@
                         </table>
                       </div>
                       <div class="flex justify-end mt-2">
-                        <button class="h-9 px-4 rounded-md bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800 transition flex items-center gap-2">
+                        <button class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition flex items-center gap-2">
                           <i data-lucide="check" class="size-3.5"></i> Despachar Seleccionados
                         </button>
                       </div>
@@ -959,9 +918,9 @@
                     <div class="border-2 border-dashed border-zinc-300 rounded-lg p-5 text-center mt-4">
                       <p class="text-[11px] uppercase tracking-wider font-medium text-zinc-400 mb-2">Vista previa del sticker</p>
                       <div class="rounded-md border border-zinc-200 bg-white p-3 text-left text-[11px] leading-4 font-mono text-zinc-700">
-                        <strong class="text-zinc-900">MedicalAdmin — Clinica del Norte</strong><br>
+                        <strong class="text-zinc-900">MedicalAdmin — Clínica del Norte</strong><br>
                         Paciente: Maria F. Rodriguez P. — CC 52.456.789<br>
-                        Formulacion: F-2024-003481 | 15/06/2024<br>
+                        Formulación: F-2024-003481 | 15/06/2024<br>
                         <span class="text-zinc-400">-------------------------------</span><br>
                         Acetaminofen 500mg x15 | Losartan 50mg x30<br>
                         Metformina 850mg x60 | Amoxicilina 500mg x18<br>
@@ -999,7 +958,7 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════ -->
-  <!-- MODAL: Nueva Formulacion -->
+  <!-- MODAL: Nueva Formulación -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden" id="modalNuevaFormulacion">
     <div class="bg-white rounded-xl shadow-2xl w-[90%] max-w-[860px] max-h-[90vh] flex flex-col overflow-hidden">
@@ -1007,7 +966,7 @@
       <!-- Modal Header -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 shrink-0">
         <h2 class="flex items-center gap-2 text-lg font-semibold text-zinc-900">
-          <i data-lucide="file-plus" class="size-5"></i> Nueva Formulacion
+          <i data-lucide="file-plus" class="size-5"></i> Nueva Formulación
         </h2>
         <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition" onclick="closeNuevaFormulacion()">
           <i data-lucide="x" class="size-5"></i>
@@ -1021,7 +980,7 @@
             <span class="inline-flex items-center justify-center size-5 rounded-full bg-zinc-900 text-white text-[11px] font-semibold mr-1.5">1</span> Paciente
           </div>
           <div class="flex-1 text-center pb-3 text-xs font-medium text-zinc-400 border-b-2 border-zinc-200" id="wstep2">
-            <span class="inline-flex items-center justify-center size-5 rounded-full bg-zinc-200 text-zinc-500 text-[11px] font-semibold mr-1.5">2</span> Formulacion
+            <span class="inline-flex items-center justify-center size-5 rounded-full bg-zinc-200 text-zinc-500 text-[11px] font-semibold mr-1.5">2</span> Formulación
           </div>
           <div class="flex-1 text-center pb-3 text-xs font-medium text-zinc-400 border-b-2 border-zinc-200" id="wstep3">
             <span class="inline-flex items-center justify-center size-5 rounded-full bg-zinc-200 text-zinc-500 text-[11px] font-semibold mr-1.5">3</span> Medicamentos
@@ -1037,7 +996,7 @@
           <div class="mb-5">
             <label class="block text-sm font-medium text-zinc-700 mb-1.5">Buscar paciente</label>
             <div class="relative">
-              <input type="text" placeholder="Nombre o numero de identificacion del paciente..." id="patientSearch" class="w-full h-9 rounded-md border border-zinc-200 bg-white pl-3 pr-10 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <input type="text" placeholder="Nombre o número de identificación del paciente..." id="patientSearch" class="w-full h-9 rounded-md border border-zinc-200 bg-white pl-3 pr-10 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
               <i data-lucide="search" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
             </div>
             <p class="text-xs text-zinc-500 mt-1">Escriba al menos 3 caracteres para buscar</p>
@@ -1059,19 +1018,19 @@
                   <td class="py-3 px-4 text-sm text-zinc-700">CC 52.456.789</td>
                   <td class="py-3 px-4 text-sm font-medium text-zinc-900">Maria Fernanda Rodriguez Perez</td>
                   <td class="py-3 px-4 text-sm text-zinc-700">Salud Total EPS</td>
-                  <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 transition" onclick="selectPatient(this)">Seleccionar</button></td>
+                  <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600 transition" onclick="selectPatient(this)">Seleccionar</button></td>
                 </tr>
                 <tr class="hover:bg-zinc-50 transition-colors">
                   <td class="py-3 px-4 text-sm text-zinc-700">CC 80.123.456</td>
                   <td class="py-3 px-4 text-sm font-medium text-zinc-900">Carlos Alberto Martinez Gomez</td>
                   <td class="py-3 px-4 text-sm text-zinc-700">Nueva EPS</td>
-                  <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 transition" onclick="selectPatient(this)">Seleccionar</button></td>
+                  <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600 transition" onclick="selectPatient(this)">Seleccionar</button></td>
                 </tr>
                 <tr class="hover:bg-zinc-50 transition-colors">
                   <td class="py-3 px-4 text-sm text-zinc-700">CC 1.098.765.432</td>
                   <td class="py-3 px-4 text-sm font-medium text-zinc-900">Ana Lucia Ospina Torres</td>
                   <td class="py-3 px-4 text-sm text-zinc-700">Particular</td>
-                  <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 transition" onclick="selectPatient(this)">Seleccionar</button></td>
+                  <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600 transition" onclick="selectPatient(this)">Seleccionar</button></td>
                 </tr>
               </tbody>
             </table>
@@ -1103,7 +1062,7 @@
               <table class="w-full">
                 <thead>
                   <tr class="border-b border-zinc-200">
-                    <th class="h-10 px-4 text-left text-sm font-medium text-zinc-500"># Formulacion</th>
+                    <th class="h-10 px-4 text-left text-sm font-medium text-zinc-500"># Formulación</th>
                     <th class="h-10 px-4 text-left text-sm font-medium text-zinc-500">Fecha</th>
                     <th class="h-10 px-4 text-left text-sm font-medium text-zinc-500">Medico</th>
                     <th class="h-10 px-4 text-left text-sm font-medium text-zinc-500">Estado</th>
@@ -1116,7 +1075,7 @@
                     <td class="py-3 px-4 text-sm text-zinc-700">15/06/2024</td>
                     <td class="py-3 px-4 text-sm text-zinc-700">Dr. Juan C. Mendez</td>
                     <td class="py-3 px-4"><span class="inline-flex items-center rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-600">Pendiente</span></td>
-                    <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 transition" onclick="selectFormulation()">Seleccionar</button></td>
+                    <td class="py-3 px-4"><button class="inline-flex items-center rounded-md bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600 transition" onclick="selectFormulation()">Seleccionar</button></td>
                   </tr>
                 </tbody>
               </table>
@@ -1125,12 +1084,12 @@
               <span class="text-xs text-zinc-400">o</span>
             </div>
             <button class="w-full inline-flex items-center justify-center gap-2 rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="goWizardStep(2)">
-              <i data-lucide="plus" class="size-4"></i> Crear formulacion manual
+              <i data-lucide="plus" class="size-4"></i> Crear formulación manual
             </button>
           </div>
         </div>
 
-        <!-- Step 2: Info Formulacion -->
+        <!-- Step 2: Info Formulación -->
         <div class="wizard-panel" id="wpanel2">
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
@@ -1179,7 +1138,7 @@
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo formula</label>
+              <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo fórmula</label>
               <div class="relative">
                 <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
                   <option>Normal</option><option>PYP</option>
@@ -1204,7 +1163,7 @@
                 <i data-lucide="search" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
               </div>
             </div>
-            <button class="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition" onclick="addMedRow()">
+            <button class="inline-flex items-center gap-1.5 rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition" onclick="addMedRow()">
               <i data-lucide="plus" class="size-4"></i> Agregar
             </button>
           </div>
@@ -1292,11 +1251,11 @@
         <div></div>
         <div class="flex gap-2">
           <button class="inline-flex items-center rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeNuevaFormulacion()">Cancelar</button>
-          <button class="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition" id="wizardNextBtn" onclick="wizardNext()">
+          <button class="inline-flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition" id="wizardNextBtn" onclick="wizardNext()">
             Siguiente <i data-lucide="arrow-right" class="size-4"></i>
           </button>
           <button class="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition hidden" id="wizardSaveBtn" onclick="saveFormulacion()">
-            <i data-lucide="check" class="size-4"></i> Guardar Formulacion
+            <i data-lucide="check" class="size-4"></i> Guardar Formulación
           </button>
         </div>
       </div>
@@ -1438,5 +1397,50 @@
       alert('Formulacion creada exitosamente (demo)');
     }
   </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+    document.querySelectorAll('.nav-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const submenu = btn.parentElement.querySelector('.nav-submenu');
+        const chevron = btn.querySelector('.nav-chevron');
+        if (submenu) submenu.classList.toggle('open');
+        if (chevron) chevron.classList.toggle('open');
+      });
+    });
+    const observer = new MutationObserver(()=>{});
+    document.querySelectorAll('.nav-chevron').forEach(c => observer.observe(c, { attributes: true }));
+  });
+  if (typeof toggleSidebar !== 'function') {
+    function toggleSidebar() {
+      const s = document.getElementById('sidebar');
+      if (!s) return;
+      s.classList.toggle('w-72'); s.classList.toggle('w-16');
+      document.querySelectorAll('.sidebar-hide').forEach(el => el.classList.toggle('hidden'));
+    }
+  }
+</script>
+
+
+<script>
+  // Sync lang button with current lang on load
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.MA_i18n) return;
+    var lang = window.MA_i18n.getLang();
+    var flags = { es: '🇪🇸', en: '🇺🇸', fr: '🇫🇷' };
+    var f = document.getElementById('langFlag');
+    var c = document.getElementById('langCode');
+    if (f) f.textContent = flags[lang] || '🇪🇸';
+    if (c) c.textContent = lang.toUpperCase();
+  });
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var menu = document.getElementById('langMenu');
+    var sw = document.getElementById('langSwitcher');
+    if (menu && sw && !sw.contains(e.target)) menu.classList.add('hidden');
+  });
+</script>
+
 </body>
 </html>

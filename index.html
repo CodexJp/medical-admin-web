@@ -2,10 +2,511 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0;url=00-shell/login.html">
-  <title>MedicalAdmin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedicalAdmin Phase 1 — Mockups Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-heading: 'Satoshi', 'Inter', system-ui, sans-serif;
+      --bg-surface: #FFFFFF;
+      --bg-panel: #FCFCFC;
+      --bg-muted: #F0F0F0;
+      --text-heading: #262626;
+      --text-body: #525252;
+      --text-muted: #737373;
+      --border: #E5E5E5;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.03);
+      --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.06);
+      --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 18px;
+      letter-spacing: -0.31px;
+      color: var(--text-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+        linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 50%, #F0F0F0 100%);
+      min-height: 100vh;
+      padding: 32px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .hub-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 40px 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hub-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .hub-logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hub-logo-icon svg { color: white; }
+
+    .hub-logo-text {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -0.5px;
+    }
+
+    .hub-subtitle {
+      font-size: 15px;
+      line-height: 22px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .hub-stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .hub-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hub-stat-value {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+
+    .hub-stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Module sections */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .module-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+      overflow: hidden;
+      transition: box-shadow 200ms, transform 100ms;
+    }
+
+    .module-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .module-card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-panel);
+    }
+
+    .module-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .module-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.5;
+    }
+
+    .module-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-heading);
+      letter-spacing: -0.3px;
+    }
+
+    .module-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg-muted);
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+
+    .module-links {
+      padding: 8px 12px;
+      list-style: none;
+    }
+
+    .module-links li {
+      border-bottom: 1px solid #F5F5F5;
+    }
+
+    .module-links li:last-child {
+      border-bottom: none;
+    }
+
+    .module-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 8px;
+      color: var(--text-body);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 150ms, color 150ms;
+      font-size: 13px;
+    }
+
+    .module-links a:hover {
+      background: var(--bg-muted);
+      color: var(--text-heading);
+    }
+
+    .module-links a svg {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .link-badge {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .badge-req { background: #EFF6FF; color: #1D4ED8; }
+    .badge-state { background: #F0FDF4; color: #15803D; }
+    .badge-admin { background: #FFF7ED; color: #C2410C; }
+    .badge-dialog { background: #FAF5FF; color: #7C3AED; }
+    .badge-pending { background: #FEF2F2; color: #DC2626; }
+
+    /* Color coding for module icons */
+    .icon-shell { background: #F5F5F5; color: #525252; }
+    .icon-calendar { background: #EFF6FF; color: #2563EB; }
+    .icon-appointments { background: #F0FDF4; color: #16A34A; }
+    .icon-reception { background: #FFF7ED; color: #EA580C; }
+    .icon-clinical { background: #FEF2F2; color: #DC2626; }
+    .icon-config { background: #FAF5FF; color: #7C3AED; }
+    .icon-pharmacy { background: #ECFDF5; color: #059669; }
+    .icon-billing { background: #FFFBEB; color: #D97706; }
+    .icon-whatsapp { background: #F0FDF4; color: #16A34A; }
+    .icon-settings { background: #F5F5F5; color: #737373; }
+
+    /* Footer */
+    .hub-footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .hub-footer a {
+      color: var(--text-body);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 16px; }
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+      .hub-stats {
+        gap: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirigiendo al login...</p>
+  <div class="container">
+    <!-- Header -->
+    <header class="hub-header">
+      <div class="hub-logo">
+        <div class="hub-logo-icon">
+          <i data-lucide="heart-pulse" style="width:24px;height:24px;stroke-width:1.5"></i>
+        </div>
+        <span class="hub-logo-text">MedicalAdmin</span>
+      </div>
+      <p class="hub-subtitle">
+        Phase 1 Mockups — Modernization from JSF/AngularJS to React 19 + TypeScript + shadcn/ui
+      </p>
+      <div class="hub-stats">
+        <div class="hub-stat">
+          <span class="hub-stat-value">61</span>
+          <span class="hub-stat-label">HTML Mockups</span>
+        </div>
+        <div class="hub-stat">
+          <span class="hub-stat-value">10</span>
+          <span class="hub-stat-label">Modules</span>
+        </div>
+        <div class="hub-stat">
+          <span class="hub-stat-value">28</span>
+          <span class="hub-stat-label">Requirements</span>
+        </div>
+        <div class="hub-stat">
+          <span class="hub-stat-value">6</span>
+          <span class="hub-stat-label">Deliveries</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Module Cards -->
+    <div class="modules-grid">
+
+      <!-- 00-shell -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-shell"><i data-lucide="layout-dashboard"></i></div>
+          <span class="module-title">00 — Shell + Dashboards</span>
+          <span class="module-count">6 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="00-shell/login.html"><i data-lucide="log-in"></i> Iniciar Sesion <span class="link-badge badge-req">A01</span></a></li>
+          <li><a href="00-shell/shell.html"><i data-lucide="layout"></i> Shell (Layout principal) <span class="link-badge badge-req">A02</span></a></li>
+          <li><a href="00-shell/dashboard-medico.html"><i data-lucide="stethoscope"></i> Dashboard Médico <span class="link-badge badge-req">A03</span></a></li>
+          <li><a href="00-shell/dashboard-recepcionista.html"><i data-lucide="clipboard-list"></i> Dashboard Recepcionista <span class="link-badge badge-req">A03</span></a></li>
+          <li><a href="00-shell/dashboard-admin.html"><i data-lucide="shield"></i> Dashboard Administrador <span class="link-badge badge-req">A03</span></a></li>
+          <li><a href="00-shell/command-palette.html"><i data-lucide="command"></i> Command Palette <span class="link-badge badge-req">A04</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 01-calendar -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-calendar"><i data-lucide="calendar"></i></div>
+          <span class="module-title">01 — Calendario</span>
+          <span class="module-count">3 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="01-calendar/index.html"><i data-lucide="calendar-days"></i> Calendario de Citas <span class="link-badge badge-req">R01</span></a></li>
+          <li><a href="01-calendar/estados.html"><i data-lucide="palette"></i> Estados del Calendario <span class="link-badge badge-state">Estados</span></a></li>
+          <li><a href="01-calendar/popover-cita.html"><i data-lucide="message-square"></i> Popover de Cita <span class="link-badge badge-dialog">Popover</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 02-appointments -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-appointments"><i data-lucide="calendar-plus"></i></div>
+          <span class="module-title">02 — Citas</span>
+          <span class="module-count">5 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="02-appointments/cita-masiva.html"><i data-lucide="copy-plus"></i> Cita Masiva <span class="link-badge badge-req">R03</span></a></li>
+          <li><a href="02-appointments/admin-horarios.html"><i data-lucide="clock"></i> Admin Horarios <span class="link-badge badge-admin">Admin</span></a></li>
+          <li><a href="02-appointments/admin-consultorios.html"><i data-lucide="door-open"></i> Admin Consultorios <span class="link-badge badge-admin">Admin</span></a></li>
+          <li><a href="02-appointments/admin-duraciones.html"><i data-lucide="timer"></i> Admin Duraciones <span class="link-badge badge-admin">Admin</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 03-reception -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-reception"><i data-lucide="user-check"></i></div>
+          <span class="module-title">03 — Recepción</span>
+          <span class="module-count">5 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="03-reception/index.html"><i data-lucide="users"></i> Lista de Pacientes <span class="link-badge badge-req">R04</span></a></li>
+          <li><a href="03-reception/recepcion-form.html"><i data-lucide="file-text"></i> Formulario Recepción <span class="link-badge badge-req">R04</span></a></li>
+          <li><a href="03-reception/recepcion-form-chile.html"><i data-lucide="flag"></i> Formulario Recepción (Chile) <span class="link-badge badge-req">R04</span></a></li>
+          <li><a href="03-reception/post-confirmacion.html"><i data-lucide="check-circle"></i> Post-Confirmación <span class="link-badge badge-dialog">Flow</span></a></li>
+          <li><a href="03-reception/estados.html"><i data-lucide="palette"></i> Estados Recepción <span class="link-badge badge-state">Estados</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 04-clinical -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-clinical"><i data-lucide="file-heart"></i></div>
+          <span class="module-title">04 — Historia Clínica</span>
+          <span class="module-count">21 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="04-clinical/attention-queue.html"><i data-lucide="users"></i> Cola de Atención <span class="link-badge badge-req">R05</span></a></li>
+          <li><a href="04-clinical/welcome.html"><i data-lucide="hand-heart"></i> Bienvenida HC <span class="link-badge badge-req">R05</span></a></li>
+          <li><a href="04-clinical/select-format-sheet.html"><i data-lucide="file-search"></i> Seleccionar Formato <span class="link-badge badge-req">R05</span></a></li>
+          <li><a href="04-clinical/loading.html"><i data-lucide="loader"></i> Cargando Formato <span class="link-badge badge-state">Loading</span></a></li>
+          <li><a href="04-clinical/hc-main.html"><i data-lucide="file-text"></i> HC Principal <span class="link-badge badge-req">R05</span></a></li>
+          <li><a href="04-clinical/tab-info-paciente.html"><i data-lucide="user"></i> Tab Info Paciente <span class="link-badge badge-req">R05</span></a></li>
+          <li><a href="04-clinical/tab-historia-clinica.html"><i data-lucide="scroll-text"></i> Tab Historia Clínica <span class="link-badge badge-req">R05</span></a></li>
+          <li><a href="04-clinical/tab-consentimiento.html"><i data-lucide="file-check"></i> Tab Consentimiento <span class="link-badge badge-req">R05</span></a></li>
+          <li><a href="04-clinical/diagnosticos-medico.html"><i data-lucide="stethoscope"></i> Diagnósticos Médico <span class="link-badge badge-req">R06</span></a></li>
+          <li><a href="04-clinical/diagnosticos-enfermeria.html"><i data-lucide="heart-pulse"></i> Diagnósticos Enfermeria <span class="link-badge badge-req">R06</span></a></li>
+          <li><a href="04-clinical/ordenes-medicas.html"><i data-lucide="clipboard-list"></i> Ordenes Médicas <span class="link-badge badge-req">R06</span></a></li>
+          <li><a href="04-clinical/odontograma.html"><i data-lucide="smile"></i> Odontograma <span class="link-badge badge-req">R06</span></a></li>
+          <li><a href="04-clinical/carga-archivo.html"><i data-lucide="upload"></i> Carga de Archivo <span class="link-badge badge-req">R06</span></a></li>
+          <li><a href="04-clinical/incapacidad.html"><i data-lucide="file-warning"></i> Incapacidad <span class="link-badge badge-req">R06</span></a></li>
+          <li><a href="04-clinical/finalizar-atencion.html"><i data-lucide="check-circle-2"></i> Finalizar Atención <span class="link-badge badge-dialog">Dialog</span></a></li>
+          <li><a href="04-clinical/post-finalizacion.html"><i data-lucide="party-popper"></i> Post-Finalizacion <span class="link-badge badge-dialog">Flow</span></a></li>
+          <li><a href="04-clinical/modales-hc.html"><i data-lucide="layers"></i> Modales HC (Showcase) <span class="link-badge badge-dialog">Modals</span></a></li>
+          <li><a href="04-clinical/format-list.html"><i data-lucide="list"></i> Admin Formatos HC <span class="link-badge badge-req">R08</span></a></li>
+          <li><a href="04-clinical/format-builder.html"><i data-lucide="blocks"></i> FormatBuilder <span class="link-badge badge-req">R08</span></a></li>
+          <li><a href="04-clinical/format-preview.html"><i data-lucide="eye"></i> Preview Formato <span class="link-badge badge-req">R08</span></a></li>
+          <li><a href="04-clinical/format-areas-crud.html"><i data-lucide="folder-tree"></i> CRUD Areas Formato <span class="link-badge badge-admin">Admin</span></a></li>
+          <li><a href="04-clinical/question-properties.html"><i data-lucide="settings-2"></i> Propiedades Pregunta <span class="link-badge badge-admin">Admin</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 05-medical-config -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-config"><i data-lucide="sliders-horizontal"></i></div>
+          <span class="module-title">05 — Config Médica</span>
+          <span class="module-count">4 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="05-medical-config/servicios.html"><i data-lucide="briefcase-medical"></i> Admin Servicios <span class="link-badge badge-req">R09</span></a></li>
+          <li><a href="05-medical-config/procedimientos.html"><i data-lucide="syringe"></i> Otros Procedimientos <span class="link-badge badge-req">R10</span></a></li>
+          <li><a href="05-medical-config/checklist.html"><i data-lucide="check-square"></i> Checklist <span class="link-badge badge-req">R11</span></a></li>
+          <li><a href="05-medical-config/ocupaciones.html"><i data-lucide="hard-hat"></i> Ocupaciones <span class="link-badge badge-req">R12</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 06-pharmacy -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-pharmacy"><i data-lucide="pill"></i></div>
+          <span class="module-title">06 — Farmacia</span>
+          <span class="module-count">2 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="06-pharmacy/despacho.html"><i data-lucide="package-check"></i> Entrega de Artículos <span class="link-badge badge-req">R07</span></a></li>
+          <li><a href="06-pharmacy/inventario.html"><i data-lucide="warehouse"></i> Administración de Artículos <span class="link-badge badge-req">R07</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 07-billing -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-billing"><i data-lucide="receipt"></i></div>
+          <span class="module-title">07 — Facturación</span>
+          <span class="module-count">10 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="07-billing/medios-pago.html"><i data-lucide="credit-card"></i> Medios de Pago <span class="link-badge badge-req">R13</span></a></li>
+          <li><a href="07-billing/rangos-facturacion.html"><i data-lucide="hash"></i> Rangos Facturación <span class="link-badge badge-req">R14</span></a></li>
+          <li><a href="07-billing/admin-facturas.html"><i data-lucide="file-stack"></i> Admin Facturas <span class="link-badge badge-req">R14</span></a></li>
+          <li><a href="07-billing/tarifas.html"><i data-lucide="badge-dollar-sign"></i> Tarifas <span class="link-badge badge-req">R15</span></a></li>
+          <li><a href="07-billing/plm.html"><i data-lucide="book-open"></i> PLM Medicamentos <span class="link-badge badge-req">R16</span></a></li>
+          <li><a href="07-billing/tarifas-medicamentos.html"><i data-lucide="pill"></i> Tarifas Medicamentos <span class="link-badge badge-req">R17</span></a></li>
+          <li><a href="07-billing/crear-orden.html"><i data-lucide="file-plus"></i> Crear Orden <span class="link-badge badge-req">R18</span></a></li>
+          <li><a href="07-billing/convenios.html"><i data-lucide="handshake"></i> Convenios <span class="link-badge badge-req">R18</span></a></li>
+          <li><a href="07-billing/clientes.html"><i data-lucide="building-2"></i> Clientes <span class="link-badge badge-req">R19</span></a></li>
+          <li><a href="07-billing/rips.html"><i data-lucide="file-bar-chart"></i> RIPS <span class="link-badge badge-req">R18</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 08-whatsapp -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-whatsapp"><i data-lucide="message-circle"></i></div>
+          <span class="module-title">08 — WhatsApp</span>
+          <span class="module-count">4 vistas</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="08-whatsapp/whatsapp-dashboard.html"><i data-lucide="layout-dashboard"></i> WhatsApp Dashboard <span class="link-badge badge-req">A08</span></a></li>
+          <li><a href="08-whatsapp/whatsapp-templates.html"><i data-lucide="file-text"></i> WhatsApp Templates <span class="link-badge badge-req">A08</span></a></li>
+          <li><a href="08-whatsapp/whatsapp-log.html"><i data-lucide="scroll-text"></i> Log de Envios <span class="link-badge badge-req">A08</span></a></li>
+          <li><a href="08-whatsapp/whatsapp-config.html"><i data-lucide="settings"></i> WhatsApp Configuración <span class="link-badge badge-req">A08</span></a></li>
+        </ul>
+      </div>
+
+      <!-- 09-settings -->
+      <div class="module-card">
+        <div class="module-card-header">
+          <div class="module-icon icon-settings"><i data-lucide="settings"></i></div>
+          <span class="module-title">09 — Configuración</span>
+          <span class="module-count">1 vista</span>
+        </div>
+        <ul class="module-links">
+          <li><a href="09-settings/settings.html"><i data-lucide="sliders-horizontal"></i> Configuración General <span class="link-badge badge-req">A09</span></a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="hub-footer">
+      <p>MedicalAdmin Phase 1 Mockups v1.0 — Generated 2026-04-04</p>
+      <p style="margin-top:4px">
+        Design Spec: Inter 13px + Satoshi headings | TailwindCSS Neutral palette | Lucide icons | 8px/12px radius
+      </p>
+      <p style="margin-top:4px">
+        PRD v4.10 | Architecture v3 | 28 Requirements (R01-R19 + A01-A09) | 6 Deliveries
+      </p>
+    </footer>
+  </div>
+
+  <script>lucide.createIcons();</script>
 </body>
 </html>

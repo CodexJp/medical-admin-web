@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedicalAdmin — Recepcion Chile</title>
+  <title>MedicalAdmin — Recepción Chile</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -71,45 +71,45 @@
       </button>
       <div class="nav-group-items open" id="cit-agenda-group">
         <a href="../01-calendar/index.html" class="nav-item" data-tooltip="Agenda">Agenda</a>
-        <span class="nav-item nav-disabled" data-tooltip="Creacion de Citas" title="Disponible en version anterior">Creacion de Citas</span>
-        <a href="../03-reception/index.html" class="nav-item active" data-tooltip="Recepcion de Paciente">Recepcion de Paciente</a>
-        <span class="nav-item nav-disabled" data-tooltip="Motivos de Cancelacion" title="Disponible en version anterior">Motivos de Cancelacion</span>
+        <span class="nav-item nav-disabled" data-tooltip="Creacion de Citas" title="Disponible en version anterior">Creación de Citas</span>
+        <a href="../03-reception/index.html" class="nav-item active" data-tooltip="Recepcion de Paciente">Recepción de Paciente</a>
+        <span class="nav-item nav-disabled" data-tooltip="Motivos de Cancelacion" title="Disponible en version anterior">Motivos de Cancelación</span>
       </div>
 
-      <!-- Configuracion CIT -->
+      <!-- Configuración CIT -->
       <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('cit-config-group')">
         <span class="nav-item-icon"><i data-lucide="settings"></i></span>
-        <span class="nav-item-label">Configuracion</span>
+        <span class="nav-item-label">Configuración</span>
         <i data-lucide="chevron-right" class="nav-group-toggle" id="cit-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
       </button>
       <div class="nav-group-items" id="cit-config-group">
         <a href="../02-appointments/admin-horarios.html" class="nav-item" data-tooltip="Horarios">Horarios</a>
         <a href="../02-appointments/admin-consultorios.html" class="nav-item" data-tooltip="Consultorios">Consultorios</a>
-        <a href="../02-appointments/admin-duraciones.html" class="nav-item" data-tooltip="Duracion de Citas">Duracion de Citas</a>
+        <a href="../02-appointments/admin-duraciones.html" class="nav-item" data-tooltip="Duracion de Citas">Duración de Citas</a>
       </div>
     </div>
 
     <!-- ====== MODULO 2: HISTORIA CLINICA ====== -->
     <div class="nav-section">
-      <div class="nav-section-label">Historia Clinica</div>
+      <div class="nav-section-label">Historia Clínica</div>
 
-      <!-- Historia Clinica -->
+      <!-- Historia Clínica -->
       <button class="nav-item" data-tooltip="Historia Clinica" onclick="toggleGroup('his-hc-group')">
         <span class="nav-item-icon"><i data-lucide="file-heart"></i></span>
-        <span class="nav-item-label">Historia Clinica</span>
+        <span class="nav-item-label">Historia Clínica</span>
         <i data-lucide="chevron-right" class="nav-group-toggle" id="his-hc-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
       </button>
       <div class="nav-group-items" id="his-hc-group">
         <span class="nav-item nav-disabled" data-tooltip="Adm. Pacientes" title="Disponible en version anterior">Adm. Pacientes</span>
-        <a href="../04-clinical/attention-queue.html" class="nav-item" data-tooltip="Atencion de Pacientes">Atencion de Pacientes</a>
+        <a href="../04-clinical/attention-queue.html" class="nav-item" data-tooltip="Atencion de Pacientes">Atención de Pacientes</a>
         <span class="nav-item nav-disabled" data-tooltip="HC Externa" title="Disponible en version anterior">HC Externa</span>
-        <span class="nav-item nav-disabled" data-tooltip="Evaluacion Enfermeria" title="Disponible en version anterior">Evaluacion Enfermeria</span>
+        <span class="nav-item nav-disabled" data-tooltip="Evaluacion Enfermeria" title="Disponible en version anterior">Evaluación Enfermeria</span>
       </div>
 
-      <!-- Configuracion General HIS -->
+      <!-- Configuración General HIS -->
       <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('his-config-group')">
         <span class="nav-item-icon"><i data-lucide="settings"></i></span>
-        <span class="nav-item-label">Configuracion General</span>
+        <span class="nav-item-label">Configuración General</span>
         <i data-lucide="chevron-right" class="nav-group-toggle" id="his-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
       </button>
       <div class="nav-group-items" id="his-config-group">
@@ -125,16 +125,16 @@
         <span class="nav-item nav-disabled" data-tooltip="Formulas Consultorios" title="Disponible en version anterior">Formulas Consultorios</span>
       </div>
 
-      <!-- Configuracion Hospitalizacion (fuera scope) -->
+      <!-- Configuración Hospitalización (fuera scope) -->
       <span class="nav-item nav-module-disabled" data-tooltip="Configuracion Hospitalizacion" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="bed"></i></span>
-        <span class="nav-item-label">Config. Hospitalizacion</span>
+        <span class="nav-item-label">Config. Hospitalización</span>
       </span>
 
-      <!-- Hospitalizacion sub-modulo (fuera scope) -->
+      <!-- Hospitalización sub-modulo (fuera scope) -->
       <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
-        <span class="nav-item-label">Hospitalizacion</span>
+        <span class="nav-item-label">Hospitalización</span>
       </span>
     </div>
 
@@ -142,31 +142,31 @@
     <div class="nav-section">
       <div class="nav-section-label">Facturacion</div>
 
-      <!-- Ejecucion de Procesos -->
+      <!-- Ejecución de Procesos -->
       <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('pos-exec-group')">
         <span class="nav-item-icon"><i data-lucide="receipt"></i></span>
         <span class="nav-item-label">Ejecucion de Procesos</span>
         <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
       </button>
       <div class="nav-group-items" id="pos-exec-group">
-        <a href="../07-billing/crear-orden.html" class="nav-item" data-tooltip="Ordenes de Facturacion">Ordenes de Facturacion</a>
+        <a href="../07-billing/crear-orden.html" class="nav-item" data-tooltip="Ordenes de Facturacion">Ordenes de Facturación</a>
         <a href="../07-billing/admin-facturas.html" class="nav-item" data-tooltip="Facturas">Facturas</a>
         <a href="../07-billing/rips.html" class="nav-item" data-tooltip="RIPS">RIPS</a>
         <a href="../07-billing/clientes.html" class="nav-item" data-tooltip="Clientes">Clientes</a>
         <span class="nav-item nav-disabled" data-tooltip="Lista de Pacientes" title="Disponible en version anterior">Lista de Pacientes</span>
       </div>
 
-      <!-- Configuracion General POS -->
+      <!-- Configuración General POS -->
       <button class="nav-item" data-tooltip="Configuracion General" onclick="toggleGroup('pos-config-group')">
         <span class="nav-item-icon"><i data-lucide="settings"></i></span>
-        <span class="nav-item-label">Configuracion General</span>
+        <span class="nav-item-label">Configuración General</span>
         <i data-lucide="chevron-right" class="nav-group-toggle" id="pos-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
       </button>
       <div class="nav-group-items" id="pos-config-group">
         <a href="../07-billing/medios-pago.html" class="nav-item" data-tooltip="Medios de Pago">Medios de Pago</a>
-        <a href="../07-billing/rangos-facturacion.html" class="nav-item" data-tooltip="Rangos de Facturacion">Rangos de Facturacion</a>
+        <a href="../07-billing/rangos-facturacion.html" class="nav-item" data-tooltip="Rangos de Facturacion">Rangos de Facturación</a>
         <a href="../07-billing/tarifas.html" class="nav-item" data-tooltip="Manuales Tarifarios">Manuales Tarifarios</a>
-        <span class="nav-item nav-disabled" data-tooltip="Tarifas de Facturacion" title="Proximamente">Tarifas de Facturacion</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tarifas de Facturacion" title="Proximamente">Tarifas de Facturación</span>
         <a href="../07-billing/plm.html" class="nav-item" data-tooltip="Lista Precios Medicamentos">Lista Precios Medicamentos</a>
         <a href="../07-billing/tarifas-medicamentos.html" class="nav-item" data-tooltip="Tarifas de Medicamentos">Tarifas de Medicamentos</a>
         <a href="../07-billing/convenios.html" class="nav-item" data-tooltip="Convenios">Convenios</a>
@@ -178,27 +178,27 @@
     <div class="nav-section">
       <div class="nav-section-label">Farmacia</div>
 
-      <!-- Ejecucion de Procesos FAR -->
+      <!-- Ejecución de Procesos FAR -->
       <button class="nav-item" data-tooltip="Ejecucion de Procesos" onclick="toggleGroup('far-exec-group')">
         <span class="nav-item-icon"><i data-lucide="pill"></i></span>
         <span class="nav-item-label">Ejecucion de Procesos</span>
         <i data-lucide="chevron-right" class="nav-group-toggle" id="far-exec-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
       </button>
       <div class="nav-group-items" id="far-exec-group">
-        <a href="../06-pharmacy/despacho.html" class="nav-item" data-tooltip="Entrega de Articulos">Entrega de Articulos</a>
+        <a href="../06-pharmacy/despacho.html" class="nav-item" data-tooltip="Entrega de Articulos">Entrega de Artículos</a>
         <a href="../06-pharmacy/inventario.html" class="nav-item" data-tooltip="Movimientos Inventario">Movimientos Inventario</a>
         <span class="nav-item nav-disabled" data-tooltip="Articulos" title="Disponible en version anterior">Articulos</span>
       </div>
 
-      <!-- Configuracion FAR -->
+      <!-- Configuración FAR -->
       <button class="nav-item" data-tooltip="Configuracion" onclick="toggleGroup('far-config-group')">
         <span class="nav-item-icon"><i data-lucide="settings"></i></span>
-        <span class="nav-item-label">Configuracion</span>
+        <span class="nav-item-label">Configuración</span>
         <i data-lucide="chevron-right" class="nav-group-toggle" id="far-config-group-toggle" style="width:14px;height:14px;stroke-width:1.5"></i>
       </button>
       <div class="nav-group-items" id="far-config-group">
         <span class="nav-item nav-disabled" data-tooltip="Bodegas" title="Disponible en version anterior">Bodegas</span>
-        <span class="nav-item nav-disabled" data-tooltip="Tipo Articulos" title="Disponible en version anterior">Tipo Articulos</span>
+        <span class="nav-item nav-disabled" data-tooltip="Tipo Articulos" title="Disponible en version anterior">Tipo Artículos</span>
         <span class="nav-item nav-disabled" data-tooltip="Tipo Movimientos" title="Disponible en version anterior">Tipo Movimientos</span>
       </div>
 
@@ -215,7 +215,7 @@
 
     <!-- ====== COMUNICACION (nuevo, no existe en BD legacy) ====== -->
     <div class="nav-section">
-      <div class="nav-section-label">Comunicacion</div>
+      <div class="nav-section-label">Comunicación</div>
       <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-item" data-tooltip="WhatsApp">
         <span class="nav-item-icon"><i data-lucide="message-circle"></i></span>
         <span class="nav-item-label">WhatsApp</span>
@@ -227,10 +227,10 @@
 
     <!-- ====== MODULOS FUERA DE SCOPE (5-13, 15) ====== -->
     <div class="nav-section">
-      <div class="nav-section-label">Otros Modulos</div>
+      <div class="nav-section-label">Otros Módulos</div>
       <span class="nav-item nav-module-disabled" data-tooltip="Hospitalizacion" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="building-2"></i></span>
-        <span class="nav-item-label">Hospitalizacion</span>
+        <span class="nav-item-label">Hospitalización</span>
       </span>
       <span class="nav-item nav-module-disabled" data-tooltip="Reportes" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="file-text"></i></span>
@@ -246,7 +246,7 @@
       </span>
       <span class="nav-item nav-module-disabled" data-tooltip="Radiologia" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="scan"></i></span>
-        <span class="nav-item-label">Radiologia</span>
+        <span class="nav-item-label">Radiología</span>
       </span>
       <span class="nav-item nav-module-disabled" data-tooltip="Quirurgicos" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="scissors"></i></span>
@@ -262,7 +262,7 @@
       </span>
       <span class="nav-item nav-module-disabled" data-tooltip="Integracion" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="puzzle"></i></span>
-        <span class="nav-item-label">Integracion</span>
+        <span class="nav-item-label">Integración</span>
       </span>
       <span class="nav-item nav-module-disabled" data-tooltip="Control de Accesos" title="Modulo disponible en version anterior">
         <span class="nav-item-icon"><i data-lucide="key-round"></i></span>
@@ -330,11 +330,11 @@
           <div class="breadcrumb">
             <a href="../00-shell/dashboard-medico.html">Inicio</a>
             <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
-            <a href="index.html">Recepcion</a>
+            <a href="index.html">Recepción</a>
             <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
-            <span style="color:var(--text-heading);">Formulario de Recepcion</span>
+            <span style="color:var(--text-heading);">Formulario de Recepción</span>
           </div>
-          <h1 class="page-title">Recepcion de Paciente <span class="country-flag">Chile</span></h1>
+          <h1 class="page-title">Recepción de Paciente <span class="country-flag">Chile</span></h1>
           <p class="page-subtitle">Variante Chile: RUT, Prevision, Fonasa/Isapre</p>
         </div>
       </div>
@@ -345,7 +345,7 @@
           <div class="patient-name">Joaquin Andres Muoz Soto</div>
           <div class="patient-meta">
             <span><i data-lucide="id-card" style="width:13px;height:13px;"></i> <strong>RUT 12.345.678-5</strong></span>
-            <span><i data-lucide="calendar" style="width:13px;height:13px;"></i> 42 anos</span>
+            <span><i data-lucide="calendar" style="width:13px;height:13px;"></i> 42 años</span>
             <span><i data-lucide="user" style="width:13px;height:13px;"></i> Masculino</span>
             <span><i data-lucide="building" style="width:13px;height:13px;"></i> Fonasa</span>
           </div>
@@ -355,7 +355,7 @@
 
       <!-- Progress bar -->
       <div class="progress-bar-container">
-        <span class="progress-text" id="progress-text">Seccion 1 de 6 — Informacion del Evento</span>
+        <span class="progress-text" id="progress-text">Seccion 1 de 6 — Información del Evento</span>
         <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width: 16.6%"></div></div>
         <span class="progress-pct" id="progress-pct">17%</span>
       </div>
@@ -468,7 +468,7 @@
             <i data-lucide="chevron-down" class="accordion-chevron"></i>
           </button>
           <div class="accordion-content">
-            <div class="section-note"><i data-lucide="id-card"></i> Identificacion</div>
+            <div class="section-note"><i data-lucide="id-card"></i> Identificación</div>
             <div class="form-grid">
               <div class="form-group chile-field">
                 <label>Tipo de Documento<span class="required">*</span></label>
@@ -512,7 +512,7 @@
               </div>
               <div class="form-group">
                 <label>Edad</label>
-                <div class="age-display">42 anos</div>
+                <div class="age-display">42 años</div>
               </div>
               <div class="form-group">
                 <label>Genero<span class="required">*</span></label>
@@ -531,7 +531,7 @@
               </div>
             </div>
 
-            <div class="section-note" style="padding-top:20px;"><i data-lucide="map-pin"></i> Ubicacion</div>
+            <div class="section-note" style="padding-top:20px;"><i data-lucide="map-pin"></i> Ubicación</div>
             <div class="form-grid">
               <div class="form-group">
                 <label>Pais<span class="required">*</span></label>
@@ -560,7 +560,7 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Direccion</label>
+                <label>Dirección</label>
                 <input type="text" class="form-input" value="Av. Providencia 1234, Depto 56">
               </div>
             </div>
@@ -643,12 +643,12 @@
           </div>
         </div>
 
-        <!-- SECTION 5: Facturacion (Chile) -->
+        <!-- SECTION 5: Facturación (Chile) -->
         <div class="accordion-item" id="sec-facturacion">
           <button class="accordion-trigger" onclick="toggleAccordion('sec-facturacion')">
             <div class="accordion-trigger-left">
               <i data-lucide="receipt"></i>
-              <span>Informacion de Facturacion</span>
+              <span>Informacion de Facturación</span>
               <span class="accordion-badge">3/15</span>
             </div>
             <i data-lucide="chevron-down" class="accordion-chevron"></i>
@@ -706,12 +706,12 @@
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label>Buscar Servicio (CUPS)<span class="required">*</span></label>
                 <div style="display:flex;gap:8px;">
-                  <input type="text" class="form-input" placeholder="Escriba codigo CUPS o nombre del servicio..." style="flex:1;" id="service-search">
+                  <input type="text" class="form-input" placeholder="Escriba código CUPS o nombre del servicio..." style="flex:1;" id="service-search">
                   <button class="btn btn-outline" style="height:36px;padding:0 12px;" title="Buscar servicio">
                     <i data-lucide="search" style="width:15px;height:15px;"></i>
                   </button>
                 </div>
-                <span class="form-hint">Minimo 3 caracteres. Busca por codigo CUPS o descripcion del servicio.</span>
+                <span class="form-hint">Minimo 3 caracteres. Busca por código CUPS o descripcion del servicio.</span>
               </div>
             </div>
 
@@ -788,13 +788,13 @@
                   <option value="">Todas las areas</option>
                   <option>Farmacia General</option>
                   <option>Farmacia Especializada</option>
-                  <option>Insumos Medicos</option>
+                  <option>Insumos Médicos</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Buscar Producto</label>
                 <div style="display:flex;gap:8px;">
-                  <input type="text" class="form-input" placeholder="Nombre generico, comercial o codigo ATC..." style="flex:1;" id="product-search">
+                  <input type="text" class="form-input" placeholder="Nombre generico, comercial o código ATC..." style="flex:1;" id="product-search">
                   <button class="btn btn-outline" style="height:36px;padding:0 12px;" title="Buscar producto">
                     <i data-lucide="search" style="width:15px;height:15px;"></i>
                   </button>
@@ -825,7 +825,7 @@
                   <td style="text-align:center;">—</td>
                   <td style="text-align:center;">5</td>
                   <td>500 mg</td>
-                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Sí</span></td>
                   <td style="text-align:right;">$150</td>
                   <td style="text-align:center;">
                     <input type="number" class="form-input" value="10" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
@@ -846,7 +846,7 @@
                   <td style="text-align:center;">—</td>
                   <td style="text-align:center;">30</td>
                   <td>50 mg</td>
-                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Sí</span></td>
                   <td style="text-align:right;">$280</td>
                   <td style="text-align:center;">
                     <input type="number" class="form-input" value="10" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
@@ -867,7 +867,7 @@
                   <td style="text-align:center;"><span class="badge-mipres">MIPRES</span></td>
                   <td style="text-align:center;">30</td>
                   <td>850 mg</td>
-                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Sí</span></td>
                   <td style="text-align:right;">$190</td>
                   <td style="text-align:center;">
                     <input type="number" class="form-input" value="1" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
@@ -888,7 +888,7 @@
                   <td style="text-align:center;">—</td>
                   <td style="text-align:center;">15</td>
                   <td>20 mg</td>
-                  <td style="text-align:center;"><span class="badge-pos-si">Si</span></td>
+                  <td style="text-align:center;"><span class="badge-pos-si">Sí</span></td>
                   <td style="text-align:right;">$320</td>
                   <td style="text-align:center;">
                     <input type="number" class="form-input" value="1" min="1" style="width:55px;height:30px;text-align:center;padding:0 4px;">
@@ -1125,7 +1125,7 @@
           <i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Cancelar
         </a>
         <a href="post-confirmacion.html" class="btn btn-primary btn-lg">
-          <i data-lucide="check" style="width:16px;height:16px;"></i> Confirmar Recepcion
+          <i data-lucide="check" style="width:16px;height:16px;"></i> Confirmar Recepción
         </a>
       </div>
     </div>
