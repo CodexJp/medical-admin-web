@@ -228,7 +228,7 @@
               <div id="langMenu" class="hidden absolute right-0 top-full mt-1 w-36 rounded-md border border-zinc-200 bg-white shadow-lg py-1 z-50">
                 <button onclick="MA_i18n.setLang('es');document.getElementById('langFlag').textContent='🇪🇸';document.getElementById('langCode').textContent='ES';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇪🇸</span><span>Español</span></button>
                 <button onclick="MA_i18n.setLang('en');document.getElementById('langFlag').textContent='🇺🇸';document.getElementById('langCode').textContent='EN';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇺🇸</span><span>English</span></button>
-                <button onclick="MA_i18n.setLang('fr');document.getElementById('langFlag').textContent='🇫🇷';document.getElementById('langCode').textContent='FR';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇫🇷</span><span>Français</span></button>
+                <button onclick="MA_i18n.setLang('pt');document.getElementById('langFlag').textContent='🇧🇷';document.getElementById('langCode').textContent='PT';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇧🇷</span><span>Português</span></button>
               </div>
             </div>
             <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
@@ -707,7 +707,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     if (!window.MA_i18n) return;
     var lang = window.MA_i18n.getLang();
-    var flags = { es: '🇪🇸', en: '🇺🇸', fr: '🇫🇷' };
+    var flags = { es: '🇪🇸', en: '🇺🇸', pt: '🇧🇷' };
     var f = document.getElementById('langFlag');
     var c = document.getElementById('langCode');
     if (f) f.textContent = flags[lang] || '🇪🇸';
