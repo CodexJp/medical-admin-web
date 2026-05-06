@@ -688,17 +688,6 @@
                 </div>
               </div>
 
-              <!-- Turno Info (hidden by default, shown when patient has turno) -->
-              <div id="turno-info" class="hidden px-4 py-3 border-b border-zinc-100 bg-zinc-50/50">
-                <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">Informacion de Turno</div>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                  <div><span class="text-zinc-400">Codigo:</span> <span id="turno-codigo" class="font-mono font-semibold text-zinc-900">A-045</span></div>
-                  <div><span class="text-zinc-400">Modulo:</span> <span class="font-medium text-zinc-700">Consultorio 3</span></div>
-                  <div><span class="text-zinc-400">Servicio:</span> <span id="turno-servicio" class="font-medium text-zinc-700">Medicina General</span></div>
-                  <div><span class="text-zinc-400">Estado:</span> <span class="inline-flex px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 text-[10px] font-medium">En espera</span></div>
-                </div>
-              </div>
-
               <!-- Mini Tabs -->
               <div class="flex border-b border-zinc-200 shrink-0">
                 <button id="mini-tab-info" onclick="switchMiniTab('info')" class="flex-1 py-2.5 text-xs font-medium text-zinc-900 border-b-2 border-zinc-900 transition text-center">Info Paciente</button>
@@ -831,23 +820,6 @@
                 </div>
               </div>
 
-              <!-- Llamar Turno (hidden by default) -->
-              <div id="turno-llamar" class="hidden px-4 pt-4">
-                <div class="p-3 rounded-lg border border-amber-200 bg-amber-50">
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                      <i data-lucide="megaphone" class="size-4 text-amber-600"></i>
-                      <span id="turno-llamar-codigo" class="text-sm font-semibold text-amber-800">Turno: A-045</span>
-                    </div>
-                    <span id="turno-llamar-count" class="text-xs text-amber-600">Llamadas: 0</span>
-                  </div>
-                  <button id="btn-llamar" onclick="llamarTurno(this)" class="w-full h-9 rounded-md bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition flex items-center justify-center gap-2">
-                    <i data-lucide="phone-call" class="size-4"></i>
-                    LLAMAR PACIENTE
-                  </button>
-                </div>
-              </div>
-
               <!-- Action Buttons -->
               <div id="action-buttons" class="p-4 border-t border-zinc-200 shrink-0">
                 <!-- Empezar Atención (for Confirmada) -->
@@ -948,33 +920,6 @@
       });
     }
 
-    // ═══ Llamar Turno ═══
-    function llamarTurno(btn) {
-      // Increment call count
-      var countEl = document.getElementById('turno-llamar-count');
-      var count = parseInt(countEl.textContent.split(': ')[1]) + 1;
-      countEl.textContent = 'Llamadas: ' + count;
-
-      // Disable button with countdown
-      btn.disabled = true;
-      btn.classList.add('opacity-50');
-      var seconds = 10;
-      var originalText = btn.innerHTML;
-
-      var interval = setInterval(function() {
-        btn.innerHTML = '<i ___PLACEHOLDER_816___ ___PLACEHOLDER_643___></i> Espere ' + seconds + 's';
-        lucide.createIcons();
-        seconds--;
-        if (seconds < 0) {
-          clearInterval(interval);
-          btn.disabled = false;
-          btn.classList.remove('opacity-50');
-          btn.innerHTML = originalText;
-          lucide.createIcons();
-        }
-      }, 1000);
-    }
-
     // ═══ Select Patient ═══
     var _selectedName = '';
     var _selectedStatus = '';
@@ -1028,19 +973,6 @@
         document.getElementById('action-start').classList.remove('hidden');
       } else if (status === 'Iniciada') {
         document.getElementById('action-resume').classList.remove('hidden');
-      }
-
-      // Show/hide turno info and llamar button
-      if (turno) {
-        document.getElementById('turno-info').classList.remove('hidden');
-        document.getElementById('turno-codigo').textContent = turno;
-        document.getElementById('turno-servicio').textContent = especialidad;
-        document.getElementById('turno-llamar').classList.remove('hidden');
-        document.getElementById('turno-llamar-codigo').textContent = 'Turno: ' + turno;
-        document.getElementById('turno-llamar-count').textContent = 'Llamadas: 0';
-      } else {
-        document.getElementById('turno-info').classList.add('hidden');
-        document.getElementById('turno-llamar').classList.add('hidden');
       }
 
       // Reset mini tab to info
