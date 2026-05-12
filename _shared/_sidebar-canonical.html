@@ -21,6 +21,12 @@
     .nav-submenu { max-height: 0; overflow: hidden; transition: max-height 250ms ease-in-out; }
     .nav-submenu.open { max-height: 1500px; }
     .sidebar-collapsed .nav-submenu { display: none; }
+    .subgroup-submenu { max-height: 0; overflow: hidden; transition: max-height 250ms ease-in-out; }
+    .subgroup-submenu.open { max-height: 1500px; }
+    .subgroup-chevron { transition: transform 200ms; }
+    .subgroup-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .subgroup-submenu { display: none; }
+
     .nav-chevron { transition: transform 200ms; }
     .nav-chevron.open { transform: rotate(90deg); }
     .sidebar-collapsed .nav-chevron { display: none; }
@@ -54,182 +60,260 @@
         </a>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Consulta Externa">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Consulta Externa">
             <i data-lucide="calendar-search" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Consulta Externa</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Agendamiento</div>
-            <a href="../01-calendar/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Creación de Citas Médicas</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Creación de Otros Eventos</a>
-            <a href="../03-reception/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Recepción de Paciente</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración Motivos de Cancelación de Cita</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Agendamiento</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="../01-calendar/index.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Creación de Citas Médicas</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Creación de Otros Eventos</a>
+            <a href="../03-reception/index.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Recepción de Paciente</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración Motivos de Cancelación de Cita</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Historia Clínica">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Historia Clínica">
             <i data-lucide="clipboard-list" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Historia Clínica</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración General</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Profesionales de la salud</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Especialidades</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Tipo de Cita</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Fórmulas para Consultorios</a>
-            <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Configuración Formatos HC</a>
-            <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Configuración de Servicio</a>
-            <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Configuración de Otros Procedimientos</a>
-            <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de lista de chequeo</a>
-            <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Ocupaciones</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración General</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Profesionales de la salud</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Especialidades</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Tipo de Cita</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Fórmulas para Consultorios</a>
+            <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Configuración Formatos HC</a>
+            <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Configuración de Servicio</a>
+            <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Configuración de Otros Procedimientos</a>
+            <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de lista de chequeo</a>
+            <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Ocupaciones</a>
             <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-3 pb-1">Historia Clínica</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Pacientes</a>
-            <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Atención de Pacientes</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Historia Clínica Externa</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Pacientes</a>
+            <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Atención de Pacientes</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Historia Clínica Externa</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Facturación">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Facturación">
             <i data-lucide="dollar-sign" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Facturación</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
-            <a href="../07-billing/crear-orden.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Ordenes de Facturación</a>
-            <a href="../07-billing/admin-facturas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Facturas</a>
-            <a href="../07-billing/rips.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Rips</a>
-            <a href="../07-billing/clientes.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Lista de Pacientes</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Ejecución de Procesos</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="../07-billing/crear-orden.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Ordenes de Facturación</a>
+            <a href="../07-billing/admin-facturas.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Facturas</a>
+            <a href="../07-billing/rips.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Rips</a>
+            <a href="../07-billing/clientes.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Lista de Pacientes</a>
             <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-3 pb-1">Configuración General</div>
-            <a href="../07-billing/medios-pago.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Medios de Pago</a>
-            <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Rangos de Facturación</a>
-            <a href="../07-billing/tarifas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración Manuales Tarifarios</a>
-            <a href="../07-billing/plm.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Lista de Precios de Medicamentos e Insumos</a>
-            <a href="../07-billing/tarifas-medicamentos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Tarifas de Medicamentos</a>
-            <a href="../07-billing/convenios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Convenio</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Sedes</a>
+            <a href="../07-billing/medios-pago.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Medios de Pago</a>
+            <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Rangos de Facturación</a>
+            <a href="../07-billing/manuales-tarifarios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración Manuales Tarifarios</a>
+            <a href="../07-billing/tarifas-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Tarifas de Facturación</span></a>
+            <a href="../07-billing/plm.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Lista de Precios de Medicamentos e Insumos</a>
+            <a href="../07-billing/tarifas-medicamentos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Tarifas de Medicamentos</a>
+            <a href="../07-billing/convenios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Convenio</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Sedes</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Farmacia">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Farmacia">
             <i data-lucide="pill" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Farmacia</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Bodegas</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Tipos de Artículos</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Tipos de Movimientos</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Bodegas</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Tipos de Artículos</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Tipos de Movimientos</a>
             <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-3 pb-1">Ejecución de Procesos</div>
-            <a href="../06-pharmacy/inventario.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Artículos</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Creación Movimientos Inventario</a>
-            <a href="../06-pharmacy/despacho.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Entrega de Artículos</a>
+            <a href="../06-pharmacy/inventario.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Artículos</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Creación Movimientos Inventario</a>
+            <a href="../06-pharmacy/despacho.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Entrega de Artículos</a>
             <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-3 pb-1">Reporte</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Kardex</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Kardex</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Hospitalización">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Hospitalización">
             <i data-lucide="bed-double" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Hospitalización</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Admisiones</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Admisión de Pacientes</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Atención de Pacientes</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Admisiones</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Admisión de Pacientes</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Atención de Pacientes</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Reportes">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Reportes">
             <i data-lucide="file-text" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Reportes</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">General</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Reportes Consulta Externa</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Reportes Historia Clínica</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Reportes Facturación</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Reportes Farmacia</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>General</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Reportes Consulta Externa</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Reportes Historia Clínica</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Reportes Facturación</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Reportes Farmacia</a>
             <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-3 pb-1">Historia Clínica</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Formato Excel</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Plantillas JET</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Formato Excel</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Plantillas JET</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="PyP">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="PyP">
             <i data-lucide="heart-pulse" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">PyP</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Administración</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Programas</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Administración</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Programas</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Laboratorio">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Laboratorio">
             <i data-lucide="microscope" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Laboratorio</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Recepción de Pacientes</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Toma de Muestra</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Ejecución de Procesos</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Recepción de Pacientes</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Toma de Muestra</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Radiología">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Radiología">
             <i data-lucide="scan-line" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Radiología</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Duración</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Sala</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Duración</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Sala</a>
             <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-3 pb-1">Agendamiento</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Recepción de Pacientes</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Agendamiento Estudios solicitados</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Recepción de Pacientes</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Agendamiento Estudios solicitados</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Integración">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Integración">
             <i data-lucide="puzzle" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Integración</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Integración con Tissue Analytics</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Diccionario de Datos</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Integración con Tissue Analytics</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Diccionario de Datos</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Comunicación">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Comunicación">
             <i data-lucide="message-circle" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Comunicación</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">WhatsApp</div>
-            <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Plantillas</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>WhatsApp</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Plantillas</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="pt-4 mt-2 border-t border-slate-100">
@@ -237,28 +321,42 @@
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Control de Accesos">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Control de Accesos">
             <i data-lucide="shield-check" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Control de Accesos</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Usuarios</a>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Administración de Perfiles</a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Usuarios</a>
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Administración de Perfiles</a>
           </div>
+          </div>
+</div>
         </div>
 
         <div class="nav-group">
-          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors" data-tooltip="Tablero">
+          <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors" data-tooltip="Tablero">
             <i data-lucide="layout-dashboard" class="size-[18px] text-blue-600 shrink-0"></i>
             <span class="sidebar-hide flex-1 text-left">Tablero</span>
             <i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400"></i>
           </button>
-          <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide">
-            <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Indicadores</div>
-            <a href="#" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span>Indicadores<i data-lucide="external-link" class="size-3 text-zinc-400 ml-auto"></i></a>
+          <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+            <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Indicadores</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <a href="#" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors">Indicadores<i data-lucide="external-link" class="size-3 text-zinc-400 ml-auto"></i></a>
           </div>
+          </div>
+</div>
         </div>
 
       </nav>
@@ -301,11 +399,23 @@
       btn.addEventListener('click', () => {
         const submenu = btn.nextElementSibling;
         const chevron = btn.querySelector('.nav-chevron');
-        const isOpen = submenu.classList.contains('open');
-        document.querySelectorAll('#sidebar .nav-submenu.open').forEach(el => el.classList.remove('open'));
-        document.querySelectorAll('#sidebar .nav-chevron.open').forEach(el => el.classList.remove('open'));
+        if (submenu) submenu.classList.toggle('open');
+        if (chevron) chevron.classList.toggle('open');
+      });
+    });
+    // Acordeón excluyente de subgroups (dentro de cada nav-group)
+    document.querySelectorAll('.subgroup-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const submenu = btn.nextElementSibling;
+        const chevron = btn.querySelector('.subgroup-chevron');
+        const navSubmenu = btn.closest('.nav-submenu');
+        const isOpen = submenu && submenu.classList.contains('open');
+        if (navSubmenu) {
+          navSubmenu.querySelectorAll('.subgroup-submenu.open').forEach(el => el.classList.remove('open'));
+          navSubmenu.querySelectorAll('.subgroup-chevron.open').forEach(el => el.classList.remove('open'));
+        }
         if (!isOpen) {
-          submenu.classList.add('open');
+          if (submenu) submenu.classList.add('open');
           if (chevron) chevron.classList.add('open');
         }
       });

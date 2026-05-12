@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedicalAdmin — R17 Tarifas Medicamentos</title>
+  <title>MedicalAdmin — Tarifas de Medicamentos</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -33,6 +33,12 @@
     .nav-submenu { max-height: 0; overflow: hidden; transition: max-height 250ms ease-in-out; }
     .nav-submenu.open { max-height: 1500px; }
     .sidebar-collapsed .nav-submenu { display: none; }
+    .subgroup-submenu { max-height: 0; overflow: hidden; transition: max-height 250ms ease-in-out; }
+    .subgroup-submenu.open { max-height: 1500px; }
+    .subgroup-chevron { transition: transform 200ms; }
+    .subgroup-chevron.open { transform: rotate(90deg); }
+    .sidebar-collapsed .subgroup-submenu { display: none; }
+
     .nav-chevron { transition: transform 200ms; }
     .nav-chevron.open { transform: rotate(90deg); }
     .sidebar-collapsed .nav-chevron { display: none; }
@@ -60,109 +66,194 @@
         <i data-lucide="home" class="size-[18px]"></i><span data-i18n="menu.home" class="sidebar-hide">Inicio</span>
       </a>
       <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="calendar-search" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.consulta_externa" class="sidebar-hide flex-1 text-left">Consulta Externa</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Agendamiento</div>
-          <a href="../01-calendar/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.creacion_citas_medicas">Creación de Citas Médicas</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Creación de Otros Eventos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <a href="../03-reception/index.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.recepcion_paciente">Recepción de Paciente</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración Motivos de Cancelación de Cita</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="calendar-search" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.consulta_externa" class="sidebar-hide flex-1 text-left">Consulta Externa</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Agendamiento</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../01-calendar/index.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.creacion_citas_medicas">Creación de Citas Médicas</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Creación de Otros Eventos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a href="../03-reception/index.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.recepcion_paciente">Recepción de Paciente</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración Motivos de Cancelación de Cita</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="clipboard-list" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.historia_clinica" class="sidebar-hide flex-1 text-left">Historia Clínica</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración General</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.config_servicio">Configuración de Servicio</span></a>
+          <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.otros_procedimientos">Configuración de Otros Procedimientos</span></a>
+          <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.lista_chequeo">Administración de lista de chequeo</span></a>
+          <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.ocupaciones">Administración de Ocupaciones</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Profesionales</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Especialidades</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          </div>
+          </div>
+<div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Historia Clínica</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
+          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración Formatos Historia Clínica</span></a>        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-blue-700 bg-blue-50 transition-colors"><i data-lucide="dollar-sign" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.facturacion" class="sidebar-hide flex-1 text-left">Facturación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 open"></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200 open">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Ejecución de Procesos</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../07-billing/crear-orden.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.crear_orden">Administración de Ordenes de Facturación</span></a>
+          <a href="../07-billing/admin-facturas.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.admin_facturas">Administración de Facturas</span></a>
+          <a href="../07-billing/rips.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Rips</span></a>
+          <a href="../07-billing/clientes.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Lista de Pacientes</span></a>
+          </div>
+          </div>
+<div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración General</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400 open"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5 open">
+          <a href="../07-billing/medios-pago.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Medios de Pago</span></a>
+          <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Rangos de Facturación</span></a>
+          <a href="../07-billing/manuales-tarifarios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.tarifas">Administración Manuales Tarifarios</span></a>
+          <a href="../07-billing/tarifas-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Tarifas de Facturación</span></a>
+          <a href="../07-billing/plm.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Lista de Precios de Medicamentos e Insumos</span></a>
+          <a href="../07-billing/tarifas-medicamentos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700"><span>Administración de Tarifas de Medicamentos</span></a>
+          <a href="../07-billing/convenios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.convenios">Administración de Convenio</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Sedes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="pill" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.farmacia" class="sidebar-hide flex-1 text-left">Farmacia</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Ejecución de Procesos</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../06-pharmacy/inventario.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.admin_articulos">Administración de Artículos</span></a>
+          <a href="../06-pharmacy/despacho.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.entrega_articulos">Entrega de Artículos</span></a>
+        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="bed" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Hospitalización</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Admisiones</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Admisión de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Atención de Pacientes Hospitalizados</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="file-text" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Reportes</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>General</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Reportes Consulta Externa</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Reportes Historia Clínica</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Reportes Facturación</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Reportes Farmacia</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="heart-pulse" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">PyP</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Administración</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Programas</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="flask-conical" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Laboratorio</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Ejecución de Procesos</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Recepción de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Toma de Muestra</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+          </div>
+</div>
+      </div>
+      <div class="nav-group">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="scan" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Radiología</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
         </div>
       </div>
       <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="clipboard-list" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.historia_clinica" class="sidebar-hide flex-1 text-left">Historia Clínica</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración General</div>
-          <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.config_servicio">Configuración de Servicio</span></a>
-          <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.otros_procedimientos">Configuración de Otros Procedimientos</span></a>
-          <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.lista_chequeo">Administración de lista de chequeo</span></a>
-          <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.ocupaciones">Administración de Ocupaciones</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Profesionales</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Especialidades</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Historia Clínica</div>
-          <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
-          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Configuración Formatos Historia Clínica</span></a>        </div>
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="plug" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Integración</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>Configuración</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Diccionario de Datos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        </div>
+          </div>
+</div>
       </div>
       <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-blue-700 bg-blue-50 transition-colors"><i data-lucide="dollar-sign" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.facturacion" class="sidebar-hide flex-1 text-left">Facturación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 open"></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide open">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
-          <a href="../07-billing/crear-orden.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.crear_orden">Administración de Ordenes de Facturación</span></a>
-          <a href="../07-billing/admin-facturas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.admin_facturas">Administración de Facturas</span></a>
-          <a href="../07-billing/rips.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Rips</span></a>
-          <a href="../07-billing/clientes.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Lista de Pacientes</span></a>
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración General</div>
-          <a href="../07-billing/medios-pago.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Medios de Pago</span></a>
-          <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Rangos de Facturación</span></a>
-          <a href="../07-billing/tarifas.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.tarifas">Administración Manuales Tarifarios</span></a>
-          <a href="../07-billing/plm.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Administración de Lista de Precios de Medicamentos e Insumos</span></a>
-          <a href="../07-billing/tarifas-medicamentos.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] bg-blue-50 text-blue-700 font-semibold"><span class="size-1 rounded-full bg-blue-500"></span><span>Administración de Tarifas de Medicamentos</span></a>
-          <a href="../07-billing/convenios.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.convenios">Administración de Convenio</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Sedes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="message-circle" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Comunicación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+          <div class="subgroup">
+            <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
+              <span>WhatsApp</span>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+            </button>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Dashboard WhatsApp</span></a>
+          <a href="../08-whatsapp/whatsapp-templates.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Plantillas</span></a>
+          <a href="../08-whatsapp/whatsapp-log.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Log de mensajes</span></a>
+          <a href="../08-whatsapp/whatsapp-config.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración</span></a>
         </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="pill" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.farmacia" class="sidebar-hide flex-1 text-left">Farmacia</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
-          <a href="../06-pharmacy/inventario.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.admin_articulos">Administración de Artículos</span></a>
-          <a href="../06-pharmacy/despacho.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span data-i18n="app.entrega_articulos">Entrega de Artículos</span></a>
-        </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="bed" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Hospitalización</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Admisiones</div>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Admisión de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Atención de Pacientes Hospitalizados</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-        </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="file-text" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Reportes</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">General</div>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Consulta Externa</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Historia Clínica</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Facturación</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Reportes Farmacia</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-        </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="heart-pulse" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">PyP</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Administración</div>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Programas</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-        </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="flask-conical" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Laboratorio</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Ejecución de Procesos</div>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Recepción de Pacientes</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Toma de Muestra</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-        </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="scan" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Radiología</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-        </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="plug" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Integración</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">Configuración</div>
-          <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-400 cursor-not-allowed pointer-events-none"><span class="size-1 rounded-full bg-zinc-200"></span><span>Administración de Diccionario de Datos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-        </div>
-      </div>
-      <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="message-circle" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide flex-1 text-left">Comunicación</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu pl-4 mt-1 space-y-0.5 sidebar-hide ">
-          <div class="text-[11px] uppercase tracking-wide font-semibold text-zinc-400 px-3 pt-2 pb-1">WhatsApp</div>
-          <a href="../08-whatsapp/whatsapp-dashboard.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Dashboard WhatsApp</span></a>
-          <a href="../08-whatsapp/whatsapp-templates.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Plantillas</span></a>
-          <a href="../08-whatsapp/whatsapp-log.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Log de mensajes</span></a>
-          <a href="../08-whatsapp/whatsapp-config.html" class="nav-leaf flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-zinc-600 hover:bg-blue-50 hover:text-blue-700"><span class="size-1 rounded-full bg-zinc-300"></span><span>Configuración</span></a>
-        </div>
+          </div>
+</div>
       </div>
       <div class="pt-3 pb-1 px-3 sidebar-hide"><span class="text-[10px] uppercase tracking-[0.08em] font-semibold text-zinc-400">Sistema</span></div>
       <a href="../_shared/coming-soon.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-medium text-zinc-700 hover:bg-slate-100 transition-colors"><i data-lucide="shield-check" class="size-[18px] text-blue-600 shrink-0"></i><span class="sidebar-hide">Control de Accesos</span></a>
@@ -218,186 +309,311 @@
       <div class="border-b border-zinc-200 bg-white px-6 py-4">
         <div class="flex items-center gap-1.5 text-xs text-zinc-500 mb-2">
           <a href="../00-shell/dashboard-medico.html" class="hover:text-zinc-700 transition">Inicio</a><i data-lucide="chevron-right" class="size-3"></i>
-          <a href="#" class="hover:text-zinc-700 transition">Facturacion</a><i data-lucide="chevron-right" class="size-3"></i>
-          <span class="text-zinc-900">Tarifas Medicamentos</span>
+          <a href="#" class="hover:text-zinc-700 transition">Facturación</a><i data-lucide="chevron-right" class="size-3"></i>
+          <a href="#" class="hover:text-zinc-700 transition">Configuración General</a><i data-lucide="chevron-right" class="size-3"></i>
+          <span class="text-zinc-900">Tarifas de Medicamentos</span>
         </div>
-        <h1 class="text-lg font-semibold text-zinc-900">Tarifas Medicamentos</h1>
-        <p class="text-sm text-zinc-500 mt-0.5">Precios de medicamentos por convenio</p>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-lg font-semibold text-zinc-900">Administración de Tarifas de Medicamentos</h1>
+            <p class="text-sm text-zinc-500 mt-0.5">Configuración y administración de tarifas de medicamentos e insumos vinculadas a una lista de precios PLM</p>
+          </div>
+          <button onclick="openCreateTarifaModal()" class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium flex items-center gap-2 hover:bg-blue-600 transition"><i data-lucide="plus" class="size-3.5"></i> Nueva Tarifa de Medicamento</button>
+        </div>
       </div>
 
-      <!-- Page Body -->
-      <div class="flex-1 overflow-y-auto p-6">
-        <!-- Tariff list card -->
-        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm mb-6">
-          <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-100">
-            <h2 class="text-sm font-semibold text-zinc-900">Tarifarios de Medicamentos</h2>
-            <button class="inline-flex items-center gap-1.5 rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600 transition" onclick="openModal()">
-              <i data-lucide="plus" class="size-3.5"></i> Nueva Tarifa
-            </button>
+      <!-- Split Layout (JSF: adminDrugTariff/principal.jsf — list + detail) -->
+      <div class="flex flex-1 gap-4 overflow-hidden p-4">
+        <!-- Left: Tarifa list (JSF: panelSearchOfDrugTariff.xhtml filters + showResultDrugTariff.xhtml results) -->
+        <div class="w-[340px] shrink-0 rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden flex flex-col">
+          <div class="p-3 border-b border-zinc-200">
+            <div class="flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 h-9">
+              <i data-lucide="search" class="size-4 text-zinc-400"></i>
+              <input type="text" class="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400" placeholder="Buscar tarifa de medicamento...">
+            </div>
+            <div class="flex gap-2 mt-2">
+              <select class="flex-1 h-9 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-700 outline-none">
+                <option>Todos los estados</option><option>Activo</option><option>Eliminado</option>
+              </select>
+              <select class="flex-1 h-9 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-700 outline-none">
+                <option>Todas las listas PLM</option><option>prueba pl</option><option>MEDICAMENTOS</option><option>Listo en cero</option><option>Plm Harley Gravier</option>
+              </select>
+            </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-zinc-100 bg-zinc-50/50">
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Nombre</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Lista PLM</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Porcentaje</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Vigencia</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Medicamentos</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Estado</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500 w-[100px]">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-zinc-100">
-                <tr class="bg-blue-50/60">
-                  <td class="px-5 py-3 font-medium text-zinc-900">Tarifa Med General 2026</td>
-                  <td class="px-5 py-3">PLM General 2026</td>
-                  <td class="px-5 py-3">+0% (base)</td>
-                  <td class="px-5 py-3">01/01/2026 - 31/12/2026</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">1,234</span></td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activa</span></td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-1">
-                      <div class="group relative inline-flex">
-                  <button onclick="openEditTarifa()" class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-blue-50 hover:text-blue-600 transition"><i data-lucide="pencil" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-red-500 hover:bg-red-50 transition"><i data-lucide="trash-2" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
-                </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">Tarifa Med Coomeva +15%</td>
-                  <td class="px-5 py-3">PLM Coomeva 2026</td>
-                  <td class="px-5 py-3">+15%</td>
-                  <td class="px-5 py-3">01/03/2026 - 28/02/2027</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">892</span></td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activa</span></td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-1">
-                      <div class="group relative inline-flex">
-                  <button onclick="openEditTarifa()" class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-blue-50 hover:text-blue-600 transition"><i data-lucide="pencil" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-red-500 hover:bg-red-50 transition"><i data-lucide="trash-2" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
-                </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="flex-1 overflow-y-auto" id="tariffList">
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 bg-blue-50 border-l-[3px] border-l-blue-600 tariff-item" data-id="1" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">plm pleno</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: prueba pl &middot; Vig: 2016/06/01 - 2026/12/31 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition tariff-item" data-id="2" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">COLMEDIC</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: MEDICAMENTOS &middot; Vig: 2017/10/12 - 2027/10/12 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition tariff-item" data-id="3" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">Harley GRavier</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: Plm Harley Gravier &middot; Vig: 2020/07/31 - 2025/07/31 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition tariff-item" data-id="4" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">harley plena</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: Plm Harley Gravier &middot; Vig: 2023/03/02 - 2026/03/02 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition opacity-60 tariff-item" data-id="5" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">HARLEY PLENA 2</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: Plm Harley Gravier &middot; Vig: 2023/03/08 - 2024/03/08 &middot; <span class="text-red-600">Eliminado</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition opacity-60 tariff-item" data-id="6" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">Med2hy</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: MEDICAMENTOS &middot; Vig: 2023/04/27 - 2024/04/27 &middot; <span class="text-red-600">Eliminado</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition opacity-60 tariff-item" data-id="7" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">Harleu_p</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: Plm Harley Gravier &middot; Vig: 2023/04/27 - 2024/04/27 &middot; <span class="text-red-600">Eliminado</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition tariff-item" data-id="8" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">Harley_gravier_m</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: Plm Harley Gravier &middot; Vig: 2023/04/27 - 2026/04/27 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition opacity-60 tariff-item" data-id="9" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">Tarofa 2</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: MEDICAMENTOS &middot; Vig: 2023/04/27 - 2024/04/27 &middot; <span class="text-red-600">Eliminado</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition tariff-item" data-id="10" onclick="selectTariff(this)">
+              <div class="text-sm font-medium text-zinc-900">De acero</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Lista: Listo en cero &middot; Vig: 2023/04/27 - 2026/04/27 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
           </div>
         </div>
 
-        <!-- Drug tariff detail card -->
-        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
-          <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-100">
-            <div>
-              <h2 class="text-sm font-semibold text-zinc-900">Detalle — Tarifa Med General 2026</h2>
-              <span class="text-xs text-zinc-500">Mostrando 1-50 de 21,734</span>
-            </div>
-            <div class="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5">
-              <i data-lucide="search" class="size-3.5 text-zinc-400"></i>
-              <input type="text" class="bg-transparent text-sm outline-none placeholder:text-zinc-400 w-60" placeholder="Buscar medicamento...">
+        <!-- Right: Tarifa detail (JSF: viewDataDrugTariff.xhtml + selectedDrugs.xhtml + logByDrugTariff.xhtml) -->
+        <div class="flex-1 rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden flex flex-col">
+          <!-- Tabs (JSF: Información tariff + Medicamentos vinculados + Registro de Cambios) -->
+          <div class="border-b border-zinc-200 px-4">
+            <div class="flex gap-0">
+              <button class="tab-btn px-4 py-2.5 text-sm font-medium text-zinc-900 border-b-2 border-zinc-900" onclick="switchTab(event,'info')">Información de la Tarifa</button>
+              <button class="tab-btn px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition border-b-2 border-transparent" onclick="switchTab(event,'meds')">Medicamentos vinculados</button>
+              <button class="tab-btn px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition border-b-2 border-transparent" onclick="switchTab(event,'log')">Registro de Cambios</button>
             </div>
           </div>
-          <div class="flex items-center gap-3 px-5 py-3 border-b border-zinc-100">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-medium text-zinc-500">Convenio</span>
-              <select class="rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-700 outline-none min-w-[180px]">
-                <option>Todos los convenios</option><option>AXA Colpatria</option><option>Coomeva</option><option>Nueva EPS</option><option>Sura</option><option>Sanitas</option>
-              </select>
+
+          <!-- Tab: Info (JSF: viewDataDrugTariff.xhtml — 4 editables + 4 readonly + auditoría) -->
+          <div class="tab-content flex-1 overflow-y-auto p-5" id="tab-info">
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Nombre — editable (JSF: <ice:inputText id="nameEdit" maxlength=30>) -->
+              <div class="col-span-2">
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Nombre<span class="text-red-500 ml-0.5">*</span></label>
+                <input type="text" maxlength="30" value="plm pleno" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition">
+              </div>
+              <!-- Descripción — editable (JSF: <ice:inputTextarea id="descEdit" maxlength=50>) -->
+              <div class="col-span-2">
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Descripción</label>
+                <textarea rows="2" maxlength="50" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition resize-none">Tarifa principal de medicamentos PLM pleno</textarea>
+              </div>
+              <!-- Vigencia Desde / Hasta — editables (JSF: <ice:selectInputDate>) -->
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Vigencia: Desde<span class="text-red-500 ml-0.5">*</span></label>
+                <input type="date" value="2016-06-01" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition">
+              </div>
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Hasta<span class="text-red-500 ml-0.5">*</span></label>
+                <input type="date" value="2026-12-31" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition">
+              </div>
+
+              <!-- Lista de Precio (PLM) — READONLY al editar (JSF: <ice:outputText currentDrugTariff.idPosPlm.name>) — Nini issue #3 -->
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Lista de Precio (PLM)</label>
+                <div class="h-9 px-3 rounded-md border border-zinc-200 bg-zinc-50 text-sm text-zinc-700 flex items-center">prueba pl</div>
+              </div>
+              <!-- Porcentaje — READONLY al editar (JSF: <ice:outputText increment + percentage>) — Nini issue #3 -->
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Porcentaje</label>
+                <div class="h-9 px-3 rounded-md border border-zinc-200 bg-zinc-50 text-sm text-zinc-700 flex items-center">
+                  <span class="inline-flex items-center justify-center size-5 rounded bg-white border border-zinc-200 text-xs font-medium text-zinc-700 mr-2">+</span>
+                  <span>0.0 %</span>
+                </div>
+              </div>
+              <!-- Redondeo — READONLY al editar (JSF: <ice:outputText roundedDigits>) — Nini issue #3 -->
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Redondeo</label>
+                <div class="h-9 px-3 rounded-md border border-zinc-200 bg-zinc-50 text-sm text-zinc-700 flex items-center">Centena</div>
+              </div>
+              <!-- Estado — READONLY al editar (JSF: <ice:outputText active>) — Nini issue #3. Cambio sólo vía botón Eliminar. -->
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Estado</label>
+                <div class="h-9 flex items-center"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">Activo</span></div>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-medium text-zinc-500">Estado</span>
-              <select class="rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-700 outline-none">
-                <option>Todos</option><option>Activo</option><option>Inactivo</option>
-              </select>
+
+            <!-- Auditoría (JSF: viewDataDrugTariff.xhtml panelInfo — Número + Creado por + Fecha de Creación) -->
+            <div class="mt-6 rounded-lg border border-zinc-200/60 bg-zinc-50/40 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-3">Información de Registro</p>
+              <div class="grid grid-cols-3 gap-3 text-sm">
+                <div>
+                  <span class="text-xs text-zinc-500">No.</span>
+                  <div class="text-zinc-900 font-medium">1</div>
+                </div>
+                <div>
+                  <span class="text-xs text-zinc-500">Creado por</span>
+                  <div class="text-zinc-900">Gerardo Rueda Escorcia</div>
+                </div>
+                <div>
+                  <span class="text-xs text-zinc-500">Fecha de Creación</span>
+                  <div class="text-zinc-900">2016-06-01 11:24 AM</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-2 mt-6">
+              <button class="h-9 px-4 rounded-md border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition inline-flex items-center gap-1.5"><i data-lucide="trash-2" class="size-3.5"></i> Eliminar</button>
+              <div class="flex-1"></div>
+              <button class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition">Guardar Cambios</button>
             </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-zinc-100 bg-zinc-50/50">
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Codigo</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Medicamento</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Presentacion</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Convenio</th>
-                  <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Valor</th>
-                  <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">IVA %</th>
-                  <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Valor + IVA</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Estado</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-zinc-100">
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">MED-001</td>
-                  <td class="px-5 py-3">Acetaminofen 500mg</td>
-                  <td class="px-5 py-3">Tableta</td>
-                  <td class="px-5 py-3">General</td>
-                  <td class="px-5 py-3 text-right">$150</td>
-                  <td class="px-5 py-3 text-right">0%</td>
-                  <td class="px-5 py-3 text-right font-medium">$150</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">MED-002</td>
-                  <td class="px-5 py-3">Losartan 50mg</td>
-                  <td class="px-5 py-3">Tableta</td>
-                  <td class="px-5 py-3">General</td>
-                  <td class="px-5 py-3 text-right">$280</td>
-                  <td class="px-5 py-3 text-right">0%</td>
-                  <td class="px-5 py-3 text-right font-medium">$280</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">MED-003</td>
-                  <td class="px-5 py-3">Metformina 850mg</td>
-                  <td class="px-5 py-3">Tableta</td>
-                  <td class="px-5 py-3">General</td>
-                  <td class="px-5 py-3 text-right">$320</td>
-                  <td class="px-5 py-3 text-right">0%</td>
-                  <td class="px-5 py-3 text-right font-medium">$320</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">MED-004</td>
-                  <td class="px-5 py-3">Omeprazol 20mg</td>
-                  <td class="px-5 py-3">Capsula</td>
-                  <td class="px-5 py-3">General</td>
-                  <td class="px-5 py-3 text-right">$450</td>
-                  <td class="px-5 py-3 text-right">5%</td>
-                  <td class="px-5 py-3 text-right font-medium">$473</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">MED-005</td>
-                  <td class="px-5 py-3">Amoxicilina 500mg</td>
-                  <td class="px-5 py-3">Capsula</td>
-                  <td class="px-5 py-3">General</td>
-                  <td class="px-5 py-3 text-right">$380</td>
-                  <td class="px-5 py-3 text-right">0%</td>
-                  <td class="px-5 py-3 text-right font-medium">$380</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                </tr>
-              </tbody>
-            </table>
+
+          <!-- Tab: Medicamentos vinculados (JSF: selectedDrugs.xhtml — Nombre / Concentración / Forma farmaceutica / Valor PLM / Valor / Acciones [Editar Valor + Eliminar]) -->
+          <div class="tab-content hidden flex-1 overflow-hidden flex flex-col" id="tab-meds">
+            <div class="flex items-center gap-3 p-4 border-b border-zinc-200">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-medium text-zinc-500">Buscar por:</span>
+                <div class="flex items-center gap-1.5 h-9 rounded-md border border-zinc-200 bg-white px-2.5">
+                  <i data-lucide="search" class="size-3.5 text-zinc-400"></i>
+                  <input type="text" class="bg-transparent text-sm outline-none placeholder:text-zinc-400 w-[220px]" placeholder="Nombre o concentración...">
+                </div>
+              </div>
+              <div class="flex-1"></div>
+              <button onclick="openAddMedModal()" class="inline-flex items-center gap-1.5 h-9 rounded-md border border-blue-200 bg-blue-50 px-3 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"><i data-lucide="plus" class="size-3.5"></i> Agregar Medicamento</button>
+            </div>
+            <div class="flex-1 overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-zinc-200 bg-zinc-50/50">
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Código</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Nombre</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Concentración</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Forma farmaceutica</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Valor PLM</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Valor</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500 w-[180px]">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">MED-001</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">Acetaminofen MK</td>
+                    <td class="px-5 py-3">500mg</td>
+                    <td class="px-5 py-3">Tableta</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$2,500</td>
+                    <td class="px-5 py-3 text-right font-medium">$2,500</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar Valor</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">MED-002</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">Losartan Genfar</td>
+                    <td class="px-5 py-3">50mg</td>
+                    <td class="px-5 py-3">Tableta</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$15,800</td>
+                    <td class="px-5 py-3 text-right font-medium">$15,800</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar Valor</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">MED-003</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">Metformina MK</td>
+                    <td class="px-5 py-3">850mg</td>
+                    <td class="px-5 py-3">Tableta</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$3,200</td>
+                    <td class="px-5 py-3 text-right font-medium">$3,200</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar Valor</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">MED-004</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">Omeprazol Tecnofarma</td>
+                    <td class="px-5 py-3">20mg</td>
+                    <td class="px-5 py-3">Capsula</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$4,500</td>
+                    <td class="px-5 py-3 text-right font-medium">$4,725</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar Valor</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">MED-005</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">Amoxicilina La Sante</td>
+                    <td class="px-5 py-3">500mg</td>
+                    <td class="px-5 py-3">Capsula</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$45,000</td>
+                    <td class="px-5 py-3 text-right font-medium">$45,000</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar Valor</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-5 py-3 border-t border-zinc-200">
+              <span class="text-xs text-zinc-500">Mostrando 1-30 de 1,234 medicamentos &middot; La edición de valor requiere justificación (JSF: panelEditDrug.xhtml)</span>
+              <div class="flex items-center gap-1">
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-400" disabled><i data-lucide="chevron-left" class="size-3.5"></i></button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-900 bg-blue-500 text-white text-xs font-medium">1</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">2</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">3</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs">...</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">42</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 hover:bg-zinc-50"><i data-lucide="chevron-right" class="size-3.5"></i></button>
+              </div>
+            </div>
           </div>
-          <div class="flex items-center justify-between px-5 py-3 border-t border-zinc-100">
-            <span class="text-xs text-zinc-500">Mostrando 1-50 de 21,734 registros</span>
-            <div class="flex items-center gap-1">
-              <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-400" disabled><i data-lucide="chevron-left" class="size-3.5"></i></button>
-              <button class="flex size-8 items-center justify-center rounded-md border border-zinc-900 bg-blue-500 text-white text-xs font-medium">1</button>
-              <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">2</button>
-              <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">3</button>
-              <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs">...</button>
-              <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">435</button>
-              <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 hover:bg-zinc-50"><i data-lucide="chevron-right" class="size-3.5"></i></button>
+
+          <!-- Tab: Registro de Cambios (JSF: logByDrugTariff.xhtml — Código + Nombre + Fecha + Realizado por + Antiguo Valor + Nuevo Valor) -->
+          <div class="tab-content hidden flex-1 overflow-y-auto" id="tab-log">
+            <div class="p-5">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-zinc-200 bg-zinc-50/50">
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Código</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Nombre</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Fecha</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Realizado por</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Antiguo Valor</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Nuevo Valor</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3 font-medium text-zinc-900">MED-004</td>
+                    <td class="px-5 py-3">Omeprazol Tecnofarma 20mg</td>
+                    <td class="px-5 py-3 text-zinc-600">2026-03-15 14:30</td>
+                    <td class="px-5 py-3">Gerardo Rueda Escorcia</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$4,500</td>
+                    <td class="px-5 py-3 text-right font-medium">$4,725</td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3 font-medium text-zinc-900">MED-002</td>
+                    <td class="px-5 py-3">Losartan Genfar 50mg</td>
+                    <td class="px-5 py-3 text-zinc-600">2026-02-08 09:15</td>
+                    <td class="px-5 py-3">Maria Lopez</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$14,200</td>
+                    <td class="px-5 py-3 text-right font-medium">$15,800</td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3 font-medium text-zinc-900">MED-001</td>
+                    <td class="px-5 py-3">Acetaminofen MK 500mg</td>
+                    <td class="px-5 py-3 text-zinc-600">2026-01-20 16:45</td>
+                    <td class="px-5 py-3">Gerardo Rueda Escorcia</td>
+                    <td class="px-5 py-3 text-right text-zinc-600">$2,300</td>
+                    <td class="px-5 py-3 text-right font-medium">$2,500</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -405,143 +621,245 @@
     </div>
   </div>
 
-  <!-- Modal: Nueva/Editar Tarifa Medicamento (alineado a JSF) -->
-  <div class="fixed inset-0 z-50 items-center justify-center bg-black/40 hidden" id="createModal">
-    <div class="w-full max-w-[640px] max-h-[88vh] flex flex-col rounded-xl border border-zinc-200/60 bg-white shadow-2xl">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-100">
+  <!-- Modal: Nueva Tarifa de Medicamento (JSF: newDrugTariff.xhtml — 7 campos cabecera + tabla Medicamentos e Insumos a adicionar) -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" id="createTarifaModal" style="display:none;" onclick="if(event.target===this)closeCreateTarifaModal()">
+    <div class="w-full max-w-[760px] max-h-[92vh] flex flex-col rounded-xl border border-zinc-200/60 bg-white shadow-lg">
+      <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
         <div class="flex items-center gap-2">
           <i data-lucide="pill" class="size-4 text-blue-600"></i>
-          <h3 class="text-sm font-semibold text-zinc-900" id="tarifaModalTitle">Nueva Tarifa Medicamento</h3>
+          <h3 class="text-base font-semibold text-zinc-900">Nueva Tarifa de Medicamento</h3>
         </div>
-        <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeModal()"><i data-lucide="x" class="size-4"></i></button>
+        <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeCreateTarifaModal()"><i data-lucide="x" class="size-4"></i></button>
+      </div>
+      <div class="p-6 overflow-y-auto">
+        <h4 class="text-[11px] uppercase tracking-wide font-semibold text-zinc-500 mb-3">Datos de la tarifa</h4>
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Lista de Precio (JSF: <ice:selectOneMenu value=idPlm> con valueChangeListener=searchDrugByPLM) -->
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Lista de Precio<span class="text-red-500 ml-0.5">*</span></label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option value="">-- Seleccione lista de precios --</option>
+                <option>prueba pl</option>
+                <option>MEDICAMENTOS</option>
+                <option>Listo en cero</option>
+                <option>Plm Harley Gravier</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+            <p class="text-[11px] text-zinc-400 mt-1">Al seleccionar la lista se cargarán los medicamentos disponibles.</p>
+          </div>
+          <!-- Nombre (JSF: <ice:inputText id="nameP"> required maxlength=30) -->
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Nombre<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="text" maxlength="30" required class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="Nombre de la tarifa (max. 30 caracteres)">
+          </div>
+          <!-- Descripción (JSF: <ice:inputTextarea id="descP"> maxlength=50) -->
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Descripción</label>
+            <textarea rows="2" maxlength="50" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 resize-none" placeholder="Descripción (max. 50 caracteres)"></textarea>
+          </div>
+          <!-- Vigencia Desde (JSF: <ice:selectInputDate id="descDateP"> required) -->
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Vigencia: Desde<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="date" required class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <!-- Vigencia Hasta (JSF: <ice:selectInputDate id="hast"> required) -->
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Hasta<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="date" required class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <!-- Porcentaje (JSF: <ice:selectOneMenu value="increment"> +/- + <ice:inputText id="percentage"> + %, required) -->
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Porcentaje<span class="text-red-500 ml-0.5">*</span></label>
+            <div class="flex items-center gap-2">
+              <select class="h-9 w-16 rounded-md border border-zinc-200 bg-white px-2 text-sm text-zinc-900">
+                <option selected>+</option><option>-</option>
+              </select>
+              <div class="relative flex-1">
+                <input type="number" step="0.1" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 pr-8 text-sm text-zinc-900 text-right placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="0.0" value="0.0">
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400">%</span>
+              </div>
+            </div>
+          </div>
+          <!-- Redondeo (JSF: <ice:selectOneMenu value="round"> con items rounds — Centena | Decena) -->
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Redondeo</label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option selected>Centena</option>
+                <option>Decena</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 2: Medicamentos e Insumos a adicionar (JSF: newDrugTariff.xhtml líneas 120-244) -->
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-[11px] uppercase tracking-wide font-semibold text-zinc-500">Medicamentos e Insumos a adicionar</h4>
+            <div class="flex items-center gap-2">
+              <button type="button" class="text-xs font-medium text-zinc-600 hover:text-zinc-900 underline">Deseleccionar Todo</button>
+              <span class="text-zinc-300">·</span>
+              <button type="button" class="text-xs font-medium text-blue-600 hover:text-blue-700 underline">Seleccionar Todo</button>
+            </div>
+          </div>
+          <div class="relative mb-3">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            <input type="text" class="w-full h-9 pl-9 pr-3 rounded-md border border-zinc-200 bg-white text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 transition" placeholder="Buscar por nombre de medicamento...">
+          </div>
+          <div class="rounded-lg border border-zinc-200 overflow-hidden">
+            <div class="overflow-x-auto max-h-[240px]">
+              <table class="w-full text-sm">
+                <thead class="sticky top-0 bg-zinc-50/95 backdrop-blur">
+                  <tr class="border-b border-zinc-200">
+                    <th class="px-3 py-2 text-left w-8"><input type="checkbox" class="size-3.5 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500"></th>
+                    <th class="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Nombre</th>
+                    <th class="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Concentración</th>
+                    <th class="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Forma farmaceutica</th>
+                    <th class="px-3 py-2 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-500">Valor PLM</th>
+                    <th class="px-3 py-2 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-500">Valor</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                  <tr class="hover:bg-zinc-50/60 transition">
+                    <td class="px-3 py-2"><input type="checkbox" checked class="size-3.5 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500"></td>
+                    <td class="px-3 py-2 text-zinc-900">Acetaminofen MK</td>
+                    <td class="px-3 py-2 text-zinc-600">500mg</td>
+                    <td class="px-3 py-2 text-zinc-600">Tableta</td>
+                    <td class="px-3 py-2 text-right text-zinc-600">$2,500</td>
+                    <td class="px-3 py-2 text-right"><input type="number" value="2500" class="w-24 h-7 px-2 rounded border border-zinc-300 bg-white text-xs text-zinc-900 text-right outline-none focus:border-blue-500"></td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/60 transition">
+                    <td class="px-3 py-2"><input type="checkbox" checked class="size-3.5 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500"></td>
+                    <td class="px-3 py-2 text-zinc-900">Losartan Genfar</td>
+                    <td class="px-3 py-2 text-zinc-600">50mg</td>
+                    <td class="px-3 py-2 text-zinc-600">Tableta</td>
+                    <td class="px-3 py-2 text-right text-zinc-600">$15,800</td>
+                    <td class="px-3 py-2 text-right"><input type="number" value="15800" class="w-24 h-7 px-2 rounded border border-zinc-300 bg-white text-xs text-zinc-900 text-right outline-none focus:border-blue-500"></td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/60 transition">
+                    <td class="px-3 py-2"><input type="checkbox" class="size-3.5 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500"></td>
+                    <td class="px-3 py-2 text-zinc-900">Metformina MK</td>
+                    <td class="px-3 py-2 text-zinc-600">850mg</td>
+                    <td class="px-3 py-2 text-zinc-600">Tableta</td>
+                    <td class="px-3 py-2 text-right text-zinc-600">$3,200</td>
+                    <td class="px-3 py-2 text-right"><input type="number" value="3200" class="w-24 h-7 px-2 rounded border border-zinc-300 bg-white text-xs text-zinc-900 text-right outline-none focus:border-blue-500"></td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/60 transition">
+                    <td class="px-3 py-2"><input type="checkbox" class="size-3.5 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500"></td>
+                    <td class="px-3 py-2 text-zinc-900">Omeprazol Tecnofarma</td>
+                    <td class="px-3 py-2 text-zinc-600">20mg</td>
+                    <td class="px-3 py-2 text-zinc-600">Capsula</td>
+                    <td class="px-3 py-2 text-right text-zinc-600">$4,500</td>
+                    <td class="px-3 py-2 text-right"><input type="number" value="4500" class="w-24 h-7 px-2 rounded border border-zinc-300 bg-white text-xs text-zinc-900 text-right outline-none focus:border-blue-500"></td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/60 transition">
+                    <td class="px-3 py-2"><input type="checkbox" class="size-3.5 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500"></td>
+                    <td class="px-3 py-2 text-zinc-900">Amoxicilina La Sante</td>
+                    <td class="px-3 py-2 text-zinc-600">500mg</td>
+                    <td class="px-3 py-2 text-zinc-600">Capsula</td>
+                    <td class="px-3 py-2 text-right text-zinc-600">$45,000</td>
+                    <td class="px-3 py-2 text-right"><input type="number" value="45000" class="w-24 h-7 px-2 rounded border border-zinc-300 bg-white text-xs text-zinc-900 text-right outline-none focus:border-blue-500"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-3 py-2 border-t border-zinc-200 bg-zinc-50/40">
+              <span class="text-[11px] text-zinc-500">2 seleccionados de 5 visibles &middot; 1,234 totales</span>
+              <div class="flex items-center gap-1">
+                <button class="flex size-6 items-center justify-center rounded border border-zinc-200 text-zinc-400" disabled><i data-lucide="chevron-left" class="size-3"></i></button>
+                <span class="text-[11px] text-zinc-500 px-2">1 / 25</span>
+                <button class="flex size-6 items-center justify-center rounded border border-zinc-200 text-zinc-600 hover:bg-white"><i data-lucide="chevron-right" class="size-3"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 border-t border-zinc-200 px-6 py-4">
+        <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeCreateTarifaModal()">Cancelar</button>
+        <button class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition" onclick="closeCreateTarifaModal()">Guardar Tarifa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Agregar Medicamento (JSF: showEnableDrugs.xhtml — buscador + selección desde catálogo PLM) -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" id="addMedModal" style="display:none;" onclick="if(event.target===this)closeAddMedModal()">
+    <div class="w-[640px] max-w-[95vw] max-h-[85vh] flex flex-col rounded-xl bg-white shadow-2xl">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-200">
+        <div class="flex items-center gap-2">
+          <i data-lucide="plus-circle" class="size-5 text-blue-600"></i>
+          <h3 class="text-[15px] font-semibold text-zinc-900">Agregar Medicamento</h3>
+        </div>
+        <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeAddMedModal()"><i data-lucide="x" class="size-4"></i></button>
       </div>
       <div class="p-5 overflow-y-auto">
-        <!-- Medicamento -->
+        <p class="text-xs text-zinc-500 mb-4">Selecciona un medicamento del catálogo PLM y asígnale un valor para esta tarifa.</p>
+
         <div class="mb-4">
           <label class="block text-xs font-medium text-zinc-700 mb-1.5">Medicamento<span class="text-red-500 ml-0.5">*</span></label>
           <div class="relative">
             <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
-            <input type="text" id="medSearchTarifa" class="w-full h-10 pl-9 pr-3 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" placeholder="Buscar por código o nombre comercial..." value="MED-001 — Acetaminofen MK 500mg">
-          </div>
-          <p class="text-[11px] text-zinc-400 mt-1">Codigo CUM, Código CUPS, principio activo: Acetaminofen 500mg</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Convenio + Tipo Tarifa -->
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Convenio<span class="text-red-500 ml-0.5">*</span></label>
-            <select class="w-full h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-              <option value="">Seleccionar...</option>
-              <option selected>General</option>
-              <option>AXA Colpatria</option>
-              <option>Coomeva EPS</option>
-              <option>Nueva EPS</option>
-              <option>Sura EPS</option>
-              <option>Sanitas</option>
-              <option>Particular</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Tipo de Tarifa<span class="text-red-500 ml-0.5">*</span></label>
-            <select class="w-full h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-              <option selected>Particular</option>
-              <option>POS</option>
-              <option>NO POS</option>
-              <option>Recobro</option>
-              <option>Plan Complementario</option>
-            </select>
-          </div>
-
-          <!-- Manual Tarifario + Lista de Precios -->
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Manual Tarifario</label>
-            <select class="w-full h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-              <option>SOAT 2026</option>
-              <option selected>ISS 2001 + 30%</option>
-              <option>Tarifario Particular</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Lista Precios Base</label>
-            <select class="w-full h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-              <option selected>Lista PLM Comercial 2026</option>
-              <option>Lista Mayorista 2026</option>
-            </select>
-          </div>
-
-          <!-- Valor + IVA -->
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Valor Tarifa<span class="text-red-500 ml-0.5">*</span></label>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 pointer-events-none">$</span>
-              <input type="number" value="2500" class="w-full h-10 pl-7 pr-3 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 text-right outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">IVA</label>
-            <div class="relative">
-              <input type="number" value="0" class="w-full h-10 pl-3 pr-7 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 text-right outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 pointer-events-none">%</span>
-            </div>
-          </div>
-
-          <!-- Margen + Cuota -->
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Margen sobre Base</label>
-            <div class="relative">
-              <input type="number" value="20" class="w-full h-10 pl-3 pr-7 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 text-right outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 pointer-events-none">%</span>
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Cuota Moderadora</label>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 pointer-events-none">$</span>
-              <input type="number" value="0" class="w-full h-10 pl-7 pr-3 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 text-right outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-            </div>
-          </div>
-
-          <!-- Vigencia -->
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Vigencia desde<span class="text-red-500 ml-0.5">*</span></label>
-            <input type="date" value="2026-01-01" class="w-full h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Vigencia hasta</label>
-            <input type="date" value="2026-12-31" class="w-full h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
+            <input type="text" placeholder="Buscar por nombre o concentración..." class="w-full h-10 pl-9 pr-3 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
           </div>
         </div>
 
-        <!-- Checks -->
-        <div class="mt-4 grid grid-cols-2 gap-3">
-          <label class="flex items-start gap-2.5 cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50/50 p-3 hover:bg-zinc-50 transition">
-            <input type="checkbox" checked class="mt-0.5 size-4 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer">
-            <div class="flex-1">
-              <div class="text-xs font-semibold text-zinc-900">Aplica Cuota Moderadora</div>
-              <p class="text-[11px] text-zinc-500 mt-0.5">El paciente paga cuota moderadora según el plan</p>
-            </div>
-          </label>
-          <label class="flex items-start gap-2.5 cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50/50 p-3 hover:bg-zinc-50 transition">
-            <input type="checkbox" class="mt-0.5 size-4 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer">
-            <div class="flex-1">
-              <div class="text-xs font-semibold text-zinc-900">Aplica Copago</div>
-              <p class="text-[11px] text-zinc-500 mt-0.5">El paciente paga copago sobre el valor</p>
-            </div>
-          </label>
+        <div class="rounded-lg border border-zinc-200 overflow-hidden mb-4 max-h-[260px] overflow-y-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-zinc-50 sticky top-0">
+              <tr class="border-b border-zinc-200">
+                <th class="px-3 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500 w-10"></th>
+                <th class="px-3 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Nombre</th>
+                <th class="px-3 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Concentración</th>
+                <th class="px-3 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Forma farmaceutica</th>
+                <th class="px-3 py-2.5 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-500">Valor PLM</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="med" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">Diclofenaco MK</td>
+                <td class="px-3 py-2.5 text-zinc-700">50mg</td>
+                <td class="px-3 py-2.5 text-zinc-700">Tableta</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$1,200</td>
+              </tr>
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="med" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">Ibuprofeno Genfar</td>
+                <td class="px-3 py-2.5 text-zinc-700">400mg</td>
+                <td class="px-3 py-2.5 text-zinc-700">Tableta</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$1,800</td>
+              </tr>
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="med" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">Loratadina La Sante</td>
+                <td class="px-3 py-2.5 text-zinc-700">10mg</td>
+                <td class="px-3 py-2.5 text-zinc-700">Tableta</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$2,100</td>
+              </tr>
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="med" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">Ranitidina MK</td>
+                <td class="px-3 py-2.5 text-zinc-700">150mg</td>
+                <td class="px-3 py-2.5 text-zinc-700">Tableta</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$3,500</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Estado -->
-        <div class="mt-4">
-          <label class="block text-xs font-medium text-zinc-700 mb-1.5">Estado</label>
-          <select class="w-full max-w-[240px] h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
-            <option selected>Activo</option>
-            <option>Inactivo</option>
-          </select>
+        <div>
+          <label class="block text-xs font-medium text-zinc-700 mb-1.5">Valor para esta tarifa<span class="text-red-500 ml-0.5">*</span></label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 pointer-events-none">$</span>
+            <input type="number" placeholder="0" class="w-full h-10 pl-7 pr-3 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 text-right outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
+          </div>
         </div>
       </div>
-      <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-zinc-100">
-        <button class="h-9 px-4 rounded-lg border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeModal()">Cancelar</button>
-        <button class="h-9 px-4 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition" onclick="closeModal()" id="tarifaModalSaveBtn">Guardar Tarifa</button>
+      <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-zinc-200">
+        <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeAddMedModal()">Cancelar</button>
+        <button class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition" onclick="closeAddMedModal()">Agregar</button>
       </div>
     </div>
   </div>
@@ -554,11 +872,23 @@
       btn.addEventListener('click', () => {
         const submenu = btn.nextElementSibling;
         const chevron = btn.querySelector('.nav-chevron');
-        const isOpen = submenu.classList.contains('open');
-        document.querySelectorAll('#sidebar .nav-submenu.open').forEach(el => el.classList.remove('open'));
-        document.querySelectorAll('#sidebar .nav-chevron.open').forEach(el => el.classList.remove('open'));
+        if (submenu) submenu.classList.toggle('open');
+        if (chevron) chevron.classList.toggle('open');
+      });
+    });
+    // Acordeón excluyente de subgroups (dentro de cada nav-group)
+    document.querySelectorAll('.subgroup-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const submenu = btn.nextElementSibling;
+        const chevron = btn.querySelector('.subgroup-chevron');
+        const navSubmenu = btn.closest('.nav-submenu');
+        const isOpen = submenu && submenu.classList.contains('open');
+        if (navSubmenu) {
+          navSubmenu.querySelectorAll('.subgroup-submenu.open').forEach(el => el.classList.remove('open'));
+          navSubmenu.querySelectorAll('.subgroup-chevron.open').forEach(el => el.classList.remove('open'));
+        }
         if (!isOpen) {
-          submenu.classList.add('open');
+          if (submenu) submenu.classList.add('open');
           if (chevron) chevron.classList.add('open');
         }
       });
@@ -573,25 +903,37 @@
       }
     }
     function toggleContrast() { document.documentElement.classList.toggle('high-contrast'); }
-    function openModal() {
-      document.getElementById('tarifaModalTitle').textContent = 'Nueva Tarifa Medicamento';
-      document.getElementById('tarifaModalSaveBtn').textContent = 'Guardar Tarifa';
-      document.getElementById('createModal').classList.remove('hidden');
-      document.getElementById('createModal').classList.add('flex');
+    function switchTab(e, tabId) {
+      document.querySelectorAll('.tab-btn').forEach(function(t) { t.classList.remove('text-zinc-900','border-zinc-900'); t.classList.add('text-zinc-500','border-transparent'); });
+      document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.add('hidden'); });
+      e.target.classList.remove('text-zinc-500','border-transparent');
+      e.target.classList.add('text-zinc-900','border-zinc-900');
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+    }
+    function selectTariff(el) {
+      document.querySelectorAll('#tariffList .tariff-item').forEach(function(it){
+        it.classList.remove('bg-blue-50','border-l-[3px]','border-l-blue-600');
+        it.classList.add('hover:bg-zinc-50','transition');
+      });
+      el.classList.add('bg-blue-50','border-l-[3px]','border-l-blue-600');
+      el.classList.remove('hover:bg-zinc-50','transition');
+    }
+    function openCreateTarifaModal() {
+      document.getElementById('createTarifaModal').style.display = 'flex';
       document.body.style.overflow = 'hidden';
       lucide.createIcons();
     }
-    function openEditTarifa() {
-      document.getElementById('tarifaModalTitle').textContent = 'Editar Tarifa Medicamento';
-      document.getElementById('tarifaModalSaveBtn').textContent = 'Guardar Cambios';
-      document.getElementById('createModal').classList.remove('hidden');
-      document.getElementById('createModal').classList.add('flex');
+    function closeCreateTarifaModal() {
+      document.getElementById('createTarifaModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function openAddMedModal() {
+      document.getElementById('addMedModal').style.display = 'flex';
       document.body.style.overflow = 'hidden';
       lucide.createIcons();
     }
-    function closeModal() {
-      document.getElementById('createModal').classList.add('hidden');
-      document.getElementById('createModal').classList.remove('flex');
+    function closeAddMedModal() {
+      document.getElementById('addMedModal').style.display = 'none';
       document.body.style.overflow = '';
     }
   </script>

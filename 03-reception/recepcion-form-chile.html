@@ -165,7 +165,8 @@
       <div class="nav-group-items" id="pos-config-group">
         <a href="../07-billing/medios-pago.html" class="nav-item" data-tooltip="Medios de Pago">Medios de Pago</a>
         <a href="../07-billing/rangos-facturacion.html" class="nav-item" data-tooltip="Rangos de Facturacion">Rangos de Facturación</a>
-        <a href="../07-billing/tarifas.html" class="nav-item" data-tooltip="Manuales Tarifarios">Manuales Tarifarios</a>
+        <a href="../07-billing/manuales-tarifarios.html" class="nav-item" data-tooltip="Manuales Tarifarios">Manuales Tarifarios</a>
+        <a href="../07-billing/tarifas-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Tarifas de Facturación</span></a>
         <span class="nav-item nav-disabled" data-tooltip="Tarifas de Facturacion" title="Proximamente">Tarifas de Facturación</span>
         <a href="../07-billing/plm.html" class="nav-item" data-tooltip="Lista Precios Medicamentos">Lista Precios Medicamentos</a>
         <a href="../07-billing/tarifas-medicamentos.html" class="nav-item" data-tooltip="Tarifas de Medicamentos">Tarifas de Medicamentos</a>
@@ -1138,8 +1139,16 @@
   function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
 
   function toggleGroup(id) {
-    document.getElementById(id).classList.toggle('open');
-    document.getElementById(id + '-toggle').classList.toggle('open');
+    // Acordeón excluyente: cerrar otros grupos al abrir uno
+    var target = document.getElementById(id);
+    var toggleIcon = document.getElementById(id + '-toggle');
+    var isOpen = target && target.classList.contains('open');
+    document.querySelectorAll('#sidebar [id$="-group"]').forEach(function (g) { g.classList.remove('open'); });
+    document.querySelectorAll('#sidebar [id$="-toggle"]').forEach(function (t) { t.classList.remove('open'); });
+    if (!isOpen) {
+      if (target) target.classList.add('open');
+      if (toggleIcon) toggleIcon.classList.add('open');
+    }
   }
 
   function setFontSize(size) {

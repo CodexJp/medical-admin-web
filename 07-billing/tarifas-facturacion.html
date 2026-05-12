@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedicalAdmin — R14 Rangos de Facturación</title>
+  <title>MedicalAdmin — Tarifas de Facturación</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -132,9 +132,9 @@
             </button>
             <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5 open">
           <a href="../07-billing/medios-pago.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Medios de Pago</span></a>
-          <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700"><span>Administración de Rangos de Facturación</span></a>
+          <a href="../07-billing/rangos-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Rangos de Facturación</span></a>
           <a href="../07-billing/manuales-tarifarios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.tarifas">Administración Manuales Tarifarios</span></a>
-          <a href="../07-billing/tarifas-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Tarifas de Facturación</span></a>
+          <a href="../07-billing/tarifas-facturacion.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700"><span>Administración de Tarifas de Facturación</span></a>
           <a href="../07-billing/plm.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Lista de Precios de Medicamentos e Insumos</span></a>
           <a href="../07-billing/tarifas-medicamentos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Administración de Tarifas de Medicamentos</span></a>
           <a href="../07-billing/convenios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.convenios">Administración de Convenio</span></a>
@@ -282,25 +282,15 @@
     <div class="flex flex-1 flex-col overflow-hidden">
       <!-- Header -->
       <header class="flex h-12 items-center gap-4 border-b border-zinc-200 bg-white px-6 shrink-0">
-        <div class="flex items-center gap-2.5">
-          <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-4 text-zinc-500"></i></div>
-          <span class="text-sm font-medium text-zinc-700">Clinica San Rafael</span>
-        </div>
+        <div class="flex items-center gap-2.5"><div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-4 text-zinc-500"></i></div><span class="text-sm font-medium text-zinc-700">Clinica San Rafael</span></div>
         <div class="h-5 w-px bg-zinc-200"></div>
-        <div class="flex flex-1 items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 max-w-md">
-          <i data-lucide="search" class="size-4 text-zinc-400"></i>
-          <input type="text" class="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly>
-          <kbd class="rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] font-medium text-zinc-500">&#8984;K</kbd>
-        </div>
+        <div class="flex flex-1 items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 max-w-md"><i data-lucide="search" class="size-4 text-zinc-400"></i><input type="text" class="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly><kbd class="rounded bg-zinc-200 px-1.5 py-0.5 text-[10px] font-medium text-zinc-500">&#8984;K</kbd></div>
         <div class="flex-1"></div>
         <div class="flex items-center gap-1">
-          <button class="relative flex size-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 transition" title="Notificaciones">
-            <i data-lucide="bell" class="size-4"></i>
-            <span class="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">5</span>
-          </button>
+          <button class="relative flex size-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 transition" title="Notificaciones"><i data-lucide="bell" class="size-4"></i><span class="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">5</span></button>
           <button class="flex size-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 transition" title="Ayuda"><i data-lucide="circle-help" class="size-4"></i></button>
         </div>
-<div class="relative" id="langSwitcher">
+        <div class="relative" id="langSwitcher">
               <button type="button" onclick="event.stopPropagation();document.getElementById('langMenu').classList.toggle('hidden')" class="flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
                 <span class="text-base leading-none" id="langFlag">🇪🇸</span>
                 <span class="text-sm font-medium text-zinc-700" id="langCode">ES</span>
@@ -312,365 +302,419 @@
                 <button onclick="MA_i18n.setLang('pt');document.getElementById('langFlag').textContent='🇧🇷';document.getElementById('langCode').textContent='PT';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇧🇷</span><span>Português</span></button>
               </div>
             </div>
-        <button class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-zinc-100 transition">
-          <div class="flex size-7 items-center justify-center rounded-full bg-zinc-200 text-xs font-semibold text-zinc-700">JP</div>
-          <span class="text-sm font-medium text-zinc-700">Dr. Rodriguez</span>
-          <i data-lucide="chevron-down" class="size-3.5 text-zinc-400"></i>
-        </button>
+            <button class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-zinc-100 transition"><div class="flex size-7 items-center justify-center rounded-full bg-zinc-200 text-xs font-semibold text-zinc-700">JP</div><span class="text-sm font-medium text-zinc-700">Dr. Rodriguez</span><i data-lucide="chevron-down" class="size-3.5 text-zinc-400"></i></button>
       </header>
 
       <!-- Page Header -->
       <div class="border-b border-zinc-200 bg-white px-6 py-4">
         <div class="flex items-center gap-1.5 text-xs text-zinc-500 mb-2">
-          <a href="../00-shell/dashboard-medico.html" class="hover:text-zinc-700 transition">Inicio</a>
-          <i data-lucide="chevron-right" class="size-3"></i>
-          <a href="#" class="hover:text-zinc-700 transition">Facturacion</a>
-          <i data-lucide="chevron-right" class="size-3"></i>
-          <span class="text-zinc-900">Rangos de Facturación</span>
+          <a href="../00-shell/dashboard-medico.html" class="hover:text-zinc-700 transition">Inicio</a><i data-lucide="chevron-right" class="size-3"></i>
+          <a href="#" class="hover:text-zinc-700 transition">Facturación</a><i data-lucide="chevron-right" class="size-3"></i>
+          <a href="#" class="hover:text-zinc-700 transition">Configuración General</a><i data-lucide="chevron-right" class="size-3"></i>
+          <span class="text-zinc-900">Tarifas de Facturación</span>
         </div>
-        <h1 class="text-lg font-semibold text-zinc-900">Rangos de Facturación</h1>
-        <p class="text-sm text-zinc-500 mt-0.5">Configuracion de consecutivos y rangos de numeracion</p>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-lg font-semibold text-zinc-900">Administración de Tarifas de Facturación</h1>
+            <p class="text-sm text-zinc-500 mt-0.5">Configuración y administración de las tarifas de facturación de los manuales tarifarios del sistema</p>
+          </div>
+          <button onclick="openCreateTarifaModal()" class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium flex items-center gap-2 hover:bg-blue-600 transition"><i data-lucide="plus" class="size-3.5"></i> Nueva Tarifa de Facturación</button>
+        </div>
       </div>
 
-      <!-- Page Body -->
-      <div class="flex-1 overflow-y-auto p-6">
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-3 gap-4 mb-6">
-          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm px-5 py-4">
-            <div class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 mb-1">Rangos Activos</div>
-            <div class="text-2xl font-bold text-zinc-900">4</div>
-          </div>
-          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm px-5 py-4">
-            <div class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 mb-1">Proximo a Vencer</div>
-            <div class="text-2xl font-bold text-amber-600">1</div>
-            <div class="text-[11px] text-zinc-400">Vence en 15 dias</div>
-          </div>
-          <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm px-5 py-4">
-            <div class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 mb-1">Facturas Emitidas Hoy</div>
-            <div class="text-2xl font-bold text-zinc-900">23</div>
-          </div>
-        </div>
-
-        <!-- Table Card -->
-        <div class="rounded-xl border border-zinc-200/60 bg-white shadow-sm">
-          <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-100">
-            <h2 class="text-sm font-semibold text-zinc-900">Rangos de Numeracion</h2>
-            <div class="flex items-center gap-3">
-              <span class="text-xs text-zinc-500">5 rangos</span>
-              <button class="inline-flex items-center gap-1.5 rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-600 transition" onclick="openModal()">
-                <i data-lucide="plus" class="size-3.5"></i> Nuevo Rango
-              </button>
+      <!-- Split Layout (JSF: adminPosTariff/principal.xhtml — list + detail) -->
+      <div class="flex flex-1 gap-4 overflow-hidden p-4">
+        <!-- Left: Tarifa list (JSF: panelSearch.xhtml filters + listTariff.xhtml results) -->
+        <div class="w-[340px] shrink-0 rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden flex flex-col">
+          <div class="p-3 border-b border-zinc-200">
+            <div class="flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 h-9">
+              <i data-lucide="search" class="size-4 text-zinc-400"></i>
+              <input type="text" class="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400" placeholder="Buscar tarifa por nombre...">
+            </div>
+            <div class="flex gap-2 mt-2">
+              <select class="flex-1 h-9 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-700 outline-none">
+                <option>Todos los estados</option><option>Activo</option><option>Eliminado</option>
+              </select>
+              <select class="flex-1 h-9 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-700 outline-none">
+                <option>Todos los manuales</option><option>SOAT</option><option>ISS</option><option>CUPS Particular</option><option>Manual Coomeva</option>
+              </select>
             </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-zinc-100 bg-zinc-50/50">
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Prefijo</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Resolución</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Id Num. F.E.</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Responsable</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Creado por</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Fecha Creación</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Sede</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Rango</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Progreso</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Vencimiento</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Tipo Mov. SICO</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Recaudos</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Estado</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500 w-[120px]">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-zinc-100">
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">FACT</td>
-                  <td class="px-5 py-3">18764002556370</td>
-                  <td class="px-5 py-3 text-zinc-600">SETP</td>
-                  <td class="px-5 py-3">Maria Lopez</td>
-                  <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
-                  <td class="px-5 py-3 text-zinc-600 text-xs">2025-12-29 05:05 PM</td>
-                  <td class="px-5 py-3">Sede Norte</td>
-                  <td class="px-5 py-3 text-xs">1 - 5,000</td>
-                  <td class="px-5 py-3">
-                    <div class="flex flex-col gap-1 min-w-[160px]">
-                      <div class="h-1.5 w-full rounded-full bg-zinc-200 overflow-hidden"><div class="h-full rounded-full bg-red-500" style="width:90.4%"></div></div>
-                      <div class="flex justify-between text-[11px] text-zinc-400"><span>Factura 4,521 de 5,000</span><span class="font-medium text-red-600">90.4%</span></div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-3">2027-06-30</td>
-                  <td class="px-5 py-3 font-mono text-zinc-700">03</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">NO</span></td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-1">
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Editar"><i data-lucide="pencil" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Sede"><i data-lucide="building" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar Sede</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-red-500 hover:bg-red-50 transition" title="Eliminar" onclick="openDeleteConfirm('FACT')"><i data-lucide="trash-2" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
-                </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">NC</td>
-                  <td class="px-5 py-3">18764002556371</td>
-                  <td class="px-5 py-3 text-zinc-400">—</td>
-                  <td class="px-5 py-3">Carlos Gomez</td>
-                  <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
-                  <td class="px-5 py-3 text-zinc-600 text-xs">2025-12-26 10:27 AM</td>
-                  <td class="px-5 py-3">Sede Norte</td>
-                  <td class="px-5 py-3 text-xs">1 - 2,000</td>
-                  <td class="px-5 py-3">
-                    <div class="flex flex-col gap-1 min-w-[160px]">
-                      <div class="h-1.5 w-full rounded-full bg-zinc-200 overflow-hidden"><div class="h-full rounded-full bg-amber-500" style="width:72%"></div></div>
-                      <div class="flex justify-between text-[11px] text-zinc-400"><span>NC 1,440 de 2,000</span><span class="font-medium text-amber-600">72.0%</span></div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-3">2027-06-30</td>
-                  <td class="px-5 py-3 font-mono text-zinc-700">17</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">NO</span></td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-1">
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Editar"><i data-lucide="pencil" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Sede"><i data-lucide="building" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar Sede</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-red-500 hover:bg-red-50 transition" title="Eliminar" onclick="openDeleteConfirm('NC')"><i data-lucide="trash-2" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
-                </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">ND</td>
-                  <td class="px-5 py-3">18764002556372</td>
-                  <td class="px-5 py-3 text-zinc-400">—</td>
-                  <td class="px-5 py-3">Carlos Gomez</td>
-                  <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
-                  <td class="px-5 py-3 text-zinc-600 text-xs">2024-10-24 05:07 PM</td>
-                  <td class="px-5 py-3">Sede Norte</td>
-                  <td class="px-5 py-3 text-xs">1 - 1,000</td>
-                  <td class="px-5 py-3">
-                    <div class="flex flex-col gap-1 min-w-[160px]">
-                      <div class="h-1.5 w-full rounded-full bg-zinc-200 overflow-hidden"><div class="h-full rounded-full bg-emerald-500" style="width:23%"></div></div>
-                      <div class="flex justify-between text-[11px] text-zinc-400"><span>ND 230 de 1,000</span><span class="font-medium text-emerald-600">23.0%</span></div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-3">2027-06-30</td>
-                  <td class="px-5 py-3 font-mono text-zinc-700">03</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700">SI</span></td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-1">
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Editar"><i data-lucide="pencil" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Sede"><i data-lucide="building" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar Sede</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-red-500 hover:bg-red-50 transition" title="Eliminar" onclick="openDeleteConfirm('ND')"><i data-lucide="trash-2" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
-                </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition">
-                  <td class="px-5 py-3 font-medium text-zinc-900">FACT-S</td>
-                  <td class="px-5 py-3">18764002556373</td>
-                  <td class="px-5 py-3 text-zinc-600">FPLC</td>
-                  <td class="px-5 py-3">Ana Torres</td>
-                  <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
-                  <td class="px-5 py-3 text-zinc-600 text-xs">2024-01-10 11:33 AM</td>
-                  <td class="px-5 py-3">Sede Sur</td>
-                  <td class="px-5 py-3 text-xs">1 - 3,000</td>
-                  <td class="px-5 py-3">
-                    <div class="flex flex-col gap-1 min-w-[160px]">
-                      <div class="h-1.5 w-full rounded-full bg-zinc-200 overflow-hidden"><div class="h-full rounded-full bg-emerald-500" style="width:45%"></div></div>
-                      <div class="flex justify-between text-[11px] text-zinc-400"><span>Factura 1,350 de 3,000</span><span class="font-medium text-emerald-600">45.0%</span></div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-3">2027-12-31</td>
-                  <td class="px-5 py-3 font-mono text-zinc-700">08</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">NO</span></td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-1">
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Editar"><i data-lucide="pencil" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition" title="Sede"><i data-lucide="building" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Editar Sede</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-red-500 hover:bg-red-50 transition" title="Eliminar" onclick="openDeleteConfirm('FACT-S')"><i data-lucide="trash-2" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
-                </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="hover:bg-zinc-50/50 transition opacity-60">
-                  <td class="px-5 py-3 font-medium text-zinc-900">FACT-OLD</td>
-                  <td class="px-5 py-3">18764002554100</td>
-                  <td class="px-5 py-3 text-zinc-400">—</td>
-                  <td class="px-5 py-3">Maria Lopez</td>
-                  <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
-                  <td class="px-5 py-3 text-zinc-600 text-xs">2022-11-29 02:42 PM</td>
-                  <td class="px-5 py-3">Sede Norte</td>
-                  <td class="px-5 py-3 text-xs">1 - 5,000</td>
-                  <td class="px-5 py-3">
-                    <div class="flex flex-col gap-1 min-w-[160px]">
-                      <div class="h-1.5 w-full rounded-full bg-zinc-200 overflow-hidden"><div class="h-full rounded-full bg-zinc-400" style="width:100%"></div></div>
-                      <div class="flex justify-between text-[11px] text-zinc-400"><span>Agotado 5,000 de 5,000</span><span class="font-medium">100%</span></div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-3 text-red-600">2025-12-31</td>
-                  <td class="px-5 py-3 font-mono text-zinc-700">01</td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600">NO</span></td>
-                  <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">Vencido</span></td>
-                  <td class="px-5 py-3">
-                    <div class="flex items-center gap-1">
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 transition" title="Ver" disabled><i data-lucide="eye" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Ver detalle</div>
-                </div>
-                      <div class="group relative inline-flex">
-                  <button class="flex size-7 items-center justify-center rounded-md text-red-500 hover:bg-red-50 transition" title="Eliminar" onclick="openDeleteConfirm('FACT-OLD')"><i data-lucide="trash-2" class="size-3.5"></i></button>
-                  <div class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100">Eliminar</div>
-                </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="flex-1 overflow-y-auto">
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 bg-blue-50 border-l-[3px] border-l-blue-600">
+              <div class="text-sm font-medium text-zinc-900">Tarifa SOAT 2026</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Manual: SOAT &middot; Creada: 01/01/2026 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition">
+              <div class="text-sm font-medium text-zinc-900">Tarifa ISS 2026 + 30%</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Manual: ISS &middot; Creada: 05/01/2026 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition">
+              <div class="text-sm font-medium text-zinc-900">Tarifa CUPS Particular 2026</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Manual: CUPS Particular &middot; Creada: 10/01/2026 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition">
+              <div class="text-sm font-medium text-zinc-900">Tarifa Manual Coomeva</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Manual: Manual Coomeva &middot; Creada: 01/03/2026 &middot; <span class="text-emerald-600">Activo</span></div>
+            </div>
+            <div class="cursor-pointer border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50 transition opacity-60">
+              <div class="text-sm font-medium text-zinc-900">Tarifa SOAT 2025</div>
+              <div class="text-[11px] text-zinc-400 mt-0.5">Manual: SOAT &middot; Creada: 01/01/2025 &middot; <span class="text-red-600">Eliminado</span></div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Modal: Crear Rango -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden" id="createModal">
-    <div class="w-full max-w-lg rounded-xl border border-zinc-200/60 bg-white shadow-xl">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-100">
-        <h3 class="text-sm font-semibold text-zinc-900">Nuevo Rango de Facturación</h3>
-        <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeModal()"><i data-lucide="x" class="size-4"></i></button>
-      </div>
-      <div class="p-5">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Responsable<span class="text-red-500 ml-0.5">*</span></label>
-            <select class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition">
-              <option value="">Seleccionar empleado...</option>
-              <option>Maria Lopez</option>
-              <option>Carlos Gomez</option>
-              <option>Ana Torres</option>
-            </select>
+        <!-- Right: Tarifa detail (JSF: tariffSelected.xhtml + servicios + listTariffLog.xhtml) -->
+        <div class="flex-1 rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden flex flex-col">
+          <!-- Tabs (JSF: Información tariff + Servicios + Registro de cambio) -->
+          <div class="border-b border-zinc-200 px-4">
+            <div class="flex gap-0">
+              <button class="tab-btn px-4 py-2.5 text-sm font-medium text-zinc-900 border-b-2 border-zinc-900" onclick="switchTab(event,'info')">Información de la Tarifa</button>
+              <button class="tab-btn px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition border-b-2 border-transparent" onclick="switchTab(event,'services')">Servicios</button>
+              <button class="tab-btn px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition border-b-2 border-transparent" onclick="switchTab(event,'log')">Registro de Cambio</button>
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Tipo Documento<span class="text-red-500 ml-0.5">*</span></label>
-            <select class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition">
-              <option value="">Seleccionar...</option>
-              <option>Factura de Venta</option>
-              <option>Nota Credito</option>
-              <option>Nota Debito</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Tipo Movimiento SICO<span class="text-red-500 ml-0.5">*</span></label>
-            <input type="text"
-                   maxlength="2"
-                   inputmode="numeric"
-                   pattern="[0-9]{1,2}"
-                   class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition"
-                   placeholder="Ej. 03">
-            <p class="text-[11px] text-zinc-400 mt-1">Código numérico de hasta 2 dígitos. Requerido si la cuenta usa facturación electrónica SICO.</p>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Sede<span class="text-red-500 ml-0.5">*</span></label>
-            <select class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition">
-              <option value="">Seleccionar sede...</option>
-              <option>Sede Norte</option>
-              <option>Sede Sur</option>
-              <option>Sede Centro</option>
-              <option>Sede Principal</option>
-            </select>
-          </div>
-          <div class="col-span-2">
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Resolución<span class="text-red-500 ml-0.5">*</span></label>
-            <input type="text" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="Número de resolución" maxlength="100">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Prefijo</label>
-            <input type="text" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="FACT" maxlength="10">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Id Numeracion F.E.</label>
-            <input type="text" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="Solo si facturación electronica" maxlength="100">
-            <p class="text-[11px] text-zinc-400 mt-1">Requerido si tiene facturación electrónica habilitada</p>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Número Inicial<span class="text-red-500 ml-0.5">*</span></label>
-            <input type="number" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="1" min="1">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Número Final<span class="text-red-500 ml-0.5">*</span></label>
-            <input type="number" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="5000" min="1">
-          </div>
-          <div class="col-span-2">
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Fecha de Expiracion<span class="text-red-500 ml-0.5">*</span></label>
-            <input type="date" class="w-full max-w-[220px] rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition">
-          </div>
-          <div class="col-span-2 mt-1">
-            <label class="flex items-start gap-2.5 cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50/50 p-3 hover:bg-zinc-50 transition">
-              <input type="checkbox" class="mt-0.5 size-4 rounded border-zinc-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer" id="checkRecaudo">
-              <div class="flex-1">
-                <div class="text-xs font-semibold text-zinc-900">Es resolución para recaudos</div>
-                <p class="text-[11px] text-zinc-500 mt-0.5">Marque si esta resolución se utiliza para recaudo de cuotas moderadoras, copagos u otros pagos del paciente.</p>
+
+          <!-- Tab: Info (JSF: tariffSelected.xhtml — Nombre, Descripción, Porcentaje, Redondeo, Manual, Fechas) -->
+          <div class="tab-content flex-1 overflow-y-auto p-5" id="tab-info">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Nombre<span class="text-red-500 ml-0.5">*</span></label>
+                <input type="text" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition" value="Tarifa SOAT 2026">
               </div>
-            </label>
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Manual Tarifario</label>
+                <div class="h-9 px-3 rounded-md border border-zinc-200 bg-zinc-50 text-sm text-zinc-700 flex items-center">SOAT</div>
+              </div>
+              <div class="col-span-2">
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Descripción</label>
+                <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition resize-none">Tarifa de facturación basada en el manual SOAT vigencia 2026.</textarea>
+              </div>
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Porcentaje</label>
+                <div class="flex items-center gap-2">
+                  <select disabled class="h-9 w-14 rounded-md border border-zinc-200 bg-zinc-50 px-2 text-sm text-zinc-700">
+                    <option>+</option><option>-</option>
+                  </select>
+                  <input type="number" disabled value="0" class="h-9 w-24 rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-700 text-right">
+                  <span class="text-sm text-zinc-500">%</span>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Redondeo de Cifras</label>
+                <div class="h-9 px-3 rounded-md border border-zinc-200 bg-zinc-50 text-sm text-zinc-700 flex items-center">Centenas</div>
+              </div>
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Fecha Inicio</label>
+                <input type="date" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition" value="2026-01-01">
+              </div>
+              <div>
+                <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Fecha Fin</label>
+                <input type="date" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition" value="2026-12-31">
+              </div>
+            </div>
+
+            <!-- Metadatos (JSF: tariffSelected.xhtml panelInfo) -->
+            <div class="mt-6 rounded-lg border border-zinc-200/60 bg-zinc-50/40 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-3">Información de Registro</p>
+              <div class="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span class="text-xs text-zinc-500">Fecha de Creación</span>
+                  <div class="text-zinc-900">2026-01-01 09:15 am</div>
+                </div>
+                <div>
+                  <span class="text-xs text-zinc-500">Creado por</span>
+                  <div class="text-zinc-900">Maria Lopez</div>
+                </div>
+                <div>
+                  <span class="text-xs text-zinc-500">Estado</span>
+                  <div><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Activo</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-2 mt-6">
+              <button class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition">Editar Tarifa</button>
+              <button class="h-9 px-4 rounded-md border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition">Eliminar Tarifa</button>
+            </div>
+          </div>
+
+          <!-- Tab: Servicios (JSF: principal.xhtml dataTable — Código Cups / Código de facturación / Nombre / Precio Base / Precio Tarifa) -->
+          <div class="tab-content hidden flex-1 overflow-hidden flex flex-col" id="tab-services">
+            <div class="flex items-center gap-3 p-4 border-b border-zinc-200">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-medium text-zinc-500">Buscar por:</span>
+                <div class="flex items-center gap-1.5 h-9 rounded-md border border-zinc-200 bg-white px-2.5">
+                  <i data-lucide="search" class="size-3.5 text-zinc-400"></i>
+                  <input type="text" class="bg-transparent text-sm outline-none placeholder:text-zinc-400 w-[220px]" placeholder="Código CUPS o nombre...">
+                </div>
+              </div>
+              <div class="flex-1"></div>
+              <button onclick="openAddServiceModal()" class="inline-flex items-center gap-1.5 h-9 rounded-md border border-blue-200 bg-blue-50 px-3 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"><i data-lucide="plus" class="size-3.5"></i> Adicionar Servicio</button>
+              <button class="inline-flex items-center gap-1.5 h-9 rounded-md border border-zinc-200 px-3 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition"><i data-lucide="save" class="size-3.5"></i> Actualizar Servicios</button>
+            </div>
+            <div class="flex-1 overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-zinc-200 bg-zinc-50/50">
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Código CUPS</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Código de Facturación</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Nombre</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Precio Base</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">Precio Tarifa</th>
+                    <th class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500 w-[140px]">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">890201</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">SRV-001</td>
+                    <td class="px-5 py-3">Consulta de primera vez medicina general</td>
+                    <td class="px-5 py-3 text-right">$40,000</td>
+                    <td class="px-5 py-3 text-right font-medium">$45,000</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">890301</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">SRV-002</td>
+                    <td class="px-5 py-3">Consulta de control medicina general</td>
+                    <td class="px-5 py-3 text-right">$30,000</td>
+                    <td class="px-5 py-3 text-right font-medium">$35,000</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">890401</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">SRV-003</td>
+                    <td class="px-5 py-3">Consulta primera vez especialista</td>
+                    <td class="px-5 py-3 text-right">$70,000</td>
+                    <td class="px-5 py-3 text-right font-medium">$80,000</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">871120</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">SRV-004</td>
+                    <td class="px-5 py-3">Radiografía de tórax PA</td>
+                    <td class="px-5 py-3 text-right">$22,000</td>
+                    <td class="px-5 py-3 text-right font-medium">$25,000</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">903841</td>
+                    <td class="px-5 py-3 font-medium text-zinc-900">SRV-005</td>
+                    <td class="px-5 py-3">Hemograma completo (IV)</td>
+                    <td class="px-5 py-3 text-right">$16,500</td>
+                    <td class="px-5 py-3 text-right font-medium">$18,500</td>
+                    <td class="px-5 py-3 text-right">
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-md">Editar</button>
+                      <button class="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-600 hover:bg-red-50 rounded-md">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-5 py-3 border-t border-zinc-200">
+              <span class="text-xs text-zinc-500">Mostrando 1-200 de 1,847 servicios</span>
+              <div class="flex items-center gap-1">
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-400" disabled><i data-lucide="chevron-left" class="size-3.5"></i></button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-900 bg-blue-500 text-white text-xs font-medium">1</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">2</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">3</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs">...</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 text-xs hover:bg-zinc-50">10</button>
+                <button class="flex size-8 items-center justify-center rounded-md border border-zinc-200 text-zinc-700 hover:bg-zinc-50"><i data-lucide="chevron-right" class="size-3.5"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Registro de Cambio (JSF: listTariffLog.xhtml) -->
+          <div class="tab-content hidden flex-1 overflow-y-auto" id="tab-log">
+            <div class="p-5">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-zinc-200 bg-zinc-50/50">
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Fecha</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Usuario</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Acción</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Detalle</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">2026-03-15 14:30</td>
+                    <td class="px-5 py-3">Maria Lopez</td>
+                    <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">Edición</span></td>
+                    <td class="px-5 py-3">Actualizado precio SRV-001: $40,000 → $45,000</td>
+                  </tr>
+                  <tr class="hover:bg-zinc-50/50 transition">
+                    <td class="px-5 py-3">2026-01-05 09:15</td>
+                    <td class="px-5 py-3">Maria Lopez</td>
+                    <td class="px-5 py-3"><span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Creación</span></td>
+                    <td class="px-5 py-3">Tarifa creada con 1,847 servicios importados</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-zinc-100">
-        <button class="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeModal()">Cancelar</button>
-        <button class="rounded-lg bg-blue-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-600 transition">Guardar Rango</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Confirmar Eliminación (replica del panelConfirmation de JSF) -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden" id="deleteConfirmModal">
-    <div class="w-full max-w-md rounded-xl border border-zinc-200/60 bg-white shadow-xl">
-      <div class="flex items-start gap-3 px-5 py-4 border-b border-zinc-100">
-        <div class="flex size-9 items-center justify-center rounded-full bg-red-50 shrink-0"><i data-lucide="alert-triangle" class="size-5 text-red-600"></i></div>
-        <div class="flex-1">
-          <h3 class="text-sm font-semibold text-zinc-900">¿Eliminar rango de facturación?</h3>
-          <p class="text-xs text-zinc-500 mt-1">Esta acción no se puede deshacer. Se eliminará el rango <span id="deleteTargetPrefijo" class="font-semibold text-zinc-900">—</span> de forma permanente.</p>
-        </div>
-        <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeDeleteConfirm()"><i data-lucide="x" class="size-4"></i></button>
+  <!-- Modal: Nueva Tarifa de Facturación (JSF: newTariff.xhtml — wizard 3 pasos consolidado) -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" id="createTarifaModal" style="display:none;" onclick="if(event.target===this)closeCreateTarifaModal()">
+    <div class="w-full max-w-lg rounded-xl border border-zinc-200/60 bg-white shadow-lg">
+      <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
+        <h3 class="text-base font-semibold text-zinc-900">Nueva Tarifa de Facturación</h3>
+        <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeCreateTarifaModal()"><i data-lucide="x" class="size-4"></i></button>
       </div>
-      <div class="flex items-center justify-end gap-2 px-5 py-4">
-        <button class="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeDeleteConfirm()">Cancelar</button>
-        <button class="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700 transition" onclick="closeDeleteConfirm()">Eliminar</button>
+      <div class="p-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Manual Tarifario<span class="text-red-500 ml-0.5">*</span></label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option value="">Seleccionar manual...</option>
+                <option>SOAT</option>
+                <option>ISS</option>
+                <option>CUPS Particular</option>
+                <option>Manual Coomeva</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Nombre<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="text" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="Ej: Tarifa SOAT 2027">
+          </div>
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Descripción</label>
+            <textarea rows="2" class="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 resize-none" placeholder="Descripción de la tarifa"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Porcentaje<span class="text-red-500 ml-0.5">*</span></label>
+            <div class="flex items-center gap-2">
+              <select class="h-9 w-14 rounded-md border border-zinc-200 bg-white px-2 text-sm text-zinc-900">
+                <option>+</option><option>-</option>
+              </select>
+              <div class="relative flex-1">
+                <input type="number" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 pr-8 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200" placeholder="0" value="0">
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400">%</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Redondeo de Cifras</label>
+            <div class="relative">
+              <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                <option>Unidades</option>
+                <option>Decenas</option>
+                <option>Centenas</option>
+                <option>Miles</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Fecha Inicio<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="date" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">Fecha Fin<span class="text-red-500 ml-0.5">*</span></label>
+            <input type="date" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+        </div>
+        <p class="text-[11px] text-zinc-500 mt-4 italic">Tras crear la tarifa, podrás vincular los servicios del manual seleccionado desde la pestaña "Servicios".</p>
+      </div>
+      <div class="flex items-center justify-end gap-2 border-t border-zinc-200 px-6 py-4">
+        <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeCreateTarifaModal()">Cancelar</button>
+        <button class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition" onclick="closeCreateTarifaModal()">Crear Tarifa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Adicionar Servicio (JSF: newService.xhtml — servicio dentro de tarifa de facturación) -->
+  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" id="addServiceModal" style="display:none;" onclick="if(event.target===this)closeAddServiceModal()">
+    <div class="w-[640px] max-w-[95vw] max-h-[85vh] flex flex-col rounded-xl bg-white shadow-2xl">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-200">
+        <div class="flex items-center gap-2">
+          <i data-lucide="plus-circle" class="size-5 text-blue-600"></i>
+          <h3 class="text-[15px] font-semibold text-zinc-900">Adicionar Servicio</h3>
+        </div>
+        <button class="flex size-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeAddServiceModal()"><i data-lucide="x" class="size-4"></i></button>
+      </div>
+      <div class="p-5 overflow-y-auto">
+        <p class="text-xs text-zinc-500 mb-4">Asignale un precio tarifa para un servicio existente del manual.</p>
+
+        <div class="mb-4">
+          <label class="block text-xs font-medium text-zinc-700 mb-1.5">Servicio<span class="text-red-500 ml-0.5">*</span></label>
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+            <input type="text" placeholder="Buscar por código CUPS o nombre..." class="w-full h-10 pl-9 pr-3 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-zinc-200 overflow-hidden mb-4 max-h-[260px] overflow-y-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-zinc-50 sticky top-0">
+              <tr class="border-b border-zinc-200">
+                <th class="px-3 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500 w-10"></th>
+                <th class="px-3 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Código CUPS</th>
+                <th class="px-3 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-zinc-500">Servicio</th>
+                <th class="px-3 py-2.5 text-right text-[11px] font-medium uppercase tracking-wider text-zinc-500">Precio Base</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-100">
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="srv" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">890301</td>
+                <td class="px-3 py-2.5 text-zinc-700">Consulta de control medicina general</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$38,000</td>
+              </tr>
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="srv" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">890201</td>
+                <td class="px-3 py-2.5 text-zinc-700">Consulta de primera vez medicina especializada</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$120,000</td>
+              </tr>
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="srv" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">903841</td>
+                <td class="px-3 py-2.5 text-zinc-700">Hemograma IV (hemoglobina, hematocrito)</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$22,000</td>
+              </tr>
+              <tr class="hover:bg-blue-50/50 transition cursor-pointer">
+                <td class="px-3 py-2.5"><input type="radio" name="srv" class="size-4 accent-blue-600 cursor-pointer"></td>
+                <td class="px-3 py-2.5 font-medium text-zinc-900">871010</td>
+                <td class="px-3 py-2.5 text-zinc-700">Radiografía de tórax</td>
+                <td class="px-3 py-2.5 text-right text-zinc-700">$48,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-zinc-700 mb-1.5">Precio Tarifa<span class="text-red-500 ml-0.5">*</span></label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 pointer-events-none">$</span>
+            <input type="number" placeholder="0" class="w-full h-10 pl-7 pr-3 rounded-lg border border-zinc-300 bg-white text-sm text-zinc-900 text-right outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-zinc-200">
+        <button class="h-9 px-4 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition" onclick="closeAddServiceModal()">Cancelar</button>
+        <button class="h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition" onclick="closeAddServiceModal()">Agregar</button>
       </div>
     </div>
   </div>
@@ -714,17 +758,30 @@
       }
     }
     function toggleContrast() { document.documentElement.classList.toggle('high-contrast'); }
-    function openModal() { document.getElementById('createModal').classList.remove('hidden'); document.getElementById('createModal').classList.add('flex'); }
-    function closeModal() { document.getElementById('createModal').classList.add('hidden'); document.getElementById('createModal').classList.remove('flex'); }
-    function openDeleteConfirm(prefijo) {
-      var t = document.getElementById('deleteTargetPrefijo');
-      if (t) t.textContent = prefijo || '—';
-      var m = document.getElementById('deleteConfirmModal');
-      m.classList.remove('hidden'); m.classList.add('flex');
+    function switchTab(e, tabId) {
+      document.querySelectorAll('.tab-btn').forEach(function(t) { t.classList.remove('text-zinc-900','border-zinc-900'); t.classList.add('text-zinc-500','border-transparent'); });
+      document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.add('hidden'); });
+      e.target.classList.remove('text-zinc-500','border-transparent');
+      e.target.classList.add('text-zinc-900','border-zinc-900');
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
     }
-    function closeDeleteConfirm() {
-      var m = document.getElementById('deleteConfirmModal');
-      m.classList.add('hidden'); m.classList.remove('flex');
+    function openCreateTarifaModal() {
+      document.getElementById('createTarifaModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    }
+    function closeCreateTarifaModal() {
+      document.getElementById('createTarifaModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function openAddServiceModal() {
+      document.getElementById('addServiceModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    }
+    function closeAddServiceModal() {
+      document.getElementById('addServiceModal').style.display = 'none';
+      document.body.style.overflow = '';
     }
   </script>
 
