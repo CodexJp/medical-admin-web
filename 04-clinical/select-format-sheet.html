@@ -98,13 +98,14 @@
               <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
             </button>
             <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración Formatos Historia Clínica</span></a>
           <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.config_servicio">Configuración de Servicio</span></a>
           <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.otros_procedimientos">Configuración de Otros Procedimientos</span></a>
           <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.lista_chequeo">Administración de lista de chequeo</span></a>
           <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.ocupaciones">Administración de Ocupaciones</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Profesionales</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Especialidades</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          </div>
+        </div>
           </div>
 <div class="subgroup">
             <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
@@ -113,7 +114,8 @@
             </button>
             <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5 open">
           <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700"><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
-          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración Formatos Historia Clínica</span></a>        </div>
+          <a href="../04-clinical/historia-clinica-externa.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Historia Clínica Externa</span></a>
+</div>
           </div>
 </div>
       </div>
@@ -707,6 +709,91 @@
     var sw = document.getElementById('langSwitcher');
     if (menu && sw && !sw.contains(e.target)) menu.classList.add('hidden');
   });
+</script>
+
+
+<script>
+  // ═══ HC Externa Context Switcher ═══
+  // Cuando se viene desde Historia Clínica Externa (?from=hc-externa),
+  // se mantiene el sidebar marcando "Historia Clínica Externa" como leaf activo,
+  // se propaga el query param en links del flujo de atención,
+  // y se actualiza breadcrumb/botones de retorno para apuntar a HC Externa.
+  (function() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('from') !== 'hc-externa') return;
+
+      // 1. Sidebar: desmarcar "Atención de Pacientes", marcar "Historia Clínica Externa"
+      document.querySelectorAll('#sidebar .nav-leaf').forEach(function(a) {
+        var href = a.getAttribute('href') || '';
+        if (href.indexOf('attention-queue.html') !== -1) {
+          a.className = 'nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors';
+        }
+        if (href.indexOf('historia-clinica-externa.html') !== -1) {
+          a.className = 'nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700';
+        }
+      });
+
+      // 2. Propagar ?from=hc-externa en todos los enlaces del flujo de atención
+      var flowFiles = ['welcome.html','select-format-sheet.html','hc-main.html','finalizar-atencion.html','post-finalizacion.html'];
+      function ensureParam(url) {
+        if (!url) return url;
+        if (url.indexOf('from=hc-externa') !== -1) return url;
+        var has = flowFiles.some(function(f) { return url.indexOf(f) !== -1; });
+        if (!has) return url;
+        var sep = url.indexOf('?') !== -1 ? '&' : '?';
+        return url + sep + 'from=hc-externa';
+      }
+      document.querySelectorAll('a[href]').forEach(function(a) {
+        a.setAttribute('href', ensureParam(a.getAttribute('href')));
+      });
+      document.querySelectorAll('[onclick]').forEach(function(el) {
+        var oc = el.getAttribute('onclick') || '';
+        var newOc = oc.replace(/(['"])(welcome\.html|select-format-sheet\.html|hc-main\.html|finalizar-atencion\.html|post-finalizacion\.html)(['"])/g, function(m, q1, file, q2) {
+          if (m.indexOf('from=hc-externa') !== -1) return m;
+          return q1 + file + '?from=hc-externa' + q2;
+        });
+        if (newOc !== oc) el.setAttribute('onclick', newOc);
+      });
+
+      // 3. Breadcrumbs y botones "Volver": cambiar attention-queue.html → historia-clinica-externa.html
+      //    y reemplazar texto visible "Atención de Pacientes" por "Historia Clínica Externa"
+      //    EXCLUYE el sidebar (los leaves del sidebar conservan su texto canónico)
+      document.querySelectorAll('a[href*="attention-queue.html"]').forEach(function(a) {
+        if (a.closest('#sidebar')) return;
+        var href = a.getAttribute('href') || '';
+        a.setAttribute('href', href.replace('attention-queue.html', 'historia-clinica-externa.html'));
+        // Reemplazar texto en spans y nodos hijos
+        a.querySelectorAll('*').forEach(function(child) {
+          if (child.children.length === 0 && child.textContent && child.textContent.trim() === 'Atención de Pacientes') {
+            child.textContent = 'Historia Clínica Externa';
+          }
+        });
+        // textNodes directos
+        a.childNodes.forEach(function(n) {
+          if (n.nodeType === 3 && n.textContent.indexOf('Atención de Pacientes') !== -1) {
+            n.textContent = n.textContent.replace('Atención de Pacientes', 'Historia Clínica Externa');
+          }
+        });
+      });
+      // Botones con onclick que vuelvan a attention-queue
+      document.querySelectorAll('button[onclick*="attention-queue.html"]').forEach(function(b) {
+        if (b.closest('#sidebar')) return;
+        var oc = b.getAttribute('onclick') || '';
+        b.setAttribute('onclick', oc.replace(/attention-queue\.html/g, 'historia-clinica-externa.html'));
+        b.childNodes.forEach(function(n) {
+          if (n.nodeType === 3 && n.textContent.indexOf('Atención de Pacientes') !== -1) {
+            n.textContent = n.textContent.replace('Atención de Pacientes', 'Historia Clínica Externa');
+          }
+        });
+        b.querySelectorAll('*').forEach(function(child) {
+          if (child.children.length === 0 && child.textContent && child.textContent.indexOf('Atención de Pacientes') !== -1) {
+            child.textContent = child.textContent.replace('Atención de Pacientes', 'Historia Clínica Externa');
+          }
+        });
+      });
+    } catch(e) { console.warn('HC Externa context switcher:', e); }
+  })();
 </script>
 
 </body>

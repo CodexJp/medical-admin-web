@@ -91,13 +91,14 @@
               <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
             </button>
             <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración Formatos Historia Clínica</span></a>
           <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.config_servicio">Configuración de Servicio</span></a>
           <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.otros_procedimientos">Configuración de Otros Procedimientos</span></a>
           <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.lista_chequeo">Administración de lista de chequeo</span></a>
           <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.ocupaciones">Administración de Ocupaciones</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Profesionales</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Especialidades</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          </div>
+        </div>
           </div>
 <div class="subgroup">
             <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
@@ -106,7 +107,8 @@
             </button>
             <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
           <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
-          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración Formatos Historia Clínica</span></a>        </div>
+          <a href="../04-clinical/historia-clinica-externa.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Historia Clínica Externa</span></a>
+</div>
           </div>
 </div>
       </div>
@@ -368,7 +370,6 @@
                 <tr class="border-b border-zinc-100 bg-zinc-50/50">
                   <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Prefijo</th>
                   <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Resolución</th>
-                  <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Id Num. F.E.</th>
                   <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Responsable</th>
                   <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Creado por</th>
                   <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Fecha Creación</th>
@@ -386,7 +387,6 @@
                 <tr class="hover:bg-zinc-50/50 transition">
                   <td class="px-5 py-3 font-medium text-zinc-900">FACT</td>
                   <td class="px-5 py-3">18764002556370</td>
-                  <td class="px-5 py-3 text-zinc-600">SETP</td>
                   <td class="px-5 py-3">Maria Lopez</td>
                   <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
                   <td class="px-5 py-3 text-zinc-600 text-xs">2025-12-29 05:05 PM</td>
@@ -422,7 +422,6 @@
                 <tr class="hover:bg-zinc-50/50 transition">
                   <td class="px-5 py-3 font-medium text-zinc-900">NC</td>
                   <td class="px-5 py-3">18764002556371</td>
-                  <td class="px-5 py-3 text-zinc-400">—</td>
                   <td class="px-5 py-3">Carlos Gomez</td>
                   <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
                   <td class="px-5 py-3 text-zinc-600 text-xs">2025-12-26 10:27 AM</td>
@@ -458,7 +457,6 @@
                 <tr class="hover:bg-zinc-50/50 transition">
                   <td class="px-5 py-3 font-medium text-zinc-900">ND</td>
                   <td class="px-5 py-3">18764002556372</td>
-                  <td class="px-5 py-3 text-zinc-400">—</td>
                   <td class="px-5 py-3">Carlos Gomez</td>
                   <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
                   <td class="px-5 py-3 text-zinc-600 text-xs">2024-10-24 05:07 PM</td>
@@ -494,7 +492,6 @@
                 <tr class="hover:bg-zinc-50/50 transition">
                   <td class="px-5 py-3 font-medium text-zinc-900">FACT-S</td>
                   <td class="px-5 py-3">18764002556373</td>
-                  <td class="px-5 py-3 text-zinc-600">FPLC</td>
                   <td class="px-5 py-3">Ana Torres</td>
                   <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
                   <td class="px-5 py-3 text-zinc-600 text-xs">2024-01-10 11:33 AM</td>
@@ -530,7 +527,6 @@
                 <tr class="hover:bg-zinc-50/50 transition opacity-60">
                   <td class="px-5 py-3 font-medium text-zinc-900">FACT-OLD</td>
                   <td class="px-5 py-3">18764002554100</td>
-                  <td class="px-5 py-3 text-zinc-400">—</td>
                   <td class="px-5 py-3">Maria Lopez</td>
                   <td class="px-5 py-3 text-zinc-600">Gerardo Rueda Escorcia</td>
                   <td class="px-5 py-3 text-zinc-600 text-xs">2022-11-29 02:42 PM</td>
@@ -568,8 +564,8 @@
   </div>
 
   <!-- Modal: Crear Rango -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden" id="createModal">
-    <div class="w-full max-w-lg rounded-xl border border-zinc-200/60 bg-white shadow-xl">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden p-4" id="createModal">
+    <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-zinc-200/60 bg-white shadow-xl">
       <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-100">
         <h3 class="text-sm font-semibold text-zinc-900">Nuevo Rango de Facturación</h3>
         <button class="flex size-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 transition" onclick="closeModal()"><i data-lucide="x" class="size-4"></i></button>
@@ -618,14 +614,9 @@
             <label class="block text-xs font-medium text-zinc-700 mb-1">Resolución<span class="text-red-500 ml-0.5">*</span></label>
             <input type="text" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="Número de resolución" maxlength="100">
           </div>
-          <div>
+          <div class="col-span-2">
             <label class="block text-xs font-medium text-zinc-700 mb-1">Prefijo</label>
             <input type="text" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="FACT" maxlength="10">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-700 mb-1">Id Numeracion F.E.</label>
-            <input type="text" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition" placeholder="Solo si facturación electronica" maxlength="100">
-            <p class="text-[11px] text-zinc-400 mt-1">Requerido si tiene facturación electrónica habilitada</p>
           </div>
           <div>
             <label class="block text-xs font-medium text-zinc-700 mb-1">Número Inicial<span class="text-red-500 ml-0.5">*</span></label>

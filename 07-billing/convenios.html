@@ -82,13 +82,14 @@
               <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
             </button>
             <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración Formatos Historia Clínica</span></a>
           <a href="../05-medical-config/servicios.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.config_servicio">Configuración de Servicio</span></a>
           <a href="../05-medical-config/procedimientos.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.otros_procedimientos">Configuración de Otros Procedimientos</span></a>
           <a href="../05-medical-config/checklist.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.lista_chequeo">Administración de lista de chequeo</span></a>
           <a href="../05-medical-config/ocupaciones.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.ocupaciones">Administración de Ocupaciones</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Profesionales</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración de Especialidades</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
-          </div>
+        </div>
           </div>
 <div class="subgroup">
             <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
@@ -97,7 +98,8 @@
             </button>
             <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
           <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
-          <a href="../04-clinical/format-list.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Configuración Formatos Historia Clínica</span></a>        </div>
+          <a href="../04-clinical/historia-clinica-externa.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Historia Clínica Externa</span></a>
+</div>
           </div>
 </div>
       </div>
@@ -873,7 +875,7 @@
       <div class="grid grid-cols-2 gap-x-5 gap-y-4">
         <div>
           <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo de Cliente<span class="text-red-500 ml-0.5">*</span></label>
-          <select id="wzTipoCliente" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm cursor-pointer focus:outline-none focus:border-zinc-400">
+          <select id="wzTipoCliente" onchange="updateClientTypeFields(this.value)" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm cursor-pointer focus:outline-none focus:border-zinc-400">
             <option value="">-- Seleccione el tipo de convenio --</option>
             <option value="particular">Particular</option>
             <option value="eps">EPS / Empresa</option>
@@ -887,19 +889,39 @@
           <label class="block text-sm font-medium text-zinc-700 mb-1.5">Nombre<span class="text-red-500 ml-0.5">*</span></label>
           <input type="text" maxlength="100" placeholder="Nombre del convenio (max. 100 caracteres)" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm focus:outline-none focus:border-zinc-400">
         </div>
-        <div>
-          <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo de facturación</label>
+        <!-- Régimen — solo si EPS/Empresa -->
+        <div id="wzRegimenWrap" class="hidden">
+          <label class="block text-sm font-medium text-zinc-700 mb-1.5">Régimen<span class="text-red-500 ml-0.5">*</span></label>
           <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm cursor-pointer focus:outline-none focus:border-zinc-400">
             <option value="">-- Seleccione --</option>
-            <option>Capitación</option>
-            <option>Evento</option>
-            <option>Periódica</option>
+            <option>Contributivo</option>
+            <option>Subsidiado</option>
+            <option>Especial o de Excepción</option>
+            <option>No definido</option>
           </select>
-          <p class="text-[11px] text-zinc-400 mt-1">Disabled si Tipo Cliente = Particular</p>
         </div>
-        <div>
+        <div id="wzTipoFactWrap">
+          <label class="block text-sm font-medium text-zinc-700 mb-1.5">Tipo de facturación</label>
+          <select id="wzTipoFact" onchange="updateBillingTypeFields(this.value)" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm cursor-pointer focus:outline-none focus:border-zinc-400 disabled:bg-zinc-100 disabled:text-zinc-400 disabled:cursor-not-allowed">
+            <option value="">-- Seleccione --</option>
+            <option value="capitacion">Capitación</option>
+            <option value="evento">Evento</option>
+            <option value="periodica">Periódica</option>
+          </select>
+          <p id="wzTipoFactHint" class="text-[11px] text-zinc-400 mt-1 hidden">No aplica para clientes Particulares.</p>
+        </div>
+        <!-- Valor a pagar — solo cuando Tipo Facturación = Capitación + Cliente NO Particular (JSF) -->
+        <div id="wzValorPagarWrap" class="hidden">
+          <label class="block text-sm font-medium text-zinc-700 mb-1.5">Valor a pagar<span class="text-red-500 ml-0.5">*</span></label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400 pointer-events-none">$</span>
+            <input type="number" placeholder="0" class="w-full h-9 rounded-md border border-zinc-200 bg-white pl-7 pr-3 text-sm text-zinc-900 text-right focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+          </div>
+          <p class="text-[11px] text-zinc-400 mt-1">Visible cuando Tipo de facturación = Capitación.</p>
+        </div>
+        <div id="wzCoberturaWrap">
           <label class="block text-sm font-medium text-zinc-700 mb-1.5">Cobertura o Plan de Beneficios <span class="inline-flex items-center rounded-md bg-blue-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 ml-1">Solo COL</span></label>
-          <select class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm cursor-pointer focus:outline-none focus:border-zinc-400">
+          <select id="wzCobertura" class="w-full h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm cursor-pointer focus:outline-none focus:border-zinc-400 disabled:bg-zinc-100 disabled:text-zinc-400 disabled:cursor-not-allowed">
             <option>-- Seleccione una cobertura o plan de beneficios --</option>
             <option>Plan de beneficios en salud financiado con UPC</option>
             <option>Presupuesto máximo</option>
@@ -917,6 +939,7 @@
             <option>Cobertura Fondo Nacional Personas Privadas Libertad</option>
             <option>Particular</option>
           </select>
+          <p id="wzCoberturaHint" class="text-[11px] text-zinc-400 mt-1 hidden">No aplica para clientes Particulares.</p>
         </div>
         <div>
           <label class="block text-sm font-medium text-zinc-700 mb-1.5">Vigencia - Desde<span class="text-red-500 ml-0.5">*</span></label>
@@ -936,6 +959,14 @@
             <div>
               <div class="text-sm font-medium text-blue-900">Permitir el envío automático del RIPS hacia el Mecanismo Único de Validación (Resolución 2275)</div>
               <p class="text-[11px] text-blue-700 mt-0.5">Solo Colombia</p>
+            </div>
+          </label>
+          <!-- PGP — solo si EPS/Empresa -->
+          <label id="wzPGPWrap" class="hidden flex items-start gap-2.5 cursor-pointer rounded-lg border border-emerald-200 bg-emerald-50/40 p-3 hover:bg-emerald-50 transition">
+            <input type="checkbox" class="mt-0.5 size-4 rounded border-emerald-300 text-emerald-600 cursor-pointer">
+            <div>
+              <div class="text-sm font-medium text-emerald-900">Aplica Pago global prospectivo (PGP)</div>
+              <p class="text-[11px] text-emerald-700 mt-0.5">Sólo cuando Tipo de facturación = Capitación. Habilita facturación PGP en SICO.</p>
             </div>
           </label>
         </div>
@@ -1207,6 +1238,47 @@
     document.getElementById('wizNextBtn').classList.toggle('hidden', wizStep === TOTAL_STEPS);
     document.getElementById('wizSaveBtn').classList.toggle('hidden', wizStep !== TOTAL_STEPS);
     lucide.createIcons();
+  }
+
+  // Wizard convenio: lógica condicional según Tipo de Cliente
+  function updateClientTypeFields(value) {
+    const isParticular = value === 'particular';
+    const isEPS = value === 'eps';
+    const regimenWrap = document.getElementById('wzRegimenWrap');
+    const tipoFact = document.getElementById('wzTipoFact');
+    const tipoFactHint = document.getElementById('wzTipoFactHint');
+    const cobertura = document.getElementById('wzCobertura');
+    const coberturaHint = document.getElementById('wzCoberturaHint');
+    const pgpWrap = document.getElementById('wzPGPWrap');
+    const valorWrap = document.getElementById('wzValorPagarWrap');
+
+    // Régimen y PGP: solo visibles para EPS/Empresa
+    if (regimenWrap) regimenWrap.classList.toggle('hidden', !isEPS);
+    if (pgpWrap) pgpWrap.classList.toggle('hidden', !isEPS);
+
+    // Tipo de facturación y Cobertura: deshabilitados para Particular
+    if (tipoFact) {
+      tipoFact.disabled = isParticular;
+      if (isParticular) tipoFact.value = '';
+    }
+    if (cobertura) {
+      cobertura.disabled = isParticular;
+      if (isParticular) cobertura.selectedIndex = 0;
+    }
+    if (tipoFactHint) tipoFactHint.classList.toggle('hidden', !isParticular);
+    if (coberturaHint) coberturaHint.classList.toggle('hidden', !isParticular);
+
+    // Valor a pagar: oculto si Particular (reevaluar tipo facturación)
+    if (valorWrap && isParticular) valorWrap.classList.add('hidden');
+  }
+
+  // Wizard convenio: Valor a pagar visible solo si Tipo Facturación = Capitación (y Cliente NO Particular)
+  function updateBillingTypeFields(value) {
+    const tipoCliente = document.getElementById('wzTipoCliente');
+    const valorWrap = document.getElementById('wzValorPagarWrap');
+    const isCapitacion = value === 'capitacion';
+    const isParticular = tipoCliente && tipoCliente.value === 'particular';
+    if (valorWrap) valorWrap.classList.toggle('hidden', !(isCapitacion && !isParticular));
   }
 
   // Toast

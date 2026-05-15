@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cita Masiva — MedicalAdmin</title>
+  <title>MedicalAdmin — Historia Clínica Externa</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -17,7 +17,7 @@
   </script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Only custom CSS for sidebar collapse behavior — everything else is Tailwind */
+    /* Only custom CSS for sidebar collapse behavior */
     .sidebar-collapsed { width: 64px !important; }
     .sidebar-collapsed .sidebar-hide { display: none !important; }
     .sidebar-collapsed .sidebar-nav-item { justify-content: center; padding: 8px; }
@@ -46,6 +46,8 @@
     .sidebar-scroll::-webkit-scrollbar { width: 4px; }
     .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
     .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+    /* Selected row */
+    .row-selected { background-color: rgb(244 244 245); }
   </style>
   <script src="../_shared/i18n.js" defer></script>
 </head>
@@ -69,15 +71,15 @@
         <i data-lucide="home" class="size-[18px]"></i><span data-i18n="menu.home" class="sidebar-hide">Inicio</span>
       </a>
       <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-blue-700 bg-blue-50 transition-colors"><i data-lucide="calendar-search" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.consulta_externa" class="sidebar-hide flex-1 text-left">Consulta Externa</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 open"></i></button>
-        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200 open">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="calendar-search" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.consulta_externa" class="sidebar-hide flex-1 text-left">Consulta Externa</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
           <div class="subgroup">
             <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
               <span>Agendamiento</span>
-              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400 open"></i>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
             </button>
-            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5 open">
-          <a href="../01-calendar/index.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700"><span data-i18n="app.creacion_citas_medicas">Creación de Citas Médicas</span></a>
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+          <a href="../01-calendar/index.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.creacion_citas_medicas">Creación de Citas Médicas</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Creación de Otros Eventos</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
           <a href="../03-reception/index.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.recepcion_paciente">Recepción de Paciente</span></a>
           <a aria-disabled="true" tabindex="-1" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-400 cursor-not-allowed pointer-events-none"><span>Administración Motivos de Cancelación de Cita</span><span class="ml-auto text-[9px] uppercase tracking-[0.05em] font-medium text-zinc-300">Pronto</span></a>
@@ -86,8 +88,8 @@
 </div>
       </div>
       <div class="nav-group">
-        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors"><i data-lucide="clipboard-list" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.historia_clinica" class="sidebar-hide flex-1 text-left">Historia Clínica</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 "></i></button>
-        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200">
+        <button type="button" class="nav-trigger w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-semibold text-blue-700 bg-blue-50 transition-colors"><i data-lucide="clipboard-list" class="size-[18px] text-blue-600 shrink-0"></i><span data-i18n="menu.historia_clinica" class="sidebar-hide flex-1 text-left">Historia Clínica</span><i data-lucide="chevron-right" class="nav-chevron sidebar-hide size-4 text-zinc-400 open"></i></button>
+        <div class="nav-submenu ml-3 pl-3 mt-1 space-y-0.5 sidebar-hide border-l border-zinc-200 open">
           <div class="subgroup">
             <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
               <span>Configuración General</span>
@@ -106,11 +108,11 @@
 <div class="subgroup">
             <button type="button" class="subgroup-trigger flex items-center justify-between w-full text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 px-2 py-1.5 rounded-md cursor-pointer transition-colors">
               <span>Historia Clínica</span>
-              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400"></i>
+              <i data-lucide="chevron-right" class="subgroup-chevron size-3 text-zinc-400 open"></i>
             </button>
-            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5">
+            <div class="subgroup-submenu ml-3 pl-3 border-l border-zinc-200 space-y-0.5 open">
           <a href="../04-clinical/attention-queue.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span data-i18n="app.atencion_pacientes">Atención de Pacientes</span></a>
-          <a href="../04-clinical/historia-clinica-externa.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-normal text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"><span>Historia Clínica Externa</span></a>
+          <a href="../04-clinical/historia-clinica-externa.html" class="nav-leaf flex items-center px-2 py-1.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700"><span>Historia Clínica Externa</span></a>
 </div>
           </div>
 </div>
@@ -286,232 +288,301 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- MAIN AREA -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <div class="flex flex-1 flex-col overflow-y-auto">
+    <div class="flex flex-1 flex-col overflow-hidden">
 
-      <!-- Top Bar -->
-      <div class="sticky top-0 z-20 flex h-14 items-center gap-4 border-b border-zinc-200 bg-white px-6">
-        <a href="../01-calendar/index.html" class="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition">
-          <i data-lucide="arrow-left" class="size-4"></i> Volver a Agenda
-        </a>
-        <h1 class="text-base font-semibold text-zinc-900">Creación de Citas Masivas</h1>
-      </div>
+      <!-- Header -->
+      <header class="sticky top-0 z-50 border-b border-zinc-200 bg-white">
+        <div class="flex items-center justify-between gap-6 px-6 py-2">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="flex size-7 items-center justify-center rounded-md bg-zinc-100"><i data-lucide="building-2" class="size-3.5 text-zinc-500"></i></div>
+              <span class="text-sm font-medium text-zinc-900">Clinica San Rafael</span>
+            </div>
+            <div class="h-4 w-px bg-zinc-200"></div>
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+              <input type="text" placeholder="Buscar pacientes, CIE-10, CUPS..." readonly class="h-9 w-80 rounded-md border border-zinc-200 bg-zinc-50 pl-9 pr-12 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2"><kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-white px-1 text-[10px] font-medium text-zinc-400">&#8984;K</kbd></span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="relative flex size-9 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition">
+              <i data-lucide="bell" class="size-[18px]"></i>
+              <span class="absolute top-1 right-0.5 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-semibold text-white ring-2 ring-white">5</span>
+            </button>
+            <div class="relative" id="langSwitcher">
+              <button type="button" onclick="event.stopPropagation();document.getElementById('langMenu').classList.toggle('hidden')" class="flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+                <span class="text-base leading-none" id="langFlag">🇪🇸</span>
+                <span class="text-sm font-medium text-zinc-700" id="langCode">ES</span>
+                <i data-lucide="chevron-down" class="size-3 text-zinc-400"></i>
+              </button>
+              <div id="langMenu" class="hidden absolute right-0 top-full mt-1 w-36 rounded-md border border-zinc-200 bg-white shadow-lg py-1 z-50">
+                <button onclick="MA_i18n.setLang('es');document.getElementById('langFlag').textContent='🇪🇸';document.getElementById('langCode').textContent='ES';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇪🇸</span><span>Español</span></button>
+                <button onclick="MA_i18n.setLang('en');document.getElementById('langFlag').textContent='🇺🇸';document.getElementById('langCode').textContent='EN';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇺🇸</span><span>English</span></button>
+                <button onclick="MA_i18n.setLang('pt');document.getElementById('langFlag').textContent='🇧🇷';document.getElementById('langCode').textContent='PT';document.getElementById('langMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-zinc-50 text-left text-zinc-700"><span class="text-base">🇧🇷</span><span>Português</span></button>
+              </div>
+            </div>
+            <button class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-zinc-100 transition">
+              <div class="flex size-7 items-center justify-center rounded-md bg-blue-500 text-[11px] font-semibold text-white">JP</div>
+              <span class="text-sm font-medium text-zinc-900">Dr. Rodriguez</span>
+            </button>
+          </div>
+        </div>
+      </header>
 
       <!-- Content -->
-      <main class="flex-1 overflow-y-auto bg-zinc-50 px-6 py-6">
-        <div class="max-w-[900px] mx-auto">
-
-          <!-- Programación -->
-          <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm mb-4">
-            <div class="mb-3.5 flex items-center gap-2 text-sm font-semibold text-zinc-900">
-              <i data-lucide="settings-2" class="size-4 text-zinc-400"></i>
-              Programación
-            </div>
-            <div class="grid grid-cols-3 gap-x-4 gap-y-3">
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Profesional<span class="text-red-600">*</span></label>
-                <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>Dr. Enrique Lopez Guzman</option>
-                  <option>Dra. Ella Barrios Johnson</option>
-                  <option>Dr. Eduardo Name Dau</option>
-                  <option>Dr. Jose Miranda Villada</option>
-                </select>
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Fecha Inicio<span class="text-red-600">*</span></label>
-                <input type="date" value="2026-04-06" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Fecha Fin<span class="text-red-600">*</span></label>
-                <input type="date" value="2026-05-03" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Tipo Cita / Evento<span class="text-red-600">*</span></label>
-                <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option selected>Consulta General</option>
-                  <option>Control</option>
-                  <option>Procedimiento</option>
-                  <option>PYP - Promoción y Prevención</option>
-                  <option>Telemedicina</option>
-                </select>
-              </div>
-            </div>
+      <main class="flex-1 overflow-hidden p-6">
+        <!-- Page Title -->
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h1 class="text-lg font-semibold text-zinc-900 tracking-tight">Historia Clínica Externa</h1>
+            <p class="text-sm text-zinc-500">Búsqueda directa de pacientes en el sistema para atención sin cita previa</p>
           </div>
-
-          <!-- Configuración por Dia -->
-          <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm mb-4">
-            <div class="mb-3.5 flex items-center gap-2 text-sm font-semibold text-zinc-900">
-              <i data-lucide="calendar-days" class="size-4 text-zinc-400"></i>
-              Configuración por Dia
-            </div>
-            <!-- Column Headers -->
-            <div class="mb-2.5 grid grid-cols-[140px_1fr_1fr_1fr] gap-2.5 px-3 text-[11px] text-zinc-400">
-              <span>Dia</span><span>Rango Horario</span><span>Duración</span><span>Hora Inicio</span>
-            </div>
-            <!-- Days Grid -->
-            <div class="flex flex-col gap-2">
-              <!-- Lunes -->
-              <div class="grid grid-cols-[140px_1fr_1fr_1fr] items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2.5">
-                <div class="flex items-center gap-2 text-sm font-medium text-zinc-900">
-                  <input type="checkbox" checked class="size-4 accent-blue-600"> Lunes
-                </div>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>7:00 AM — 12:00 PM</option><option>2:00 PM — 6:00 PM</option>
-                </select>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>30 min — Consulta</option><option>45 min</option><option>60 min</option>
-                </select>
-                <input type="time" value="07:00" class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <!-- Martes -->
-              <div class="grid grid-cols-[140px_1fr_1fr_1fr] items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2.5">
-                <div class="flex items-center gap-2 text-sm font-medium text-zinc-900">
-                  <input type="checkbox" checked class="size-4 accent-blue-600"> Martes
-                </div>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>7:00 AM — 12:00 PM</option>
-                </select>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>30 min — Consulta</option>
-                </select>
-                <input type="time" value="07:00" class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <!-- Miercoles -->
-              <div class="grid grid-cols-[140px_1fr_1fr_1fr] items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2.5">
-                <div class="flex items-center gap-2 text-sm font-medium text-zinc-900">
-                  <input type="checkbox" checked class="size-4 accent-blue-600"> Miercoles
-                </div>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>2:00 PM — 6:00 PM</option>
-                </select>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>30 min — Consulta</option>
-                </select>
-                <input type="time" value="14:00" class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <!-- Jueves -->
-              <div class="grid grid-cols-[140px_1fr_1fr_1fr] items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2.5">
-                <div class="flex items-center gap-2 text-sm font-medium text-zinc-900">
-                  <input type="checkbox" checked class="size-4 accent-blue-600"> Jueves
-                </div>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>7:00 AM — 12:00 PM</option>
-                </select>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>30 min — Consulta</option>
-                </select>
-                <input type="time" value="07:00" class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <!-- Viernes -->
-              <div class="grid grid-cols-[140px_1fr_1fr_1fr] items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2.5">
-                <div class="flex items-center gap-2 text-sm font-medium text-zinc-900">
-                  <input type="checkbox" checked class="size-4 accent-blue-600"> Viernes
-                </div>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>7:00 AM — 12:00 PM</option>
-                </select>
-                <select class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>30 min — Consulta</option>
-                </select>
-                <input type="time" value="07:00" class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <!-- Sabado (disabled) -->
-              <div class="grid grid-cols-[140px_1fr_1fr_1fr] items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2.5 opacity-40">
-                <div class="flex items-center gap-2 text-sm font-medium text-zinc-900">
-                  <input type="checkbox" class="size-4 accent-blue-600"> Sabado
-                </div>
-                <select disabled class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none"><option>--</option></select>
-                <select disabled class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none"><option>--</option></select>
-                <input type="time" disabled class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none">
-              </div>
-              <!-- Domingo (disabled) -->
-              <div class="grid grid-cols-[140px_1fr_1fr_1fr] items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50/80 px-3 py-2.5 opacity-40">
-                <div class="flex items-center gap-2 text-sm font-medium text-zinc-900">
-                  <input type="checkbox" class="size-4 accent-blue-600"> Domingo
-                </div>
-                <select disabled class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none"><option>--</option></select>
-                <select disabled class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none"><option>--</option></select>
-                <input type="time" disabled class="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-900 outline-none">
-              </div>
-            </div>
-          </div>
-
-          <!-- Paciente -->
-          <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm mb-4">
-            <div class="mb-3.5 flex items-center gap-2 text-sm font-semibold text-zinc-900">
-              <i data-lucide="user" class="size-4 text-zinc-400"></i>
-              Paciente
-            </div>
-            <div class="grid grid-cols-3 gap-x-4 gap-y-3">
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Tipo Documento<span class="text-red-600">*</span></label>
-                <select class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                  <option>Cedula de Ciudadania</option>
-                </select>
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Identificación<span class="text-red-600">*</span></label>
-                <input type="text" placeholder="Ingrese número de documento" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">&nbsp;</label>
-                <button class="inline-flex h-9 items-center gap-1.5 self-start rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-900 hover:bg-zinc-50 transition">
-                  <i data-lucide="search" class="size-3.5"></i> Buscar
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Excepciones -->
-          <div class="rounded-xl border border-zinc-200/60 bg-white p-6 shadow-sm mb-4">
-            <div class="mb-3.5 flex items-center gap-2 text-sm font-semibold text-zinc-900">
-              <i data-lucide="calendar-x-2" class="size-4 text-zinc-400"></i>
-              Excepciones (Opcional)
-            </div>
-            <div class="grid grid-cols-2 gap-x-4 gap-y-3">
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Fechas a Excluir</label>
-                <input type="text" placeholder="Ej: 2026-04-10, 2026-04-17" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-                <div class="text-[11px] text-zinc-400">Separe las fechas con coma</div>
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-zinc-600">Nota</label>
-                <input type="text" placeholder="Ej: Festivos, vacaciones" class="h-9 rounded-md border border-zinc-200 bg-white px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15">
-              </div>
-            </div>
-          </div>
-
-          <!-- Preview: Se crearan X citas -->
-          <div class="rounded-xl border border-blue-200/60 bg-blue-50/50 p-5 shadow-sm mb-4">
-            <div class="flex items-center gap-3">
-              <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-                <i data-lucide="calculator" class="size-5 text-blue-600"></i>
-              </div>
-              <div class="flex-1">
-                <p class="text-sm font-semibold text-zinc-900">Se crearan <span class="text-blue-600">20 citas</span> en el periodo seleccionado</p>
-                <p class="text-xs text-zinc-500 mt-0.5">5 dias activos x 4 semanas. 2 fechas excluidas por conflicto de horario.</p>
-              </div>
-              <div class="flex gap-2">
-                <button onclick="window.location.href='../01-calendar/index.html'" class="h-9 rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-900 hover:bg-zinc-50 transition">Cancelar</button>
-                <button onclick="alert('20 citas masivas creadas exitosamente. 2 excluidas por conflicto.')" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-blue-500 px-4 text-sm font-medium text-white hover:bg-blue-600 transition">
-                  <i data-lucide="check" class="size-4"></i> Crear Citas Masivas
-                </button>
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        <!-- Split Layout: Búsqueda izq + Resultados der -->
+        <div class="flex gap-4 h-[calc(100vh-180px)]">
+
+          <!-- Panel izquierdo: Buscar por -->
+          <div class="w-[340px] shrink-0 rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-zinc-200/60">
+              <h2 class="text-sm font-semibold text-zinc-900">Buscar por</h2>
+              <p class="text-xs text-zinc-500 mt-0.5">Pacientes que se encuentran en el sistema</p>
+            </div>
+            <div class="p-5 space-y-3 flex-1 overflow-y-auto">
+              <div>
+                <label class="block text-xs font-medium text-zinc-600 mb-1">Tipo de Documento</label>
+                <div class="relative">
+                  <select class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 pr-8 text-sm text-zinc-900 appearance-none cursor-pointer focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+                    <option value="">Tipo de Documento</option>
+                    <option>Cédula de Ciudadanía</option>
+                    <option>Cédula de Extranjería</option>
+                    <option>Tarjeta de Identidad</option>
+                    <option>NIT</option>
+                    <option>RUT</option>
+                    <option>Pasaporte</option>
+                    <option>Registro Civil</option>
+                    <option>Adulto sin identificación</option>
+                    <option>Menor sin identificación</option>
+                    <option>Carnet Diplomático</option>
+                    <option>Salvoconducto</option>
+                    <option>Permiso Especial de Permanencia</option>
+                    <option>Residente Especial para la Paz</option>
+                    <option>Certificado de nacido vivo</option>
+                    <option>Documento de Identificación Extranjero</option>
+                    <option>NUIP</option>
+                    <option>Pasaporte de la ONU</option>
+                    <option>RUN</option>
+                    <option>Target Id de registro nacional</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400 pointer-events-none"></i>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-zinc-600 mb-1">Identificación</label>
+                <input type="text" placeholder="Número de documento" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-zinc-600 mb-1">Nombre</label>
+                <input type="text" placeholder="Nombre del paciente" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-zinc-600 mb-1">Apellido</label>
+                <input type="text" placeholder="Apellido del paciente" class="h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200">
+              </div>
+            </div>
+            <div class="p-4 border-t border-zinc-200/60 flex gap-2">
+              <button onclick="resetBusqueda()" class="h-9 px-3 rounded-md border border-zinc-200 bg-white text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition inline-flex items-center gap-1.5">
+                <i data-lucide="rotate-ccw" class="size-3.5"></i>
+                Limpiar
+              </button>
+              <button onclick="buscarPacientes()" class="flex-1 h-9 px-4 rounded-md bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition inline-flex items-center justify-center gap-1.5">
+                <i data-lucide="search" class="size-3.5"></i>
+                Buscar
+              </button>
+            </div>
+          </div>
+
+          <!-- Panel derecho: Resultados -->
+          <div class="flex-1 rounded-xl border border-zinc-200/60 bg-white shadow-sm overflow-hidden flex flex-col">
+
+            <!-- Estado inicial (oculto: la lista de pacientes carga por defecto) -->
+            <div id="estadoInicial" class="hidden flex-1 flex-col items-center justify-center text-center p-8">
+              <div class="size-16 rounded-full bg-zinc-100 grid place-items-center mb-4">
+                <i data-lucide="user-search" class="size-7 text-zinc-400"></i>
+              </div>
+              <h3 class="text-base font-semibold text-zinc-900">Bienvenido a Historia Clínica Externa</h3>
+              <p class="text-sm text-zinc-500 mt-1 max-w-md">Presione el botón Buscar en el panel izquierdo para ver todos los pacientes que se encuentran en el sistema, o filtre con los campos de búsqueda para una búsqueda más precisa.</p>
+            </div>
+
+            <!-- Estado loading (oculto) -->
+            <div id="estadoLoading" class="hidden flex-1 flex-col items-center justify-center p-8">
+              <div class="size-12 rounded-full border-4 border-blue-100 border-t-blue-500 animate-spin mb-4"></div>
+              <p class="text-sm text-zinc-500">Cargando pacientes...</p>
+            </div>
+
+            <!-- Estado sin resultados (oculto) -->
+            <div id="estadoVacio" class="hidden flex-1 flex-col items-center justify-center text-center p-8">
+              <div class="size-16 rounded-full bg-zinc-100 grid place-items-center mb-4">
+                <i data-lucide="search-x" class="size-7 text-zinc-400"></i>
+              </div>
+              <h3 class="text-base font-semibold text-zinc-900">No se encontraron pacientes</h3>
+              <p class="text-sm text-zinc-500 mt-1">Intente con otros criterios de búsqueda.</p>
+            </div>
+
+            <!-- Estado resultados (visible por defecto) -->
+            <div id="estadoResultados" class="flex-1 flex flex-col overflow-hidden">
+              <div class="px-5 py-4 border-b border-zinc-200/60 flex items-center justify-between shrink-0">
+                <div>
+                  <h2 class="text-sm font-semibold text-zinc-900">Resultados de búsqueda</h2>
+                  <p class="text-xs text-zinc-500 mt-0.5"><span id="resultsCount">8</span> pacientes encontrados</p>
+                </div>
+                <span class="text-xs text-zinc-400">Seleccione un paciente para iniciar atención</span>
+              </div>
+
+              <div class="flex-1 overflow-y-auto">
+                <table class="w-full">
+                  <thead class="bg-zinc-50/60 sticky top-0 z-10">
+                    <tr class="border-b border-zinc-200/60">
+                      <th class="text-left text-xs font-semibold text-zinc-600 px-5 py-3">Identificación</th>
+                      <th class="text-left text-xs font-semibold text-zinc-600 px-3 py-3">Tipo Documento</th>
+                      <th class="text-left text-xs font-semibold text-zinc-600 px-3 py-3">Nombre del Paciente</th>
+                      <th class="text-left text-xs font-semibold text-zinc-600 px-3 py-3">Edad</th>
+                      <th class="text-right text-xs font-semibold text-zinc-600 px-5 py-3">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-zinc-100">
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">52.345.678</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Cédula de Ciudadanía</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">María Alejandra Rodríguez Pérez</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">34 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('María Alejandra Rodríguez Pérez')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">80.123.456</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Cédula de Ciudadanía</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">Luis Fernando Castillo García</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">45 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('Luis Fernando Castillo García')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">1.032.456.789</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Cédula de Ciudadanía</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">Andrea Carolina Muñoz Torres</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">28 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('Andrea Carolina Muñoz Torres')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">19.876.543</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Cédula de Ciudadanía</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">Juan Pablo Herrera López</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">52 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('Juan Pablo Herrera López')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">1.015.234.567</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Cédula de Ciudadanía</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">Santiago Esteban López Ramírez</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">38 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('Santiago Esteban López Ramírez')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">41.987.654</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Cédula de Ciudadanía</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">Carmen Rosa Suárez Mendoza</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">61 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('Carmen Rosa Suárez Mendoza')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">1.001.234.567</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Tarjeta de Identidad</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">Sebastián Vargas Ortega</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">14 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('Sebastián Vargas Ortega')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-zinc-50/60 transition">
+                      <td class="px-5 py-3 text-sm font-medium text-zinc-900">P-9876543</td>
+                      <td class="px-3 py-3 text-sm text-zinc-700">Pasaporte</td>
+                      <td class="px-3 py-3 text-sm text-zinc-900">Isabella Romero Costa</td>
+                      <td class="px-3 py-3 text-sm text-zinc-600">29 años</td>
+                      <td class="px-5 py-3 text-right">
+                        <button onclick="seleccionarPaciente('Isabella Romero Costa')" class="h-8 px-3 rounded-md bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 transition inline-flex items-center gap-1.5">
+                          <i data-lucide="user-check" class="size-3.5"></i>
+                          Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
 
-<script>
-  lucide.createIcons();
+  <!-- AlertDialog shadcn (shared) -->
+  <div id="alert-overlay" class="hidden fixed inset-0 z-[100] items-center justify-center bg-black/50 backdrop-blur-sm" onclick="if(event.target===this) closeAlertDialog()">
+    <div class="w-full max-w-md rounded-xl border border-zinc-200 bg-white shadow-lg" onclick="event.stopPropagation()">
+      <div class="p-6">
+        <h3 id="alert-title" class="text-base font-semibold text-zinc-900 mb-1.5">Titulo</h3>
+        <p id="alert-desc" class="text-sm text-zinc-500 leading-relaxed">Descripción</p>
+      </div>
+      <div class="flex items-center justify-end gap-2 border-t border-zinc-100 px-6 py-4">
+        <button onclick="closeAlertDialog()" class="inline-flex h-9 items-center justify-center rounded-md border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition focus:outline-none focus:ring-2 focus:ring-zinc-200 focus:ring-offset-2">
+          Cancelar
+        </button>
+        <button id="alert-confirm" onclick="confirmAlertDialog()" class="inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
 
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
-  }
+  <script>
+    lucide.createIcons();
 
-  // Acordeón sidebar v4 — un grupo abierto a la vez
+    // ═══ Sidebar ═══
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-collapsed'); }
+    // Acordeón sidebar v4 — un grupo abierto a la vez
     document.querySelectorAll('#sidebar .nav-trigger').forEach(btn => {
       btn.addEventListener('click', () => {
         const submenu = btn.nextElementSibling;
@@ -538,21 +609,91 @@
       });
     });
     function toggleGroup(id) { /* legacy compat — no-op, replaced by acordeón listener */ }
+    function setFontSize(s) { /* placeholder */ }
 
-  function setFontSize(size) {
-    const root = document.documentElement;
-    document.querySelectorAll('button[onclick*="setFontSize"]').forEach(b => {
-      b.classList.remove('bg-zinc-900', 'text-white', 'border-zinc-900');
-      b.classList.add('text-zinc-500', 'bg-zinc-50', 'border-zinc-200');
-    });
-    event.target.closest('button').classList.remove('text-zinc-500', 'bg-zinc-50', 'border-zinc-200');
-    event.target.closest('button').classList.add('bg-zinc-900', 'text-white', 'border-zinc-900');
-    switch(size) {
-      case 'normal': root.style.fontSize = '13px'; break;
-      case 'large': root.style.fontSize = '16px'; break;
-      case 'xlarge': root.style.fontSize = '18px'; break;
+    // ═══ Búsqueda HC Externa ═══
+    function buscarPacientes() {
+      // Loading
+      document.getElementById('estadoInicial').classList.add('hidden');
+      document.getElementById('estadoResultados').classList.add('hidden');
+      document.getElementById('estadoVacio').classList.add('hidden');
+      document.getElementById('estadoLoading').classList.remove('hidden');
+      document.getElementById('estadoLoading').classList.add('flex');
+      // Simular carga 600ms y mostrar resultados
+      setTimeout(function() {
+        document.getElementById('estadoLoading').classList.add('hidden');
+        document.getElementById('estadoLoading').classList.remove('flex');
+        document.getElementById('estadoResultados').classList.remove('hidden');
+        document.getElementById('estadoResultados').classList.add('flex');
+      }, 600);
     }
-  }
+
+    function resetBusqueda() {
+      // Limpiar inputs/select
+      document.querySelectorAll('#estadoInicial, #estadoResultados, #estadoLoading, #estadoVacio').forEach(function(el) { el.classList.add('hidden'); el.classList.remove('flex'); });
+      document.getElementById('estadoInicial').classList.remove('hidden');
+      document.getElementById('estadoInicial').classList.add('flex');
+      // Reset inputs
+      document.querySelectorAll('main input[type="text"]').forEach(function(i) { i.value = ''; });
+      document.querySelectorAll('main select').forEach(function(s) { s.selectedIndex = 0; });
+    }
+
+    var _selectedName = '';
+    function seleccionarPaciente(name) {
+      _selectedName = name;
+      showAlertDialog(
+        'Iniciar atención',
+        'Se iniciará la atención del paciente: ' + name + '. Se abrirá la historia clínica del paciente.',
+        'Iniciar atención',
+        'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500',
+        function() { window.location = 'welcome.html?from=hc-externa'; }
+      );
+    }
+
+    // ═══ AlertDialog ═══
+    var _pendingAction = null;
+
+    function showAlertDialog(title, description, confirmLabel, confirmClass, actionFn) {
+      _pendingAction = actionFn;
+      document.getElementById('alert-title').textContent = title;
+      document.getElementById('alert-desc').textContent = description;
+      var confirmBtn = document.getElementById('alert-confirm');
+      confirmBtn.textContent = confirmLabel;
+      confirmBtn.className = 'inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 ' + confirmClass;
+      document.getElementById('alert-overlay').classList.remove('hidden');
+      document.getElementById('alert-overlay').classList.add('flex');
+    }
+
+    function closeAlertDialog() {
+      document.getElementById('alert-overlay').classList.add('hidden');
+      document.getElementById('alert-overlay').classList.remove('flex');
+      _pendingAction = null;
+    }
+
+    function confirmAlertDialog() {
+      if (_pendingAction) _pendingAction();
+      closeAlertDialog();
+    }
+  </script>
+
+<script>
+  // Sync lang button with current lang on load
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.MA_i18n) return;
+    var lang = window.MA_i18n.getLang();
+    var flags = { es: '🇪🇸', en: '🇺🇸', pt: '🇧🇷' };
+    var f = document.getElementById('langFlag');
+    var c = document.getElementById('langCode');
+    if (f) f.textContent = flags[lang] || '🇪🇸';
+    if (c) c.textContent = lang.toUpperCase();
+  });
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var menu = document.getElementById('langMenu');
+    var sw = document.getElementById('langSwitcher');
+    if (menu && sw && !sw.contains(e.target)) menu.classList.add('hidden');
+  });
 </script>
+
 </body>
 </html>
