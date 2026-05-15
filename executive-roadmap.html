@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedicalAdmin · Hoja de ruta ejecutiva</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            ink: { 950: '#0A0A0B', 900: '#18181B', 800: '#27272A', 700: '#3F3F46', 600: '#52525B', 500: '#71717A', 400: '#A1A1AA', 300: '#D4D4D8', 200: '#E4E4E7', 100: '#F4F4F5', 50: '#FAFAFA' }
+          },
+          boxShadow: {
+            'soft': '0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04)',
+            'glow': '0 0 0 1px rgba(99,102,241,0.12), 0 8px 32px rgba(99,102,241,0.12)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { -webkit-font-smoothing: antialiased; letter-spacing: -0.011em; }
+    .grid-bg {
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(99,102,241,0.06) 1px, transparent 0);
+      background-size: 32px 32px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .phase-card { transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1); }
+    .phase-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(99,102,241,0.2), 0 12px 32px rgba(0,0,0,0.06); }
+    .timeline-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #6366F1;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+    }
+    .timeline-dot.done {
+      background: #10B981; border-color: #10B981;
+      box-shadow: 0 0 0 4px rgba(16,185,129,0.18);
+    }
+    .timeline-dot.active {
+      background: #6366F1; border-color: #6366F1;
+      box-shadow: 0 0 0 5px rgba(99,102,241,0.22), 0 0 24px rgba(99,102,241,0.4);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    .timeline-dot.upcoming { background: white; border-color: #D4D4D8; box-shadow: none; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 5px rgba(99,102,241,0.22), 0 0 24px rgba(99,102,241,0.4); }
+      50% { box-shadow: 0 0 0 9px rgba(99,102,241,0.12), 0 0 36px rgba(99,102,241,0.55); }
+    }
+    .timeline-line { background: linear-gradient(90deg, #10B981 0%, #10B981 33%, #6366F1 33%, #6366F1 50%, #E4E4E7 50%, #E4E4E7 100%); }
+    .badge-soft { background: rgba(99,102,241,0.08); color: #4F46E5; }
+    .number-deco { font-feature-settings: 'tnum'; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body class="bg-ink-50 text-ink-900 font-sans">
+
+  <!-- HERO -->
+  <header class="relative border-b border-ink-200 bg-white overflow-hidden">
+    <div class="absolute inset-0 grid-bg opacity-60"></div>
+    <div class="relative max-w-6xl mx-auto px-8 py-12">
+      <div class="flex items-start justify-between flex-wrap gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-medium text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full mb-4">
+            <span class="size-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            <span>Documento ejecutivo · 15 mayo 2026</span>
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-ink-950 leading-[1.05]">
+            MedicalAdmin<br/>
+            <span class="gradient-text">Hoja de ruta del proyecto</span>
+          </h1>
+          <p class="mt-4 text-base text-ink-600 max-w-2xl leading-relaxed">
+            Modernización del sistema clínico. Arquitectura y prototipos cerrados.
+            Mañana sábado <strong class="text-ink-900">16 de mayo</strong> arranca la construcción
+            con la primera y segunda entrega en paralelo.
+          </p>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+          <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+            <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
+            <span>En marcha</span>
+          </div>
+          <p class="text-xs text-ink-500">Próxima revisión: cierre de Entrega 1</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-8 py-12 space-y-16">
+
+    <!-- ESTADO ACTUAL: 3 CARDS -->
+    <section>
+      <div class="flex items-baseline justify-between mb-5">
+        <h2 class="text-sm font-semibold text-ink-500 uppercase tracking-wider">Estado actual</h2>
+        <span class="text-xs text-ink-400">Lo entregado a la fecha</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- Card 1 -->
+        <div class="relative rounded-2xl bg-white border border-ink-200 p-6 shadow-soft overflow-hidden">
+          <div class="absolute top-0 right-0 size-24 bg-gradient-to-br from-emerald-100 to-transparent rounded-bl-full opacity-60"></div>
+          <div class="relative">
+            <div class="inline-flex items-center justify-center size-10 rounded-xl bg-emerald-100 text-emerald-700 mb-4">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h6M9 13h6M9 17h6"/></svg>
+            </div>
+            <p class="text-xs font-medium text-emerald-700 uppercase tracking-wider">Cerrado</p>
+            <h3 class="mt-1 text-xl font-semibold text-ink-950">Arquitectura definida</h3>
+            <p class="mt-2 text-sm text-ink-600 leading-relaxed">
+              Decisiones técnicas y de negocio cerradas. Cómo se conectan los módulos,
+              qué bases de datos usan y cómo se entrega a producción.
+            </p>
+            <div class="mt-4 flex items-center gap-2 text-xs text-ink-500">
+              <span class="size-1.5 rounded-full bg-emerald-500"></span>
+              <span>Listo para construir</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="relative rounded-2xl bg-white border border-ink-200 p-6 shadow-soft overflow-hidden">
+          <div class="absolute top-0 right-0 size-24 bg-gradient-to-br from-violet-100 to-transparent rounded-bl-full opacity-60"></div>
+          <div class="relative">
+            <div class="inline-flex items-center justify-center size-10 rounded-xl bg-violet-100 text-violet-700 mb-4">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <p class="text-xs font-medium text-violet-700 uppercase tracking-wider">Cerrado</p>
+            <h3 class="mt-1 text-xl font-semibold text-ink-950">Prototipos navegables</h3>
+            <p class="mt-2 text-sm text-ink-600 leading-relaxed">
+              Todas las pantallas del nuevo sistema publicadas en línea, revisadas
+              y validadas con el equipo de Hypersoft.
+            </p>
+            <div class="mt-4 flex items-center gap-2">
+              <a href="https://medical-admin-web-six.vercel.app" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-medium text-violet-700 hover:text-violet-900 transition">
+                <span>medical-admin-web-six.vercel.app</span>
+                <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="relative rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white p-6 shadow-glow overflow-hidden">
+          <div class="absolute top-0 right-0 size-32 bg-white/10 rounded-bl-full"></div>
+          <div class="relative">
+            <div class="inline-flex items-center justify-center size-10 rounded-xl bg-white/15 text-white mb-4">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+            <p class="text-xs font-medium text-indigo-100 uppercase tracking-wider">Inicia mañana</p>
+            <h3 class="mt-1 text-xl font-semibold text-white">Construcción Fase 1 + 2</h3>
+            <p class="mt-2 text-sm text-indigo-100 leading-relaxed">
+              Sábado 16 de mayo arranca la primera entrega (Base del sistema)
+              y en paralelo se inicia la segunda (Módulo de Citas).
+            </p>
+            <div class="mt-4 inline-flex items-center gap-1.5 text-xs font-medium bg-white/15 text-white px-2.5 py-1 rounded-full">
+              <span class="size-1.5 rounded-full bg-white animate-pulse"></span>
+              <span>16 may · 06:00</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ROADMAP TIMELINE -->
+    <section>
+      <div class="flex items-baseline justify-between mb-8">
+        <h2 class="text-sm font-semibold text-ink-500 uppercase tracking-wider">Hoja de ruta</h2>
+        <span class="text-xs text-ink-400">5 entregas · cierre 26 jun · soporte hasta oct</span>
+      </div>
+
+      <div class="rounded-2xl bg-white border border-ink-200 p-8 shadow-soft">
+        <!-- Timeline visual -->
+        <div class="relative pb-2">
+          <div class="absolute top-[26px] left-0 right-0 h-0.5 bg-ink-200"></div>
+          <div class="absolute top-[26px] left-0 h-0.5 bg-emerald-500" style="width: 22%"></div>
+
+          <div class="relative grid grid-cols-6 gap-2">
+            <!-- Hito: Arquitectura/Prototipos (HECHO) -->
+            <div class="flex flex-col items-center text-center">
+              <div class="timeline-dot done mb-3"></div>
+              <div class="text-[10px] uppercase tracking-wider font-semibold text-emerald-700">Hecho</div>
+              <div class="text-xs font-medium text-ink-900 mt-1">Base · Prototipos</div>
+              <span class="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <svg class="size-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>
+                Entregado
+              </span>
+            </div>
+
+            <!-- Entrega 1 ACTIVA -->
+            <div class="flex flex-col items-center text-center">
+              <div class="timeline-dot active mb-3"></div>
+              <div class="text-[10px] uppercase tracking-wider font-semibold text-indigo-700">Entrega 1</div>
+              <div class="text-xs font-medium text-ink-900 mt-1">Base del sistema</div>
+              <span class="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span class="size-1.5 rounded-full bg-indigo-500"></span>
+                22 may
+              </span>
+            </div>
+
+            <!-- Entrega 2 ACTIVA en paralelo -->
+            <div class="flex flex-col items-center text-center">
+              <div class="timeline-dot active mb-3"></div>
+              <div class="text-[10px] uppercase tracking-wider font-semibold text-indigo-700">Entrega 2</div>
+              <div class="text-xs font-medium text-ink-900 mt-1">Módulo de Citas</div>
+              <span class="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span class="size-1.5 rounded-full bg-indigo-500"></span>
+                30 may
+              </span>
+            </div>
+
+            <!-- Entrega 3 -->
+            <div class="flex flex-col items-center text-center">
+              <div class="timeline-dot upcoming mb-3"></div>
+              <div class="text-[10px] uppercase tracking-wider font-semibold text-ink-500">Entrega 3</div>
+              <div class="text-xs font-medium text-ink-700 mt-1">Historia Clínica</div>
+              <span class="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-ink-600 bg-white border border-ink-200 px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span class="size-1.5 rounded-full bg-ink-300"></span>
+                5 jun
+              </span>
+            </div>
+
+            <!-- Entrega 4 -->
+            <div class="flex flex-col items-center text-center">
+              <div class="timeline-dot upcoming mb-3"></div>
+              <div class="text-[10px] uppercase tracking-wider font-semibold text-ink-500">Entrega 4</div>
+              <div class="text-xs font-medium text-ink-700 mt-1">Facturación</div>
+              <span class="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-ink-600 bg-white border border-ink-200 px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span class="size-1.5 rounded-full bg-ink-300"></span>
+                12 jun
+              </span>
+            </div>
+
+            <!-- Entrega 5 -->
+            <div class="flex flex-col items-center text-center">
+              <div class="timeline-dot upcoming mb-3"></div>
+              <div class="text-[10px] uppercase tracking-wider font-semibold text-ink-500">Entrega 5</div>
+              <div class="text-xs font-medium text-ink-700 mt-1">Cierre y entrega</div>
+              <span class="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-ink-600 bg-white border border-ink-200 px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span class="size-1.5 rounded-full bg-ink-300"></span>
+                26 jun
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="mt-8 pt-6 border-t border-ink-100 flex items-center gap-6 text-xs">
+          <div class="flex items-center gap-2"><span class="size-2.5 rounded-full bg-emerald-500"></span><span class="text-ink-600">Cerrado</span></div>
+          <div class="flex items-center gap-2"><span class="size-2.5 rounded-full bg-indigo-500"></span><span class="text-ink-600">En marcha</span></div>
+          <div class="flex items-center gap-2"><span class="size-2.5 rounded-full bg-white border-2 border-ink-300"></span><span class="text-ink-600">Por venir</span></div>
+          <div class="ml-auto text-ink-400">Soporte continuo hasta <strong class="text-ink-600">octubre 2026</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARDS POR FASE -->
+    <section>
+      <div class="flex items-baseline justify-between mb-5">
+        <h2 class="text-sm font-semibold text-ink-500 uppercase tracking-wider">Alcance por entrega</h2>
+        <span class="text-xs text-ink-400">Qué llega al usuario en cada fase</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <!-- E1 -->
+        <article class="phase-card rounded-2xl bg-white border border-indigo-200 ring-1 ring-indigo-100 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center justify-center size-9 rounded-lg bg-indigo-100 text-indigo-700 font-bold text-sm">01</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-1 rounded-full uppercase tracking-wider">
+              <span class="size-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+              En marcha
+            </span>
+          </div>
+          <h3 class="text-lg font-semibold text-ink-950">Base del sistema</h3>
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-full">
+              <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Entrega: 22 may 2026
+            </span>
+            <span class="text-xs text-ink-500">1 semana</span>
+          </div>
+          <p class="mt-3 text-sm text-ink-600 leading-relaxed">
+            Dejar funcionando el ambiente técnico sobre el que vivirán todos los módulos:
+            seguridad, identidad, monitoreo y el camino para llevar los cambios a producción.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-700">
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Inicio de sesión único para todo el sistema</li>
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Vigilancia técnica del sistema en vivo</li>
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Tablero de control con datos del paciente</li>
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Línea automatizada de publicación a producción</li>
+          </ul>
+        </article>
+
+        <!-- E2 -->
+        <article class="phase-card rounded-2xl bg-white border border-indigo-200 ring-1 ring-indigo-100 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center justify-center size-9 rounded-lg bg-indigo-100 text-indigo-700 font-bold text-sm">02</span>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-1 rounded-full uppercase tracking-wider">
+              <span class="size-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+              En marcha
+            </span>
+          </div>
+          <h3 class="text-lg font-semibold text-ink-950">Módulo de Citas</h3>
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-full">
+              <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Entrega: 30 may 2026
+            </span>
+            <span class="text-xs text-ink-500">2 semanas</span>
+          </div>
+          <p class="mt-3 text-sm text-ink-600 leading-relaxed">
+            El primer módulo que verán los usuarios: agendamiento, recepción de
+            pacientes y administración del día a día de las citas.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-700">
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Calendario y administración de citas</li>
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Citas prioritarias y eventos especiales</li>
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Horarios de consulta y consultorios</li>
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Recordatorios automáticos por correo y SMS</li>
+            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Recepción de pacientes ágil</li>
+          </ul>
+        </article>
+
+        <!-- E3 -->
+        <article class="phase-card rounded-2xl bg-white border border-ink-200 p-6 opacity-95">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center justify-center size-9 rounded-lg bg-ink-100 text-ink-700 font-bold text-sm">03</span>
+            <span class="text-[10px] font-semibold text-ink-500 uppercase tracking-wider">Próxima</span>
+          </div>
+          <h3 class="text-lg font-semibold text-ink-950">Historia Clínica y Configuración Médica</h3>
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-700 bg-white border border-ink-200 px-2.5 py-1 rounded-full">
+              <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Entrega: 5 jun 2026
+            </span>
+            <span class="text-xs text-ink-500">1 semana</span>
+          </div>
+          <p class="mt-3 text-sm text-ink-600 leading-relaxed">
+            La columna vertebral del sistema clínico. Permite a los profesionales
+            atender pacientes y al equipo administrativo configurar el catálogo.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-700">
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Configuración de formatos de historia clínica</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Atención de pacientes (con y sin cita previa)</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Catálogo de servicios y procedimientos</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Listas de chequeo clínicas</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Atenciones más rápidas y sin esperas largas</li>
+          </ul>
+        </article>
+
+        <!-- E4 -->
+        <article class="phase-card rounded-2xl bg-white border border-ink-200 p-6 opacity-95">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center justify-center size-9 rounded-lg bg-ink-100 text-ink-700 font-bold text-sm">04</span>
+            <span class="text-[10px] font-semibold text-ink-500 uppercase tracking-wider">Próxima</span>
+          </div>
+          <h3 class="text-lg font-semibold text-ink-950">Facturación</h3>
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-700 bg-white border border-ink-200 px-2.5 py-1 rounded-full">
+              <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Entrega: 12 jun 2026
+            </span>
+            <span class="text-xs text-ink-500">1 semana</span>
+          </div>
+          <p class="mt-3 text-sm text-ink-600 leading-relaxed">
+            Todo lo financiero y administrativo: convenios, rangos de facturación,
+            manejo de medicamentos e insumos, y reportes regulatorios.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-700">
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Administración de convenios y EPS</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Manuales tarifarios y precios</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Medicamentos e insumos</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Rangos de facturación electrónica</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Reportes RIPS al día con la norma</li>
+          </ul>
+        </article>
+
+        <!-- E5 -->
+        <article class="phase-card rounded-2xl bg-white border border-ink-200 p-6 opacity-95">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center justify-center size-9 rounded-lg bg-ink-100 text-ink-700 font-bold text-sm">05</span>
+            <span class="text-[10px] font-semibold text-ink-500 uppercase tracking-wider">Próxima</span>
+          </div>
+          <h3 class="text-lg font-semibold text-ink-950">Estabilización y cierre</h3>
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-700 bg-white border border-ink-200 px-2.5 py-1 rounded-full">
+              <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Entrega: 26 jun 2026
+            </span>
+            <span class="text-xs text-ink-500">2 semanas</span>
+          </div>
+          <p class="mt-3 text-sm text-ink-600 leading-relaxed">
+            Verificar que todo funciona en producción, capacitar a los usuarios
+            y dejar la documentación lista para la entrega formal.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-700">
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Pruebas de aceptación con usuarios reales</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Capacitación al equipo de Hypersoft</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Retiro de versiones antiguas ya migradas</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Documentación final y entrega</li>
+          </ul>
+        </article>
+
+        <!-- E6 -->
+        <article class="phase-card rounded-2xl bg-ink-50 border border-dashed border-ink-300 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center justify-center size-9 rounded-lg bg-white border border-ink-200 text-ink-600 font-bold text-sm">06</span>
+            <span class="text-[10px] font-semibold text-ink-500 uppercase tracking-wider">Post-entrega</span>
+          </div>
+          <h3 class="text-lg font-semibold text-ink-950">Soporte continuo</h3>
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-700 bg-white border border-dashed border-ink-300 px-2.5 py-1 rounded-full">
+              <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Hasta octubre 2026
+            </span>
+            <span class="text-xs text-ink-500">~4 meses</span>
+          </div>
+          <p class="mt-3 text-sm text-ink-600 leading-relaxed">
+            Acompañamiento post-implementación: corrección de incidencias,
+            mejoras de uso y soporte a Hypersoft mientras el sistema estabiliza.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-ink-700">
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Soporte a incidencias en producción</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Ajustes y mejoras menores</li>
+            <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Acompañamiento al equipo interno</li>
+          </ul>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ARRANQUE INMEDIATO -->
+    <section>
+      <div class="rounded-2xl bg-gradient-to-br from-ink-950 to-ink-800 text-white p-10 shadow-soft relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 size-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -left-10 -bottom-10 size-48 bg-violet-500/20 rounded-full blur-3xl"></div>
+
+        <div class="relative">
+          <div class="flex items-baseline justify-between mb-2">
+            <h2 class="text-sm font-semibold text-indigo-300 uppercase tracking-wider">Arranque inmediato</h2>
+            <span class="text-xs text-ink-400">Primera semana</span>
+          </div>
+          <h3 class="text-3xl font-bold mb-3">Sábado 16 de mayo · 06:00</h3>
+          <p class="text-ink-300 max-w-2xl">
+            Comienza la construcción de las dos primeras entregas en paralelo.
+            La Entrega 1 (Base) abre el camino técnico; la Entrega 2 (Citas)
+            empieza con las tareas que no dependen de ella.
+          </p>
+
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-xl bg-white/5 border border-white/10 p-5 backdrop-blur">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="size-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                <span class="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Entrega 1</span>
+              </div>
+              <h4 class="text-lg font-semibold mb-2">Base del sistema</h4>
+              <p class="text-sm text-ink-300">Inicio de sesión único, vigilancia técnica, tablero del paciente y línea de publicación.</p>
+            </div>
+
+            <div class="rounded-xl bg-white/5 border border-white/10 p-5 backdrop-blur">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="size-2 rounded-full bg-violet-400 animate-pulse"></span>
+                <span class="text-xs font-semibold text-violet-300 uppercase tracking-wider">Entrega 2 · paralelo</span>
+              </div>
+              <h4 class="text-lg font-semibold mb-2">Módulo de Citas</h4>
+              <p class="text-sm text-ink-300">Tareas iniciales que no dependen de la Entrega 1: análisis fino y preparación del módulo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DUDAS -->
+    <section class="text-center pt-8">
+      <p class="text-sm text-ink-500 max-w-xl mx-auto">
+        Este documento es la hoja de ruta viva del proyecto.
+        Se actualizará al cierre de cada entrega con avances reales y nuevos hallazgos.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-8 py-8 border-t border-ink-200 flex items-center justify-between text-xs text-ink-500">
+    <div>
+      <strong class="text-ink-700">MedicalAdmin</strong> · Modernización clínica · Hypersoft
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="https://medical-admin-web-six.vercel.app" target="_blank" class="hover:text-indigo-600 transition inline-flex items-center gap-1">
+        Prototipos en vivo
+        <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+      </a>
+      <span class="text-ink-300">·</span>
+      <span>15 mayo 2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>
