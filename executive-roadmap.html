@@ -409,14 +409,41 @@
             Dejar funcionando el ambiente técnico sobre el que vivirán todos los módulos:
             seguridad, identidad, monitoreo y el camino para llevar los cambios a producción.
           </p>
-          <ul class="mt-4 space-y-2 text-sm text-ink-700">
-            <li class="flex gap-2"><span class="text-emerald-500 mt-0.5">✓</span> Núcleo de datos compartido (identidad del paciente, catálogos, permisos)</li>
-            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Plataforma en la nube para producción</li>
-            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Inicio de sesión único para todo el sistema</li>
-            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Vigilancia técnica del sistema en vivo</li>
-            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Tablero de control con datos del paciente</li>
-            <li class="flex gap-2"><span class="text-indigo-500 mt-0.5">→</span> Línea automatizada de publicación a producción</li>
-          </ul>
+          <!-- Barra de avance -->
+          <div class="mt-5">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[11px] font-semibold text-indigo-700 uppercase tracking-wider">Avance</span>
+              <span class="text-[11px] font-medium text-ink-500">Fundación lista · construyendo funcionalidades</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-ink-100 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500" style="width: 55%"></div>
+            </div>
+          </div>
+
+          <!-- Ya logrado -->
+          <div class="mt-5 rounded-xl bg-emerald-50/70 border border-emerald-100 p-4">
+            <div class="flex items-center gap-1.5 mb-2.5">
+              <svg class="size-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
+              <span class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">Ya logrado</span>
+            </div>
+            <ul class="space-y-2 text-sm text-ink-700">
+              <li class="flex gap-2"><span class="text-emerald-500 mt-0.5">✓</span> Cimientos técnicos y control de calidad automático</li>
+              <li class="flex gap-2"><span class="text-emerald-500 mt-0.5">✓</span> Forma de trabajo del equipo validada con el primer módulo de extremo a extremo</li>
+              <li class="flex gap-2"><span class="text-emerald-500 mt-0.5">✓</span> Núcleo de datos compartido en operación (identidad del paciente, catálogos, permisos)</li>
+              <li class="flex gap-2"><span class="text-indigo-600 mt-0.5">◐</span> <span>Plataforma en la nube — <span class="text-ink-500">fundación lista; publicación automatizada en revisión final</span></span></li>
+            </ul>
+          </div>
+
+          <!-- Por construir -->
+          <div class="mt-4">
+            <span class="text-[11px] font-semibold text-ink-400 uppercase tracking-wider">Por construir</span>
+            <ul class="mt-2 space-y-2 text-sm text-ink-700">
+              <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Inicio de sesión único para todo el sistema</li>
+              <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Vigilancia técnica del sistema en vivo</li>
+              <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Tablero de control con datos del paciente</li>
+              <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Línea automatizada de publicación a producción</li>
+            </ul>
+          </div>
         </article>
 
         <!-- E2 -->
