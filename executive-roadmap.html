@@ -562,7 +562,7 @@
           <!-- Contador de historias -->
           <div class="mt-3 flex items-center gap-2 text-[11px] font-medium">
             <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1"><span class="font-bold text-xs">122</span> terminadas</span>
-            <span class="inline-flex items-center gap-1 rounded-full bg-ink-100 text-ink-600 px-2.5 py-1"><span class="font-bold text-xs">4</span> por terminar</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-ink-100 text-ink-600 px-2.5 py-1"><span class="font-bold text-xs">3</span> por terminar</span>
           </div>
 
           <!-- Ya construido -->
@@ -585,7 +585,6 @@
           <div class="mt-4">
             <span class="text-[11px] font-semibold text-ink-400 uppercase tracking-wider">Por terminar</span>
             <ul class="mt-2 space-y-2 text-sm text-ink-700">
-              <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Medicamentos e insumos (farmacia)</li>
               <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Correcciones finales de las pruebas de aceptación del sponsor (UAT)</li>
               <li class="flex gap-2"><span class="text-ink-400 mt-0.5">→</span> Revisión Go/No-Go de la Entrega 3</li>
             </ul>
@@ -910,7 +909,7 @@
         badgeClass: 'text-indigo-700', numClass: 'bg-indigo-100 text-indigo-700',
         body:
           intro('Casi terminada. La ' + S('atención al paciente está completa y verificada en vivo') + ', y el servicio de Historia Clínica ya funciona en la nube. Solo restan medicamentos y la revisión final.')
-          + counter(122, 'terminadas', 4, 'por terminar')
+          + counter(122, 'terminadas', 3, 'por terminar')
           + mk('Ya construido', 'done', [
               S('Atención al paciente completa y verificada en vivo') + ': el encuentro clínico de punta a punta (fases 2→3→4 + una historia con diagnóstico que se finaliza), endurecido con semanas de pruebas en vivo.',
               S('Servicio de Historia Clínica desplegado') + ' y funcionando en la nube (tercer servicio, junto al núcleo de datos y Citas).',
@@ -919,7 +918,6 @@
               'Reportes clínicos en PDF (13 reportes) + ' + S('retiro de la clase más grande del legacy') + ' (~18.000 líneas de HC).'
             ])
           + mk('Por terminar', 'todo', [
-              'Medicamentos e insumos (farmacia).',
               'Correcciones finales de las pruebas de aceptación del sponsor (UAT).',
               'Revisión Go/No-Go de la Entrega 3.'
             ])
